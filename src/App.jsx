@@ -8,7 +8,6 @@ import Overview from "./components/sections/Overview";
 import Location from "./components/sections/Location";
 import Amenities from "./components/sections/Amenities";
 import FloorPlan from "./components/sections/FloorPlan";
-import Apartments from "./components/sections/Apartments";
 import News from "./components/sections/News";
 import LeadSection from "./components/sections/LeadSection";
 
@@ -45,8 +44,13 @@ export default function App() {
         <Overview data={project.overview} />
         <Location data={project.location} />
         <Amenities items={project.amenities} />
-        <FloorPlan imageSrc="/assets/layout/sensaA.png" />
-        <Apartments items={project.apartments} />
+        <FloorPlan
+          images={{
+            A: "/assets/layout/sensa-A.png",
+            B: "/assets/layout/sensa-b.jpg",
+          }}
+        />
+
         <News items={project.news} />
         <LeadSection onSubmit={submitLead} />
       </main>

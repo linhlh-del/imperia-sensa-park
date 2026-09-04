@@ -55,10 +55,39 @@ export default {
           from: { opacity: "0", transform: "translateY(6px) scale(0.97)" },
           to: { opacity: "1", transform: "translateY(0) scale(1)" },
         },
-        // Viền "kiến bò" (marching ants) cho các zone chưa active — đúng
-        // hiệu ứng stroke-dashoffset trong file SVG mặt bằng gốc bạn gửi.
-        zoneMarch: {
-          to: { strokeDashoffset: "-32" },
+        // Hiệu ứng "thở" cho từng zone trên FloorPlan — cùng ngôn ngữ với
+        // .mbt__zone / @keyframes mbt-breathe trong MatBangTang.css (fill-opacity
+        // dao động nhẹ + halo mờ dần bằng currentColor, không cần biết trước
+        // màu zone vì polygon đã set màu qua style.color -> fill-current).
+        // Tốc độ CHẬM HƠN bản gốc MatBangTang (mặc định 1s) vì FloorPlan có
+        // tới 20 zone nhỏ hiển thị cùng lúc, thở nhanh sẽ rối mắt.
+        zoneBreathe: {
+          "0%, 18%, 82%, 100%": {
+            fillOpacity: "0.08",
+            filter: "drop-shadow(0 0 0 transparent)",
+          },
+          "42%, 58%": {
+            fillOpacity: "0.14",
+            filter: "drop-shadow(0 0 6px currentColor)",
+          },
+        },
+        zoneBreathPulse: {
+          "0%": {
+            fillOpacity: "0.12",
+            strokeOpacity: "0.55",
+            filter: "drop-shadow(0 0 0 transparent)",
+          },
+          "45%, 70%": {
+            fillOpacity: "0.36",
+            strokeOpacity: "1",
+            filter:
+              "brightness(1.3) saturate(1.18) drop-shadow(0 0 10px currentColor)",
+          },
+          "100%": {
+            fillOpacity: "0.12",
+            strokeOpacity: "0.55",
+            filter: "drop-shadow(0 0 0 transparent)",
+          },
         },
       },
       animation: {
@@ -68,7 +97,11 @@ export default {
         // --- Thêm cho FloorPlan.jsx ---
         breathe: "breathe 2.2s ease-in-out infinite",
         "pop-in": "popIn 220ms cubic-bezier(0.2, 0.7, 0.2, 1)",
-        "zone-march": "zoneMarch 1.1s linear infinite",
+        // Thay cho "zone-march" (kiến bò) cũ — xem zoneBreathe ở trên.
+        // 3.2s gồm khoảng nghỉ ở đầu/cuối mỗi nhịp, tránh cảm giác nhấp nháy
+        // liên tục khi di chuyển qua các zone.
+        "zone-breathe": "zoneBreathe 2s ease-in-out infinite",
+        "zone-breath-pulse": "zoneBreathPulse 2000ms ease-in-out 3",
       },
     },
   },
