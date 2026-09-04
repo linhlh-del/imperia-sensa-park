@@ -114,7 +114,7 @@ export default function FloorPlan({
     <section className="section-y bg-imperia-cream">
       <div className="container-page">
         {/* Heading */}
-        <div className="mb-10 max-w-2xl">
+        <div className="mb-10 max-w-3xl">
           <span className="eyebrow">
             {meta.tower} — {meta.floorType}
           </span>
