@@ -89,6 +89,102 @@ export default {
             filter: "drop-shadow(0 0 0 transparent)",
           },
         },
+        // --- Thêm cho ThankYou.jsx ---
+        fadeInUp: {
+          from: { opacity: "0", transform: "translateY(20px)" },
+          to: { opacity: "1", transform: "translateY(0)" },
+        },
+        scaleIn: {
+          from: { opacity: "0", transform: "scale(0.5)" },
+          to: { opacity: "1", transform: "scale(1)" },
+        },
+        buttonPulse: {
+          "0%, 100%": {
+            transform: "scale(1)",
+            boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
+          },
+          "50%": {
+            transform: "scale(1.02)",
+            boxShadow: "0 6px 20px rgba(0,0,0,0.2)",
+          },
+        },
+        // --- Thêm cho FeaturedAmenities.jsx ---
+        amenityShimmer: {
+          "0%": { backgroundPosition: "150% 0" },
+          "100%": { backgroundPosition: "-50% 0" },
+        },
+        amenityFadeIn: {
+          from: { opacity: "0", transform: "translateY(6px)" },
+          to: { opacity: "1", transform: "translateY(0)" },
+        },
+        // --- Thêm cho FloatingButtons.jsx ---
+        fbPhoneWobble: {
+          "0%, 60%, 100%": { transform: "rotate(0deg) scale(1)" },
+          "10%": { transform: "rotate(-15deg) scale(1.05)" },
+          "20%": { transform: "rotate(12deg) scale(1.05)" },
+          "30%": { transform: "rotate(-10deg) scale(1.02)" },
+          "40%": { transform: "rotate(8deg) scale(1.02)" },
+          "50%": { transform: "rotate(-4deg) scale(1)" },
+        },
+        fbPhoneGlow: {
+          "0%, 100%": {
+            boxShadow:
+              "0 4px 20px rgba(77,85,56,0.5), 0 0 0 0 rgba(169,181,120,0.5)",
+          },
+          "50%": {
+            boxShadow:
+              "0 4px 28px rgba(77,85,56,0.7), 0 0 0 12px rgba(169,181,120,0)",
+          },
+        },
+        fbRing: {
+          "0%": { transform: "scale(1)", opacity: "0.65" },
+          "100%": { transform: "scale(1.8)", opacity: "0" },
+        },
+        fbZaloShake: {
+          "0%, 80%, 100%": { transform: "rotate(0deg)" },
+          "10%": { transform: "rotate(-6deg)" },
+          "20%": { transform: "rotate(6deg)" },
+          "30%": { transform: "rotate(-5deg)" },
+          "40%": { transform: "rotate(5deg)" },
+          "50%": { transform: "rotate(-3deg)" },
+          "60%": { transform: "rotate(3deg)" },
+          "70%": { transform: "rotate(-1deg)" },
+        },
+        fbZaloRing1: {
+          "0%": { transform: "scale(1)", opacity: "0.6" },
+          "100%": { transform: "scale(2.2)", opacity: "0" },
+        },
+        fbZaloRing2: {
+          "0%": { transform: "scale(1)", opacity: "0.45" },
+          "100%": { transform: "scale(2.8)", opacity: "0" },
+        },
+        fbZaloRing3: {
+          "0%": { transform: "scale(1)", opacity: "0.3" },
+          "100%": { transform: "scale(3.4)", opacity: "0" },
+        },
+        // --- Thêm cho nút Bảng Giá trong FloatingButtons.jsx ---
+        fbPriceWobble: {
+          "0%, 60%, 100%": { transform: "rotate(0deg) scale(1)" },
+          "10%": { transform: "rotate(-15deg) scale(1.05)" },
+          "20%": { transform: "rotate(12deg) scale(1.05)" },
+          "30%": { transform: "rotate(-10deg) scale(1.02)" },
+          "40%": { transform: "rotate(8deg) scale(1.02)" },
+          "50%": { transform: "rotate(-4deg) scale(1)" },
+        },
+        fbPriceGlow: {
+          "0%, 100%": {
+            boxShadow:
+              "0 4px 20px rgba(211,167,105,0.5), 0 0 0 0 rgba(211,167,105,0.5)",
+          },
+          "50%": {
+            boxShadow:
+              "0 4px 28px rgba(211,167,105,0.7), 0 0 0 12px rgba(211,167,105,0)",
+          },
+        },
+        fbPriceRing: {
+          "0%": { transform: "scale(1)", opacity: "0.6" },
+          "100%": { transform: "scale(1.8)", opacity: "0" },
+        },
       },
       animation: {
         "marker-shake": "markerShake 2s ease-in-out infinite",
@@ -102,6 +198,27 @@ export default {
         // liên tục khi di chuyển qua các zone.
         "zone-breathe": "zoneBreathe 2s ease-in-out infinite",
         "zone-breath-pulse": "zoneBreathPulse 2000ms ease-in-out 3",
+        // --- Thêm cho ThankYou.jsx ---
+        "fade-in-up": "fadeInUp 0.4s ease",
+        "scale-in": "scaleIn 0.5s ease-out",
+        "button-pulse": "buttonPulse 2s ease-in-out infinite",
+        // --- Thêm cho FeaturedAmenities.jsx ---
+        "amenity-shimmer": "amenityShimmer 1.3s ease-in-out infinite",
+        "amenity-fade-in": "amenityFadeIn 0.35s ease",
+        // --- Thêm cho FloatingButtons.jsx ---
+        "fb-phone-wobble": "fbPhoneWobble 2.2s ease-in-out infinite",
+        "fb-phone-glow": "fbPhoneGlow 2.2s ease-in-out infinite",
+        "fb-ring-1": "fbRing 2.2s ease-out infinite",
+        "fb-ring-2": "fbRing 2.2s ease-out infinite 0.7s",
+        "fb-zalo-shake": "fbZaloShake 1.6s ease-in-out infinite",
+        "fb-zalo-ring-1": "fbZaloRing1 2s ease-out infinite",
+        "fb-zalo-ring-2": "fbZaloRing2 2s ease-out infinite 0.5s",
+        "fb-zalo-ring-3": "fbZaloRing3 2s ease-out infinite 1s",
+        // --- Thêm cho nút Bảng Giá trong FloatingButtons.jsx ---
+        "fb-price-wobble": "fbPriceWobble 2.4s ease-in-out infinite",
+        "fb-price-glow": "fbPriceGlow 2.4s ease-in-out infinite",
+        "fb-price-ring-1": "fbPriceRing 2.4s ease-out infinite",
+        "fb-price-ring-2": "fbPriceRing 2.4s ease-out infinite 0.8s",
       },
     },
   },

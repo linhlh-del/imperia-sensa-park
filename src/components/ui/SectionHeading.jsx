@@ -4,9 +4,10 @@ export default function SectionHeading({
   subtitle,
   light = false,
   center = false,
+  className = "",
 }) {
   return (
-    <div className={`mb-12 ${center ? "text-center" : ""}`}>
+    <div className={`mb-12 ${center ? "text-center" : ""} ${className}`}>
       {eyebrow && (
         <div
           className={`eyebrow ${light ? "text-imperia-beige" : ""} ${center ? "justify-center" : ""}`}

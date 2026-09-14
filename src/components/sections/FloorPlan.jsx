@@ -32,6 +32,10 @@
  *  - Dropdown chọn tháp (Sensa A / Sensa B) đặt trước hàng legend loại hình.
  *  - Text "Tháp Sensa A" / "Tháp Sensa B" hiện ở góc trái trên của ảnh mặt
  *    bằng, đổi theo tháp đang chọn.
+ *  - Panel chi tiết bên phải: thêm ảnh phối cảnh minh hoạ layout theo loại
+ *    hình căn hộ (Studio/1PN+/2PN/3PN) — xem LAYOUT_IMAGES bên dưới. Loại
+ *    hình nào chưa có ảnh (hiện tại là Duplex) sẽ tự động không hiện khối
+ *    ảnh, không hiện ảnh vỡ/placeholder.
  * ============================================================================
  */
 
@@ -42,6 +46,19 @@ import {
   VIEWBOX_WIDTH,
   VIEWBOX_HEIGHT,
 } from "../../data/sensaAFloorData";
+
+// --- Ảnh phối cảnh minh hoạ layout theo loại hình căn hộ, hiện trong panel
+// chi tiết (bên dưới phần text diện tích/loại hình). Key phải khớp với
+// key trong UNIT_TYPE_LEGEND / COLOR_CODES ("STUDIO", "1PN+", "2PN", "3PN",
+// "DUPLEX"). Hiện chưa có ảnh cho Duplex — cứ để trống, code tự ẩn khối ảnh
+// khi không tìm thấy entry tương ứng, không cần sửa gì thêm khi có ảnh mới.
+const LAYOUT_IMAGES = {
+  STUDIO: "/assets/aparments/studio.png",
+  "1PN+": "/assets/aparments/1pn.png",
+  "2PN": "/assets/aparments/2pn.png",
+  "3PN": "/assets/aparments/3pn.png",
+  // DUPLEX: chưa có ảnh — bổ sung khi có, ví dụ: "/assets/aparments/duplex.png"
+};
 
 // --- Helper: tính trọng tâm (centroid) của 1 polygon từ chuỗi "x1,y1 x2,y2 ..."
 // Dùng công thức centroid chuẩn theo diện tích (shoelace) để label luôn nằm
@@ -100,7 +117,7 @@ function darkenHexColor(color, amount = 0.65) {
     .join("")}`;
 }
 
-const BREATH_ORDER = [
+const BREATH_ORDER_A = [
   "a.08",
   "a.07",
   "a.09",
@@ -121,6 +138,29 @@ const BREATH_ORDER = [
   "a.20",
   "a.18",
   "a.19",
+];
+
+const BREATH_ORDER_B = [
+  "b.1",
+  "b.2",
+  "b.3",
+  "b.3a",
+  "b.5",
+  "b.6",
+  "b.7",
+  "b.8",
+  "b.9",
+  "b.10",
+  "b.11",
+  "b.12",
+  "b.12a",
+  "b.12b",
+  "b.15",
+  "b.16",
+  "b.17",
+  "b.18",
+  "b.19",
+  "b.20",
 ];
 
 // --- Dropdown chọn tháp (Sensa A / Sensa B) ---
@@ -222,20 +262,31 @@ export default function FloorPlan({
   const [hoverType, setHoverType] = useState(null);
   const [pinned, setPinned] = useState(false);
   const [breathIndex, setBreathIndex] = useState(0);
+  const [floorPlanLightbox, setFloorPlanLightbox] = useState(false);
 
   const towerData = towers[activeTower] || Object.values(towers)[0];
   const units = towerData.units;
   const zones = towerData.zones;
   const meta = towerData.meta;
   const imageSrc = images[activeTower];
+  const breathOrder = activeTower === "B" ? BREATH_ORDER_B : BREATH_ORDER_A;
 
   useEffect(() => {
     setBreathIndex(0);
     const breathTimer = window.setInterval(() => {
-      setBreathIndex((current) => (current + 1) % BREATH_ORDER.length);
+      setBreathIndex((current) => (current + 1) % breathOrder.length);
     }, 7000);
     return () => window.clearInterval(breathTimer);
   }, [activeTower]);
+
+  useEffect(() => {
+    if (!floorPlanLightbox) return undefined;
+    const handleKeyDown = (event) => {
+      if (event.key === "Escape") setFloorPlanLightbox(false);
+    };
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, [floorPlanLightbox]);
 
   const unitByCode = useMemo(
     () => Object.fromEntries(units.map((u) => [u.unit_code, u])),
@@ -274,6 +325,11 @@ export default function FloorPlan({
   const activeTypeKey = activeUnit ? activeUnit.type : hoverType;
   const isSelectionActive = Boolean(hoverCode || hoverType);
   const showPanel = Boolean(activeUnit) || Boolean(hoverType);
+  // Ảnh phối cảnh layout tương ứng với loại hình đang xem trong panel —
+  // dùng chung cho cả 2 trường hợp (đang xem 1 căn cụ thể / đang hover
+  // legend loại hình). Nếu type chưa có ảnh trong LAYOUT_IMAGES (vd Duplex),
+  // giá trị sẽ là undefined và khối ảnh không được render.
+  const activeLayoutImage = activeTypeKey ? LAYOUT_IMAGES[activeTypeKey] : null;
 
   const closePanel = () => {
     setPinned(false);
@@ -284,6 +340,7 @@ export default function FloorPlan({
   const handleTowerChange = (key) => {
     if (key === activeTower) return;
     closePanel();
+    setBreathIndex(0);
     setActiveTower(key);
   };
 
@@ -340,9 +397,6 @@ export default function FloorPlan({
       <div className="container-page">
         {/* Heading */}
         <div className="mb-10 max-w-4xl">
-          <span className="eyebrow">
-            {meta.tower} — {meta.floorType}
-          </span>
           <h2 className="section-title">Mặt bằng tầng điển hình</h2>
           <p className="section-subtitle">
             {meta.totalLayouts} căn hộ mỗi tầng, chia thành 5 loại hình. Di
@@ -408,7 +462,16 @@ export default function FloorPlan({
                 alt={`${imageAlt} — ${towerData.label}`}
                 width={VIEWBOX_WIDTH}
                 height={VIEWBOX_HEIGHT}
-                className="block h-auto w-full select-none rounded-2xl"
+                role="button"
+                tabIndex={0}
+                onClick={() => setFloorPlanLightbox(true)}
+                onKeyDown={(event) => {
+                  if (event.key === "Enter" || event.key === " ") {
+                    event.preventDefault();
+                    setFloorPlanLightbox(true);
+                  }
+                }}
+                className="block h-auto w-full cursor-zoom-in select-none rounded-2xl"
                 draggable={false}
               />
             ) : (
@@ -479,7 +542,7 @@ export default function FloorPlan({
                   const borderColor = darkenHexColor(unit.color);
                   const isBreathing =
                     !isSelectionActive &&
-                    unit.unit_code.toLowerCase() === BREATH_ORDER[breathIndex];
+                    unit.unit_code.toLowerCase() === breathOrder[breathIndex];
 
                   return (
                     <polygon
@@ -499,7 +562,11 @@ export default function FloorPlan({
                           ? "fill-current opacity-100 [fill-opacity:.06]"
                           : "fill-current opacity-90 [fill-opacity:.12]",
                         isActive ? "[stroke-width:2.25]" : "",
-                        isBreathing ? "animate-zone-breath-pulse" : "",
+                        isBreathing
+                          ? activeTower === "B"
+                            ? "animate-[zoneBreathPulse_2000ms_ease-in-out_infinite]"
+                            : "animate-zone-breath-pulse"
+                          : "",
                         isDimmed ? "!opacity-20 ![fill-opacity:.03]" : "",
                       ].join(" ")}
                       style={{
@@ -596,6 +663,16 @@ export default function FloorPlan({
                         value={`${activeUnit.nfa_sqm} m²`}
                       />
                     </dl>
+                    {activeLayoutImage ? (
+                      <div className="mt-5 overflow-hidden rounded-xl border border-imperia-primary/10">
+                        <img
+                          src={activeLayoutImage}
+                          alt={`Phối cảnh layout ${legendByKey[activeUnit.type]?.label || activeUnit.type}`}
+                          className="block h-auto w-full object-cover"
+                          loading="lazy"
+                        />
+                      </div>
+                    ) : null}
                     <button
                       type="button"
                       onClick={closePanel}
@@ -613,6 +690,16 @@ export default function FloorPlan({
                       {units.filter((u) => u.type === hoverType).length} căn
                       thuộc loại hình này trên mỗi tầng.
                     </p>
+                    {activeLayoutImage ? (
+                      <div className="mt-4 overflow-hidden rounded-xl border border-imperia-primary/10">
+                        <img
+                          src={activeLayoutImage}
+                          alt={`Phối cảnh layout ${legendByKey[hoverType]?.label || hoverType}`}
+                          className="block h-auto w-full object-cover"
+                          loading="lazy"
+                        />
+                      </div>
+                    ) : null}
                   </>
                 )}
               </div>
@@ -624,6 +711,29 @@ export default function FloorPlan({
           </aside>
         </div>
       </div>
+
+      {floorPlanLightbox && imageSrc ? (
+        <div
+          className="fixed inset-0 z-[1200] flex items-center justify-center bg-imperia-black/85 p-4 backdrop-blur-sm animate-[fadeInUp_0.25s_ease]"
+          role="presentation"
+          onClick={() => setFloorPlanLightbox(false)}
+        >
+          <button
+            type="button"
+            aria-label="Đóng ảnh mặt bằng"
+            onClick={() => setFloorPlanLightbox(false)}
+            className="absolute right-5 top-5 z-10 flex h-10 w-10 items-center justify-center rounded-full bg-imperia-white/10 text-2xl text-imperia-cream transition-colors hover:bg-imperia-white/20"
+          >
+            ×
+          </button>
+          <img
+            src={imageSrc}
+            alt={`${imageAlt} — ${towerData.label}`}
+            onClick={(event) => event.stopPropagation()}
+            className="max-h-[92vh] max-w-full animate-scale-in object-contain rounded-xl shadow-card"
+          />
+        </div>
+      ) : null}
     </section>
   );
 }
