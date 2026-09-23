@@ -124,7 +124,7 @@ export default function LeadSection({ onSubmit }) {
               ))}
             </ul>
             <strong className="font-display text-3xl text-imperia-primary">
-              Hotline: 1800 1234
+              Hotline: 093 448 3138
             </strong>
           </div>
           <form
@@ -148,11 +148,7 @@ export default function LeadSection({ onSubmit }) {
               <option>Chọn căn hộ</option>
               <option>Xem mặt bằng</option>
             </select>
-            <textarea
-              rows="4"
-              className="rounded-xl border border-imperia-primary/15 bg-imperia-cream px-4 py-3 text-sm outline-none focus:border-imperia-primary"
-              placeholder="Nội dung cần tư vấn"
-            />
+
             <Button type="submit">Đăng ký nhận thông tin</Button>
             <div className="mt-0.5 flex flex-col gap-2 rounded-lg border border-imperia-primary/20 bg-white/60 p-3 text-left">
               <p className="flex min-w-0 items-center gap-2 text-[0.8125rem] text-imperia-black/85">
