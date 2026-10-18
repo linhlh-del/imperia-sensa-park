@@ -164,7 +164,7 @@ export default function News({
                   <article
                     key={item.id}
                     data-cms-item="news"
-                    className="flex w-[min(360px,82vw)] flex-none flex-col overflow-hidden rounded-[22px] border border-imperia-primary/10 bg-imperia-cream"
+                    className="flex w-[min(360px,82vw)] flex-none flex-col rounded-[22px] border border-imperia-primary/10 bg-imperia-cream"
                     style={{ scrollSnapAlign: "start" }}
                   >
                     <Link

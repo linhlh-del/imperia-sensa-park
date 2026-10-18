@@ -2,6 +2,38 @@
 @tailwind components;
 @tailwind utilities;
 
+@font-face {
+  font-family: "SVN Bon Voyage";
+  src: url("./assets/font/SVN-BonVoyage-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "SVN Selecta";
+  src: url("./assets/font/SVN-Selecta-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "SVN Selecta";
+  src: url("./assets/font/SVN-Selecta-Light.woff2") format("woff2");
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "SVN Selecta";
+  src: url("./assets/font/SVN-Selecta-Bold.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
 :root {
   --imperia-primary: #4d5538;
   --imperia-dark: #353c27;
@@ -25,7 +57,7 @@ body {
   overflow-x: hidden;
   background: var(--imperia-cream);
   color: var(--imperia-black);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: "SVN Selecta", Arial, Helvetica, sans-serif;
   line-height: 1.6;
 }
 body.menu-open,

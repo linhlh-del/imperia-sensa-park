@@ -11,12 +11,18 @@
  *
  *  --------------------------------------------------------------------------
  *  CẤU TRÚC NHIỀU THÁP:
- *  - Sensa A: đã có đầy đủ toạ độ polygon (ZONE_GEOMETRY_A) + dữ liệu căn
- *    (RAW_UNITS_A).
- *  - Sensa B: ĐÃ có toạ độ polygon (ZONE_GEOMETRY_B, quy đổi từ SVG gốc mới
- *    nhất viewBox 1536×1024 sang 2444×1728) và dữ liệu căn hộ trong
- *    RAW_UNITS_B.
+ *  - Sensa A: đủ toạ độ polygon (ZONE_GEOMETRY_A) + dữ liệu căn (RAW_UNITS_A).
+ *    A.18 (Duplex) có `floors` gồm cả tầng 1 và tầng 2.
+ *  - Sensa B: toạ độ polygon (ZONE_GEOMETRY_B, quy đổi từ SVG gốc viewBox
+ *    1536×1024 sang 2444×1728) + dữ liệu căn trong RAW_UNITS_B.
+ *    B.3 và B.12B (Duplex) có `floors` gồm cả tầng 1 và tầng 2.
  *  - UNIT_TYPE_LEGEND (Studio/1PN+/2PN/3PN/Duplex) dùng chung cho cả 2 tháp.
+ *
+ *  CĂN DUPLEX NHIỀU TẦNG:
+ *  Entry trong ZONE_GEOMETRY_* có thể có thêm field
+ *    floors: [{ level, color, points }, ...]
+ *  `points` ở ngoài = tầng 1 (giữ để tương thích ngược). FloorPlan.jsx vẽ
+ *  mọi polygon trong `floors`; hover/click ở tầng nào cũng chọn cùng 1 căn.
  * ============================================================================
  */
 
@@ -184,11 +190,18 @@ const buildUnits = (rawUnits, zoneGeometry) => {
       ...u,
       color: geo?.color || fallbackColor(u.type, i),
       points: geo?.points || null, // null = chưa có toạ độ, sẽ không vẽ được zone
-      // Với các căn có nhiều mặt bằng theo tầng (vd Duplex B.3, B.12B):
-      // mảng đầy đủ [{level, color, points}], FloorPlan.jsx cần đọc field
-      // này để vẽ thêm polygon phụ. Nếu FloorPlan.jsx chưa hỗ trợ, chỉ
-      // `points` (tầng 1) ở trên được vẽ, `floors` bị bỏ qua vô hại.
-      floors: geo?.floors || null,
+      // Căn Duplex (A.18, B.3, B.12B): mỗi tầng là 1 mục RIÊNG
+      // [{level, code, color, points, labelTop, labelLeft}] — FloorPlan.jsx
+      // hiển thị thành "B.03-F1", "B.03-F2"... (hover/click/label riêng).
+      // null = căn chỉ có 1 tầng (dùng `points`).
+      floors: geo?.floors
+        ? geo.floors.map((f) => ({
+            ...f,
+            code: `${u.unit_code}-F${f.level}`, // vd "B.03-F1"
+            labelTop: f.label?.top ?? labelTop, // chip riêng cho từng tầng
+            labelLeft: f.label?.left ?? labelLeft,
+          }))
+        : null,
       labelTop, // % — vị trí chip label, NGOÀI polygon, giống style data.js
       labelLeft,
     };
@@ -315,10 +328,27 @@ const ZONE_GEOMETRY_A = {
     points:
       "1631.8,396.4 1738.3,396.4 1741.6,425.9 1790.8,425.9 1792.4,522.5 1617.0,522.5 1615.4,452.1 1631.8,452.1",
   },
+  // Duplex — A.18 có 2 tầng. `points` = tầng 1 (giữ nguyên như cũ);
+  // `floors` = đủ cả 2 tầng, tầng 2 quy đổi từ SVG "A18-Floor2"
+  // (viewBox 1491×1055 -> 2444×1728).
   "a.18": {
     color: "#77a9a8",
-    label: { top: "18%", left: "80%" },
+    label: { top: "18%", left: "77%" }, // = label của Floor 1
     points: "1789.2,370.2 1956.3,368.5 1958.0,520.9 1794.1,522.5",
+    floors: [
+      {
+        level: 1,
+        color: "#77a9a8",
+        label: { top: "18%", left: "77%" },
+        points: "1789.2,370.2 1956.3,368.5 1958.0,520.9 1794.1,522.5",
+      },
+      {
+        level: 2,
+        color: "#72a7a5",
+        label: { top: "18%", left: "85%" },
+        points: "1997.3,365.3 1992.4,522.5 2164.5,524.1 2161.2,368.5",
+      },
+    ],
   },
 };
 
@@ -396,20 +426,13 @@ export const PROJECT_META_A = {
  *  Màu giữ nguyên theo mã hex gốc trong SVG (không ép về đúng COLOR_CODES,
  *  giống cách làm của Sensa A).
  *
- *  GHI CHÚ QUAN TRỌNG:
+ *  GHI CHÚ:
  *  1) B.3 và B.12B là Duplex có mặt bằng KHÁC NHAU giữa tầng dưới và tầng
- *     trên (đã xác nhận với bạn). Mỗi entry trong ZONE_GEOMETRY_B của 2
- *     căn này có thêm field `floors: [{level, color, points}, ...]` chứa
- *     đủ toạ độ cả 2 tầng, bên cạnh field `points` (= tầng 1, giữ để
- *     tương thích ngược). buildUnits() đã truyền field `floors` này ra
- *     unit object — NHƯNG FloorPlan.jsx cần được cập nhật thêm để thực sự
- *     vẽ 2 <polygon> cho unit có `floors` (hiện tại nếu chưa sửa, nó vẫn
- *     chỉ vẽ được `points` = tầng 1, không lỗi nhưng thiếu tầng 2).
- *     -> Gửi mình FloorPlan.jsx để mình sửa phần render cho khớp.
- *  2) `bedrooms` / `gfa_sqm` / `nfa_sqm` trong RAW_UNITS_B bên dưới lấy từ
- *     số liệu bạn đã cung cấp trước đó (không phải suy đoán từ màu nữa).
- *     Label của các căn B được tự động tính theo centroid polygon và
- *     chuyển sang phần trăm top/left.
+ *     trên. Mỗi entry có `points` (= tầng 1, tương thích ngược) và
+ *     `floors: [{level, color, points}, ...]` chứa đủ 2 tầng.
+ *  2) `bedrooms` / `gfa_sqm` / `nfa_sqm` trong RAW_UNITS_B lấy từ số liệu
+ *     bạn đã cung cấp. Label của các căn B được tự động tính theo centroid
+ *     polygon và chuyển sang phần trăm top/left.
  * ========================================================================== */
 
 const ZONE_GEOMETRY_B = {
@@ -425,24 +448,23 @@ const ZONE_GEOMETRY_B = {
       "1640.0,347.5 1805.6,351.2 1809.0,591.1 1695.8,593.0 1692.3,489.0 1667.0,487.2 1668.8,463.9 1643.3,465.8",
   },
   // Duplex — B.3 có 2 mặt bằng khác nhau theo tầng (tầng dưới/tầng trên).
-  // `points` = tầng 1 (dùng làm hình chính, tương thích ngược với code cũ
-  // chỉ đọc `points`). `floors` = đầy đủ cả 2 tầng, dùng khi FloorPlan.jsx
-  // được cập nhật để vẽ nhiều polygon / 1 căn (xem ghi chú cuối file).
   "b.3": {
     color: "#84b3a7",
-    label: { top: "14%", left: "85%" },
+    label: { top: "14%", left: "79%" }, // = label của Floor 1
     points:
       "1871.3,347.5 2023.5,349.3 2025.1,603.6 1846.0,601.9 1844.5,431.7 1874.8,433.5",
     floors: [
       {
         level: 1,
         color: "#84b3a7",
+        label: { top: "14%", left: "79%" },
         points:
           "1871.3,347.5 2023.5,349.3 2025.1,603.6 1846.0,601.9 1844.5,431.7 1874.8,433.5",
       },
       {
         level: 2,
         color: "#84b4a8",
+        label: { top: "14%", left: "89.5%" },
         points:
           "2112.9,345.8 2278.5,349.3 2276.8,607.3 2086.0,607.3 2086.0,433.5 2116.4,433.5",
       },
@@ -507,23 +529,24 @@ const ZONE_GEOMETRY_B = {
     label: { top: "90%", left: "32%" },
     points: "817.5,1356.1 954.4,1357.8 952.6,1495.8 817.5,1492.1",
   },
-  // Duplex — B.12B cũng có 2 mặt bằng khác nhau theo tầng, xem giải thích ở
-  // "b.3" phía trên (points = tầng 1, floors = đủ cả 2 tầng).
+  // Duplex — B.12B cũng có 2 mặt bằng khác nhau theo tầng.
   "b.12b": {
     color: "#86b6a9",
-    label: { top: "90%", left: "18%" },
+    label: { top: "94%", left: "28.5%" }, // = label của Floor 1
     points:
       "667.2,1381.0 665.4,1357.8 810.7,1356.1 815.8,1502.9 584.4,1501.2 584.4,1381.0",
     floors: [
       {
         level: 1,
         color: "#86b6a9",
+        label: { top: "96%", left: "26%" },
         points:
           "667.2,1381.0 665.4,1357.8 810.7,1356.1 815.8,1502.9 584.4,1501.2 584.4,1381.0",
       },
       {
         level: 2,
         color: "#86b6aa",
+        label: { top: "96%", left: "12%" },
         points:
           "391.9,1357.8 390.1,1323.8 508.4,1322.0 506.8,1499.3 273.7,1499.3 271.9,1356.1",
       },

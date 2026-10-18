@@ -18,10 +18,11 @@ export default {
         },
       },
       fontFamily: {
-        sans: ["Arial", "Helvetica", "sans-serif"],
-        display: ["Arial", "Helvetica", "sans-serif"],
+        sans: ['"SVN Selecta"', "Arial", "Helvetica", "sans-serif"],
+        display: ['"SVN Bon Voyage"', "Georgia", "serif"],
+        1: ['"SVN Bon Voyage"', "Georgia", "serif"],
         title: ['"Times New Roman"', "Times", "serif"], // dùng cho title "50+"
-        body: ["Arial", "Helvetica", "sans-serif"], // dùng cho subtitle + text
+        body: ['"SVN Selecta"', "Arial", "Helvetica", "sans-serif"],
       },
       boxShadow: {
         soft: "0 12px 40px rgba(45, 51, 34, .10)",

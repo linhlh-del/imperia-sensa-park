@@ -16,17 +16,17 @@ import {
   formatDate,
 } from "../services/newsService";
 
-function Shell({ children }) {
+function Shell({ children, onLead }) {
   return (
-    <div className="min-h-screen bg-imperia-cream">
-      <Header />
+    <div className="min-h-screen bg-imperia-cream pt-[76px]">
+      <Header onLead={onLead} />
       <main className="container-page section-y">{children}</main>
       <Footer />
     </div>
   );
 }
 
-export default function NewsDetailPage() {
+export default function NewsDetailPage({ onLead }) {
   const { articleId } = useParams();
   const [articles, setArticles] = useState(null);
   const [fetchError, setFetchError] = useState(null);
@@ -71,7 +71,7 @@ export default function NewsDetailPage() {
 
   if (!articles && !fetchError) {
     return (
-      <Shell>
+      <Shell onLead={onLead}>
         <p className="text-center text-imperia-black/60">
           Đang tải bài viết...
         </p>
@@ -80,7 +80,7 @@ export default function NewsDetailPage() {
   }
   if (fetchError) {
     return (
-      <Shell>
+      <Shell onLead={onLead}>
         <p className="text-center text-imperia-secondary-dark">{fetchError}</p>
       </Shell>
     );
@@ -89,7 +89,7 @@ export default function NewsDetailPage() {
   const article = articles.find((a) => a.id === articleId);
   if (!article) {
     return (
-      <Shell>
+      <Shell onLead={onLead}>
         <div className="text-center">
           <h1 className="section-title">Không tìm thấy bài viết</h1>
           <p className="section-subtitle mx-auto text-center">
@@ -113,8 +113,8 @@ export default function NewsDetailPage() {
   const related = getRelated(articles, article.id, 3);
 
   return (
-    <div className="min-h-screen bg-imperia-cream">
-      <Header />
+    <div className="min-h-screen bg-imperia-cream pt-[76px]">
+      <Header onLead={onLead} />
 
       {/* Banner — KHÔNG dùng `relative` ở đây: position khác static sẽ tự
           động vẽ đè lên các phần tử static phía sau trong cùng stacking
@@ -186,7 +186,7 @@ export default function NewsDetailPage() {
                 >
                   {article.tag}
                 </Link>
-                <h1 className="mt-4 font-display text-3xl font-semibold leading-tight text-imperia-primary md:text-4xl">
+                <h1 className="mb-6 mt-4 font-1 text-center text-3xl leading-tight text-[#475134] sm:text-4xl uppercase">
                   {article.title}
                 </h1>
                 <p className="mt-3 text-sm text-imperia-black/50">
@@ -210,7 +210,7 @@ export default function NewsDetailPage() {
                   if (block.type === "img") {
                     return (
                       <figure key={i} className="my-8">
-                        <div className="overflow-hidden rounded-[18px] border border-imperia-primary/10">
+                        <div className="border border-imperia-primary/10">
                           <img
                             src={block.src}
                             alt={block.caption || ""}
@@ -293,7 +293,7 @@ export default function NewsDetailPage() {
               {related.map((item) => (
                 <article
                   key={item.id}
-                  className="flex flex-col overflow-hidden rounded-[20px] border border-imperia-primary/10 bg-imperia-cream"
+                  className="flex flex-col rounded-[20px] border border-imperia-primary/10 bg-imperia-cream"
                 >
                   <Link
                     to={getHref(item.id)}

@@ -18,7 +18,7 @@ import FloatingButtons from "./components/ui/FloatingButton";
 import NewsPage from "./pages/NewsPage";
 import NewsDetailPage from "./pages/NewsDetailPage";
 
-function HomePage({ onOpenModal, leadOpen, setLeadOpen, submitLead }) {
+function HomePage({ onOpenModal, submitLead }) {
   const location = useLocation();
 
   // Khi đến "/" kèm state.scrollTo (được Header điều hướng từ trang khác
@@ -64,12 +64,6 @@ function HomePage({ onOpenModal, leadOpen, setLeadOpen, submitLead }) {
         <LeadSection onSubmit={submitLead} />
       </main>
       <Footer />
-      <FloatingButtons />
-      <LeadPopup
-        open={leadOpen}
-        onClose={() => setLeadOpen(false)}
-        onSubmit={submitLead}
-      />
     </>
   );
 }
@@ -125,23 +119,25 @@ export default function App() {
     return <ThankYouPage onBack={() => setSubmitted(false)} />;
   }
 
-  // Lưu ý: NewsPage/NewsDetailPage tự render Header/Footer riêng của chúng,
-  // nên chỉ HomePage mới cần nhận onOpenModal/leadOpen ở đây.
   return (
-    <Routes>
-      <Route
-        path="/"
-        element={
-          <HomePage
-            onOpenModal={openLead}
-            leadOpen={leadOpen}
-            setLeadOpen={setLeadOpen}
-            submitLead={submitLead}
-          />
-        }
+    <>
+      <Routes>
+        <Route
+          path="/"
+          element={<HomePage onOpenModal={openLead} submitLead={submitLead} />}
+        />
+        <Route path="/tin-tuc" element={<NewsPage onLead={openLead} />} />
+        <Route
+          path="/tin-tuc/:articleId"
+          element={<NewsDetailPage onLead={openLead} />}
+        />
+      </Routes>
+      <FloatingButtons />
+      <LeadPopup
+        open={leadOpen}
+        onClose={() => setLeadOpen(false)}
+        onSubmit={submitLead}
       />
-      <Route path="/tin-tuc" element={<NewsPage />} />
-      <Route path="/tin-tuc/:articleId" element={<NewsDetailPage />} />
-    </Routes>
+    </>
   );
 }

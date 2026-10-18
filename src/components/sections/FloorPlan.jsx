@@ -1,44 +1,3 @@
-/**
- * ============================================================================
- *  FloorPlan.jsx — bản chuyển đổi Tailwind CSS của MatBangTang.jsx, cập nhật
- *  overlay bằng toạ độ polygon THẬT của mặt bằng (viewBox 2444×1728) gộp với
- *  dữ liệu diện tích/loại hình từ JSON — xem sensaAFloorData.js.
- *
- *  Hỗ trợ NHIỀU THÁP (Sensa A / Sensa B) qua export `TOWERS` trong
- *  sensaAFloorData.js — dropdown ở đầu section cho phép chuyển tháp, khi đổi
- *  tháp thì units/zones/ảnh mặt bằng đổi theo, còn legend loại hình
- *  (Studio/1PN+/2PN/3PN/Duplex) dùng chung cho cả 2 tháp nên không đổi.
- *
- *  Cần truyền ảnh mặt bằng thật qua prop `images` — object dạng
- *  { A: "url-anh-sensa-a.jpg", B: "url-anh-sensa-b.jpg" } — đúng tỉ lệ
- *  viewBox 2444×1728, preserveAspectRatio="none" nên ảnh PHẢI đúng tỉ lệ,
- *  không thì polygon sẽ lệch khỏi vị trí căn hộ thật trên ảnh.
- *
- *  Hành vi giữ nguyên bản gốc MatBangTang.jsx:
- *  - Hover/click 1 zone, 1 chip label, hoặc 1 legend chip (loại hình) → zone
- *    liên quan "sáng" lên (is-active), phần còn lại mờ đi (is-dimmed).
- *  - Panel chi tiết hiện diện tích GFA/NFA — đóng khi click ra ngoài.
- *  - Zone "thở" nhẹ (fill-opacity + halo mờ dao động) khi chưa active — cùng
- *    ngôn ngữ với .mbt__zone / @keyframes mbt-breathe trong MatBangTang.css,
- *    chỉ chậm hơn (xem animation `zone-breathe` trong tailwind.config.js).
- *
- *  MỚI:
- *  - Label mã căn (unit_code) giờ là 1 CHIP nổi NGOÀI polygon (không đè lên
- *    layout căn hộ nữa) — vị trí lấy từ labelTop/labelLeft đã tính sẵn trong
- *    sensaAFloorData.js (đẩy ra xa tâm mặt bằng theo hướng của từng zone,
- *    có thể override thủ công per-unit). 1 leader-line mảnh, cùng màu zone,
- *    nối chip về đúng tâm zone để không bị nhầm căn — giống hệt cơ chế
- *    leader-line trong MatBangTang.jsx.
- *  - Dropdown chọn tháp (Sensa A / Sensa B) đặt trước hàng legend loại hình.
- *  - Text "Tháp Sensa A" / "Tháp Sensa B" hiện ở góc trái trên của ảnh mặt
- *    bằng, đổi theo tháp đang chọn.
- *  - Panel chi tiết bên phải: thêm ảnh phối cảnh minh hoạ layout theo loại
- *    hình căn hộ (Studio/1PN+/2PN/3PN) — xem LAYOUT_IMAGES bên dưới. Loại
- *    hình nào chưa có ảnh (hiện tại là Duplex) sẽ tự động không hiện khối
- *    ảnh, không hiện ảnh vỡ/placeholder.
- * ============================================================================
- */
-
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import {
   TOWERS,
@@ -47,11 +6,6 @@ import {
   VIEWBOX_HEIGHT,
 } from "../../data/sensaAFloorData";
 
-// --- Ảnh phối cảnh minh hoạ layout theo loại hình căn hộ, hiện trong panel
-// chi tiết (bên dưới phần text diện tích/loại hình). Key phải khớp với
-// key trong UNIT_TYPE_LEGEND / COLOR_CODES ("STUDIO", "1PN+", "2PN", "3PN",
-// "DUPLEX"). Hiện chưa có ảnh cho Duplex — cứ để trống, code tự ẩn khối ảnh
-// khi không tìm thấy entry tương ứng, không cần sửa gì thêm khi có ảnh mới.
 const LAYOUT_IMAGES = {
   STUDIO: "/assets/aparments/studio.png",
   "1PN+": "/assets/aparments/1pn.png",
@@ -60,10 +14,49 @@ const LAYOUT_IMAGES = {
   // DUPLEX: chưa có ảnh — bổ sung khi có, ví dụ: "/assets/aparments/duplex.png"
 };
 
-// --- Helper: tính trọng tâm (centroid) của 1 polygon từ chuỗi "x1,y1 x2,y2 ..."
-// Dùng công thức centroid chuẩn theo diện tích (shoelace) để label luôn nằm
-// đúng giữa polygon, kể cả với các polygon lõm nhiều cạnh (không chỉ là
-// trung bình cộng đơn giản của các đỉnh).
+const UNIT_LAYOUT_IMAGES = {
+  "A.01": "/assets/aparments/2PN-70-4m2.png",
+  "A.02": "/assets/aparments/2PN-70-4m2.png",
+  "A.03": "/assets/aparments/A03.png",
+  "A.03A": "/assets/aparments/", //CHƯA CÓ ẢNH
+  "A.05": "/assets/aparments/2PN-70-4m2.png",
+  "A.06": "/assets/aparments/2PN-70-4m2.png",
+  "A.07": "/assets/aparments/2PN-94-9m2.png",
+  "A.08": "/assets/aparments/A08.png",
+  "A.09": "/assets/aparments/2PN -70m2.png",
+  "A.10": "/assets/aparments/", //CHƯA CÓ ẢNH
+  "A.11": "/assets/aparments/2PN -70m2.png",
+  "A.12": "/assets/aparments/2PN -70m2.png",
+  "A.12A": "/assets/aparments/A12A.png",
+  "A.12B": "/assets/aparments/", //CHƯA CÓ ẢNH
+  "A.15": "/assets/aparments/2PN -70m2.png",
+  "A.16": "/assets/aparments/", //CHƯA CÓ ẢNH
+  "A.17": "/assets/aparments/2PN -70m2.png",
+  "A.18": "/assets/aparments/", //CHƯA CÓ ẢNH
+  "A.19": "/assets/aparments/2PN-94-9m2.png",
+  "A.20": "/assets/aparments/2PN-70-4m2.png",
+  "B.01": "/assets/aparments/", //CHƯA CÓ ẢNH
+  "B.02": "/assets/aparments/B02.png",
+  "B.03": "/assets/aparments/", //CHƯA CÓ ẢNH
+  "B.03A": "/assets/aparments/2PN-70-1m2.png",
+  "B.05": "/assets/aparments/2PN-70-1m2.png",
+  "B.06": "/assets/aparments/2PN-70-1m2.png",
+  "B.07": "/assets/aparments/", //CHƯA CÓ ẢNH
+  "B.08": "/assets/aparments/", //CHƯA CÓ ẢNH
+  "B.09": "/assets/aparments/B09.png",
+  "B.10": "/assets/aparments/2PN-70-1m2.png",
+  "B.11": "/assets/aparments/2PN-70-1m2.png",
+  "B.12": "/assets/aparments/B12.png",
+  "B.12A": "/assets/aparments/B12A.png",
+  "B.12B": "/assets/aparments/", //CHƯA CÓ ẢNH
+  "B.15": "/assets/aparments/B15.png",
+  "B.16": "/assets/aparments/2PN-70-4m2.png",
+  "B.17": "/assets/aparments/2PN-70-4m2.png",
+  "B.18": "/assets/aparments/2PN-70-4m2.png",
+  "B.19": "/assets/aparments/2PN-70-4m2.png",
+  "B.20": "/assets/aparments/2PN-70-4m2.png",
+};
+
 function parsePolygonPoints(pointsStr) {
   return pointsStr
     .trim()
@@ -288,48 +281,78 @@ export default function FloorPlan({
     return () => document.removeEventListener("keydown", handleKeyDown);
   }, [floorPlanLightbox]);
 
-  const unitByCode = useMemo(
-    () => Object.fromEntries(units.map((u) => [u.unit_code, u])),
-    [units],
-  );
   const legendByKey = useMemo(
     () => Object.fromEntries(legend.map((l) => [l.key, l])),
     [legend],
   );
-  // Trọng tâm từng polygon — dùng làm điểm ĐẦU CUỐI (đích) cho leader-line,
-  // vì label giờ không còn nằm giữa zone nữa (xem labelPositions bên dưới).
-  const centroids = useMemo(() => {
-    const map = {};
-    zones.forEach((z) => {
-      map[z.unit_code] = getPolygonCentroid(z.points);
-    });
-    return map;
-  }, [zones]);
+
+  // Danh sách "mục hiển thị" trên mặt bằng. Căn thường -> 1 mục (id = mã căn,
+  // vd "A.05"). Căn Duplex có `floors` (A.18, B.3, B.12B) -> TÁCH THÀNH
+  // TỪNG TẦNG: "B.03-F1", "B.03-F2"... mỗi mục có polygon, chip label,
+  // hover/click riêng. `unit` luôn trỏ về căn gốc để lấy diện tích, loại hình.
+  const items = useMemo(
+    () =>
+      zones.flatMap((unit) => {
+        if (unit.floors?.length > 1) {
+          return unit.floors.map((f) => ({
+            id: f.code,
+            unit,
+            floor: f.level,
+            color: f.color || unit.color,
+            points: f.points,
+            centroid: getPolygonCentroid(f.points),
+            labelTop: f.labelTop,
+            labelLeft: f.labelLeft,
+            labelText: unit.unit_code,
+          }));
+        }
+        return [
+          {
+            id: unit.unit_code,
+            unit,
+            floor: null,
+            color: unit.color,
+            points: unit.points,
+            centroid: getPolygonCentroid(unit.points),
+            labelTop: unit.labelTop,
+            labelLeft: unit.labelLeft,
+            labelText: unit.unit_code,
+          },
+        ];
+      }),
+    [zones],
+  );
+  const itemById = useMemo(
+    () => Object.fromEntries(items.map((it) => [it.id, it])),
+    [items],
+  );
 
   // Vị trí chip label (px theo hệ viewBox) — quy đổi ngược từ labelTop/
-  // labelLeft (%) đã tính sẵn trong sensaAFloorData.js, dùng làm điểm ĐẦU
-  // cho leader-line nối chip -> centroid zone.
+  // labelLeft (%) — điểm ĐẦU của leader-line nối chip -> centroid từng mục.
   const labelPositions = useMemo(() => {
     const map = {};
-    zones.forEach((z) => {
-      if (z.labelTop == null || z.labelLeft == null) return;
-      map[z.unit_code] = [
-        (parseFloat(z.labelLeft) / 100) * VIEWBOX_WIDTH,
-        (parseFloat(z.labelTop) / 100) * VIEWBOX_HEIGHT,
+    items.forEach((it) => {
+      if (it.labelTop == null || it.labelLeft == null) return;
+      map[it.id] = [
+        (parseFloat(it.labelLeft) / 100) * VIEWBOX_WIDTH,
+        (parseFloat(it.labelTop) / 100) * VIEWBOX_HEIGHT,
       ];
     });
     return map;
-  }, [zones]);
+  }, [items]);
 
-  const activeUnit = hoverCode ? unitByCode[hoverCode] : null;
+  // hoverCode = id của mục đang chọn ("A.05" hoặc "B.03-F2").
+  const activeItem = hoverCode ? itemById[hoverCode] : null;
+  const activeUnit = activeItem ? activeItem.unit : null;
   const activeTypeKey = activeUnit ? activeUnit.type : hoverType;
   const isSelectionActive = Boolean(hoverCode || hoverType);
   const showPanel = Boolean(activeUnit) || Boolean(hoverType);
-  // Ảnh phối cảnh layout tương ứng với loại hình đang xem trong panel —
-  // dùng chung cho cả 2 trường hợp (đang xem 1 căn cụ thể / đang hover
-  // legend loại hình). Nếu type chưa có ảnh trong LAYOUT_IMAGES (vd Duplex),
-  // giá trị sẽ là undefined và khối ảnh không được render.
-  const activeLayoutImage = activeTypeKey ? LAYOUT_IMAGES[activeTypeKey] : null;
+  // Ưu tiên ảnh riêng theo mã căn; khi hover loại hình thì dùng ảnh chung.
+  const activeLayoutImage = activeUnit
+    ? UNIT_LAYOUT_IMAGES[activeUnit.unit_code] || LAYOUT_IMAGES[activeUnit.type]
+    : activeTypeKey
+      ? LAYOUT_IMAGES[activeTypeKey]
+      : null;
 
   const closePanel = () => {
     setPinned(false);
@@ -360,16 +383,16 @@ export default function FloorPlan({
     if (pinned) return;
     setHoverCode(null);
   };
-  const handleZoneClick = (unit) => (e) => {
+  const handleZoneClick = (item) => (e) => {
     e.stopPropagation();
-    if (pinned && hoverCode === unit.unit_code) {
+    if (pinned && hoverCode === item.id) {
       closePanel();
       return;
     }
-    setHoverCode(unit.unit_code);
+    setHoverCode(item.id);
     setHoverType(null);
     setPinned(true);
-    onSelectUnit?.(unit);
+    onSelectUnit?.(item.unit, item.floor); // floor = null nếu căn 1 tầng
   };
 
   const handleLegendEnter = (key) => () => {
@@ -451,10 +474,10 @@ export default function FloorPlan({
 
         <div className="grid gap-8 lg:grid-cols-[1fr_320px]">
           {/* Mặt bằng thật + overlay polygon.
-              LƯU Ý: bỏ `overflow-hidden` ở wrapper này (khác bản cũ) — vì
-              chip label giờ nằm NGOÀI polygon, có thể lấn ra sát mép ảnh;
-              overflow-hidden ở đây sẽ cắt mất chip. Bo góc được chuyển
-              xuống từng lớp con (ảnh + svg) thay vì clip cả khối. */}
+              LƯU Ý: bỏ `overflow-hidden` ở wrapper này — vì chip label nằm
+              NGOÀI polygon, có thể lấn ra sát mép ảnh; overflow-hidden ở đây
+              sẽ cắt mất chip. Bo góc được chuyển xuống từng lớp con (ảnh +
+              svg) thay vì clip cả khối. */}
           <div className="relative leading-none shadow-soft">
             {imageSrc ? (
               <img
@@ -497,21 +520,20 @@ export default function FloorPlan({
                 viewBox={`0 0 ${VIEWBOX_WIDTH} ${VIEWBOX_HEIGHT}`}
                 preserveAspectRatio="none"
               >
-                {/* Leader-line: nối chip label (nằm ngoài zone) về đúng tâm
-                    zone — vẽ trước polygon để nằm dưới, không đè lên nét
-                    viền zone. Cùng ngôn ngữ với .mbt__leader-line trong
-                    MatBangTang, chỉ khác là màu lấy trực tiếp theo từng căn. */}
-                {zones.map((unit) => {
+                {/* Leader-line: nối chip label (nằm ngoài zone) về tâm polygon
+                    — vẽ trước polygon để nằm dưới nét viền. Mỗi tầng Duplex
+                    có chip + leader-line riêng. */}
+                {items.map((it) => {
                   const isActive =
-                    hoverCode === unit.unit_code ||
-                    (!hoverCode && hoverType === unit.type);
+                    hoverCode === it.id ||
+                    (!hoverCode && hoverType === it.unit.type);
                   const isDimmed = isSelectionActive && !isActive;
-                  const [cx, cy] = centroids[unit.unit_code] || [0, 0];
-                  const [lx, ly] = labelPositions[unit.unit_code] || [cx, cy];
+                  const [cx, cy] = it.centroid;
+                  const [lx, ly] = labelPositions[it.id] || [cx, cy];
 
                   return (
                     <line
-                      key={`leader-${unit.unit_code}`}
+                      key={`leader-${it.id}`}
                       x1={lx}
                       y1={ly}
                       x2={cx}
@@ -522,40 +544,42 @@ export default function FloorPlan({
                         isDimmed ? "!opacity-10" : "",
                       ].join(" ")}
                       style={{
-                        stroke: unit.color,
+                        stroke: it.color,
                         strokeWidth: isActive ? 2.5 : 1.5,
                         strokeDasharray: isActive ? "none" : "7 6",
                         vectorEffect: "non-scaling-stroke",
                         filter: isActive
-                          ? `drop-shadow(0 0 6px ${unit.color})`
+                          ? `drop-shadow(0 0 6px ${it.color})`
                           : undefined,
                       }}
                     />
                   );
                 })}
 
-                {zones.map((unit) => {
+                {items.map((it) => {
+                  const { unit } = it;
                   const isActive =
-                    hoverCode === unit.unit_code ||
+                    hoverCode === it.id ||
                     (!hoverCode && hoverType === unit.type);
                   const isDimmed = isSelectionActive && !isActive;
-                  const borderColor = darkenHexColor(unit.color);
+                  const borderColor = darkenHexColor(it.color);
                   const isBreathing =
                     !isSelectionActive &&
                     unit.unit_code.toLowerCase() === breathOrder[breathIndex];
+                  const floorSuffix = it.floor ? ` — Floor ${it.floor}` : "";
 
                   return (
                     <polygon
-                      key={unit.unit_code}
-                      points={unit.points}
+                      key={it.id}
+                      points={it.points}
                       tabIndex={0}
                       role="button"
-                      aria-label={`${unit.unit_code} — ${legendByKey[unit.type]?.label || unit.type}`}
-                      onMouseEnter={handleZoneEnter(unit.unit_code)}
+                      aria-label={`${unit.unit_code} — ${legendByKey[unit.type]?.label || unit.type}${floorSuffix}`}
+                      onMouseEnter={handleZoneEnter(it.id)}
                       onMouseLeave={handleZoneLeave}
-                      onFocus={handleZoneEnter(unit.unit_code)}
+                      onFocus={handleZoneEnter(it.id)}
                       onBlur={handleZoneLeave}
-                      onClick={handleZoneClick(unit)}
+                      onClick={handleZoneClick(it)}
                       className={[
                         "cursor-pointer stroke-[1.5] [stroke-linejoin:round] [vector-effect:non-scaling-stroke] outline-none transition-[fill-opacity,opacity,filter,stroke-width] duration-300",
                         isActive
@@ -570,48 +594,45 @@ export default function FloorPlan({
                         isDimmed ? "!opacity-20 ![fill-opacity:.03]" : "",
                       ].join(" ")}
                       style={{
-                        color: unit.color,
-                        stroke: isBreathing ? unit.color : borderColor,
+                        color: it.color,
+                        stroke: isBreathing ? it.color : borderColor,
                         filter: isActive
                           ? `drop-shadow(0 0 5px ${borderColor})`
                           : undefined,
                       }}
                     >
-                      <title>{unit.unit_code}</title>
+                      <title>{`${unit.unit_code}${floorSuffix}`}</title>
                     </polygon>
                   );
                 })}
               </svg>
             )}
 
-            {/* Chip label mã căn — NỔI NGOÀI polygon (không đè lên layout
-                căn hộ nữa), vị trí lấy từ labelTop/labelLeft đã tính sẵn
-                trong sensaAFloorData.js. Phong cách chip mượn từ legend
-                chip của MatBangTang (chấm màu + pill mờ), đổi sang tông
-                imperia cho khớp theme FloorPlan. Hover/click chip có cùng
-                hiệu ứng active/dim với hover/click trực tiếp lên zone. */}
-            {zones.map((unit) => {
-              if (unit.labelTop == null || unit.labelLeft == null) return null;
+            {/* Chip label — NỔI NGOÀI polygon. Căn thường: "A.05". Căn Duplex
+                tách riêng từng tầng: "B.03-F1", "B.03-F2". Hover/click chip
+                có cùng hiệu ứng active/dim với hover/click trực tiếp lên zone. */}
+            {items.map((it) => {
+              if (it.labelTop == null || it.labelLeft == null) return null;
               const isActive =
-                hoverCode === unit.unit_code ||
-                (!hoverCode && hoverType === unit.type);
+                hoverCode === it.id ||
+                (!hoverCode && hoverType === it.unit.type);
               const isDimmed = isSelectionActive && !isActive;
 
               return (
                 <button
-                  key={`label-${unit.unit_code}`}
+                  key={`label-${it.id}`}
                   type="button"
                   tabIndex={-1}
                   aria-hidden="true"
-                  onMouseEnter={handleZoneEnter(unit.unit_code)}
+                  onMouseEnter={handleZoneEnter(it.id)}
                   onMouseLeave={handleZoneLeave}
-                  onClick={handleZoneClick(unit)}
+                  onClick={handleZoneClick(it)}
                   style={{
-                    top: unit.labelTop,
-                    left: unit.labelLeft,
+                    top: it.labelTop,
+                    left: it.labelLeft,
                   }}
                   className={[
-                    "absolute z-10 inline-flex -translate-x-1/2 -translate-y-1/2 items-center gap-1.5 rounded-full border px-2.5 py-1 text-[11px] font-bold uppercase tracking-[.03em] backdrop-blur-sm transition-all duration-300",
+                    "absolute z-10 inline-flex -translate-x-1/2 -translate-y-1/2 items-center gap-1.5 whitespace-nowrap rounded-full border px-2.5 py-1 text-[11px] font-bold uppercase tracking-[.03em] backdrop-blur-sm transition-all duration-300",
                     isActive
                       ? "scale-110 border-imperia-primary bg-imperia-primary text-white shadow-soft"
                       : "border-imperia-primary/25 bg-white/85 text-imperia-black",
@@ -620,9 +641,20 @@ export default function FloorPlan({
                 >
                   <span
                     className="h-2 w-2 shrink-0 rounded-full ring-1 ring-black/10"
-                    style={{ backgroundColor: unit.color }}
+                    style={{ backgroundColor: it.color }}
                   />
-                  {unit.unit_code}
+                  <span className="inline-flex items-baseline">
+                    {it.labelText}
+                    {it.floor ? (
+                      <>
+                        -{it.floor}
+                        <sup className="relative -top-0.5 text-[8px] leading-none">
+                          {it.floor === 1 ? "st" : it.floor === 2 ? "nd" : "th"}
+                        </sup>
+                        F
+                      </>
+                    ) : null}
+                  </span>
                 </button>
               );
             })}
@@ -635,12 +667,22 @@ export default function FloorPlan({
                 {activeUnit ? (
                   <>
                     <div className="mb-4 flex items-center justify-between">
-                      <span className="text-2xl font-semibold text-imperia-primary">
-                        {activeUnit.unit_code}
+                      <span className="flex items-center gap-3">
+                        <span className="text-2xl font-semibold text-imperia-primary">
+                          {activeUnit.unit_code}
+                        </span>
+                        {activeItem?.floor ? (
+                          <span className="rounded-full bg-imperia-primary px-3 py-1 text-xs font-bold uppercase tracking-[.06em] text-white">
+                            Floor {activeItem.floor}
+                          </span>
+                        ) : null}
                       </span>
                       <span
                         className="h-4 w-4 rounded-full ring-1 ring-black/10"
-                        style={{ backgroundColor: activeUnit.color }}
+                        style={{
+                          backgroundColor:
+                            activeItem?.color || activeUnit.color,
+                        }}
                       />
                     </div>
                     <dl className="space-y-3 text-sm">
@@ -650,6 +692,12 @@ export default function FloorPlan({
                           legendByKey[activeUnit.type]?.label || activeUnit.type
                         }
                       />
+                      {activeItem?.floor ? (
+                        <Row
+                          label="Mặt bằng"
+                          value={`Floor ${activeItem.floor}`}
+                        />
+                      ) : null}
                       <Row
                         label="Số phòng ngủ"
                         value={activeUnit.bedrooms ?? "—"}
@@ -663,6 +711,12 @@ export default function FloorPlan({
                         value={`${activeUnit.nfa_sqm} m²`}
                       />
                     </dl>
+                    {activeItem?.floor ? (
+                      <p className="mt-3 text-xs text-[#64675c]">
+                        Căn Duplex gồm Floor 1 và Floor 2 — diện tích ở trên là
+                        tổng của cả căn.
+                      </p>
+                    ) : null}
                     {activeLayoutImage ? (
                       <div className="mt-5 overflow-hidden rounded-xl border border-imperia-primary/10">
                         <img

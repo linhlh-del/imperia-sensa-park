@@ -15,17 +15,17 @@ import {
 } from "../services/newsService";
 import { useEffect, useState } from "react";
 
-function StateShell({ children }) {
+function StateShell({ children, onLead }) {
   return (
-    <div className="min-h-screen bg-imperia-cream">
-      <Header />
+    <div className="min-h-screen bg-imperia-cream pt-[76px]">
+      <Header onLead={onLead} />
       <main className="container-page section-y">{children}</main>
       <Footer />
     </div>
   );
 }
 
-export default function NewsPage() {
+export default function NewsPage({ onLead }) {
   const [articles, setArticles] = useState(null);
   const [fetchError, setFetchError] = useState(null);
 
@@ -47,21 +47,21 @@ export default function NewsPage() {
 
   if (!articles && !fetchError) {
     return (
-      <StateShell>
+      <StateShell onLead={onLead}>
         <p className="text-center text-imperia-black/60">Đang tải tin tức...</p>
       </StateShell>
     );
   }
   if (fetchError) {
     return (
-      <StateShell>
+      <StateShell onLead={onLead}>
         <p className="text-center text-imperia-secondary-dark">{fetchError}</p>
       </StateShell>
     );
   }
   if (articles.length === 0) {
     return (
-      <StateShell>
+      <StateShell onLead={onLead}>
         <p className="text-center text-imperia-black/60">
           Chưa có bài viết nào.
         </p>
@@ -74,8 +74,8 @@ export default function NewsPage() {
   const grid = articles.filter((item) => item.id !== featured.id);
 
   return (
-    <div className="min-h-screen bg-imperia-cream">
-      <Header />
+    <div className="min-h-screen bg-imperia-cream pt-[76px]">
+      <Header onLead={onLead} />
 
       {/* Hero */}
       <section className="bg-imperia-primary py-16 text-center text-white md:py-20">
@@ -96,7 +96,7 @@ export default function NewsPage() {
       {/* Featured + highlights */}
       <section className="container-page section-y">
         <div className="grid gap-6 lg:grid-cols-[2fr_1fr]">
-          <article className="overflow-hidden rounded-[24px] border border-imperia-primary/10 bg-white shadow-soft">
+          <article className="rounded-[24px] border border-imperia-primary/10 bg-white shadow-soft">
             <Link
               to={getHref(featured.id)}
               className="block h-72 overflow-hidden md:h-96"
@@ -166,7 +166,7 @@ export default function NewsPage() {
           {grid.map((item) => (
             <article
               key={item.id}
-              className="flex flex-col overflow-hidden rounded-[22px] border border-imperia-primary/10 bg-white shadow-soft"
+              className="flex flex-col rounded-[22px] border border-imperia-primary/10 bg-white shadow-soft"
             >
               <Link
                 to={getHref(item.id)}

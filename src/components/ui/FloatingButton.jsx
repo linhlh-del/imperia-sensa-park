@@ -1,5 +1,5 @@
-const PHONE_NUMBER = "0877191940";
-const PHONE_DISPLAY = "0877 191 940";
+const PHONE_NUMBER = "093 448 3138";
+const PHONE_DISPLAY = "093 448 3138";
 const ZALO_URL = "https://zalo.me/1717736678695240623";
 const PRICE_URL = "/bang-gia"; // TODO: đổi thành link Bảng Giá thực tế
 
@@ -53,7 +53,7 @@ function FbLabel({ children }) {
   );
 }
 
-export default function FloatingButtons({ onOpenModal }) {
+export default function FloatingButtons() {
   return (
     <div className="fixed bottom-6 right-5 z-[9999] flex flex-col items-center gap-3.5 max-[480px]:bottom-4 max-[480px]:right-3 max-[480px]:gap-2.5">
       {/* ── Phone ── */}
@@ -109,9 +109,8 @@ export default function FloatingButtons({ onOpenModal }) {
       </a>
 
       {/* ── Bảng Giá ── */}
-      <button
-        type="button"
-        onClick={onOpenModal}
+      <a
+        href="#lien-he"
         title="Bảng Giá"
         aria-label="Xem Bảng Giá"
         className="group relative flex h-[52px] w-[52px] items-center justify-center rounded-full bg-[#0068FF] text-white shadow-[0_4px_20px_rgba(0,104,255,0.5)] transition-transform duration-200 animate-fb-price-glow hover:scale-[1.12] hover:[animation-play-state:paused] hover:shadow-[0_6px_28px_rgba(0,104,255,0.65)] max-[480px]:h-11 max-[480px]:w-11"
@@ -128,7 +127,7 @@ export default function FloatingButtons({ onOpenModal }) {
           <PdfIcon className="h-1/2 w-1/2 shrink-0" aria-hidden="true" />
         </span>
         <FbLabel>Bảng Giá</FbLabel>
-      </button>
+      </a>
     </div>
   );
 }

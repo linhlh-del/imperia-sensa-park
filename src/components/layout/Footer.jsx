@@ -6,11 +6,6 @@ export default function Footer() {
           <div className="font-display text-xl tracking-widest">
             IMPERIA <span className="text-imperia-accent">SENSA PARK</span>
           </div>
-          <p className="mt-4 max-w-lg text-sm leading-6 text-white/55">
-            Landing page template dành cho dự án bất động sản. Nội dung, hình
-            ảnh, số liệu và thông tin dự án cần được thay thế bằng dữ liệu chính
-            thức.
-          </p>
         </div>
         <div>
           <h4 className="font-bold">Dự án</h4>
@@ -26,7 +21,6 @@ export default function Footer() {
           <div className="mt-4 grid gap-2 text-sm text-white/60">
             <a href="#tin-tuc">Tin tức</a>
             <a href="#lien-he">Nhận bảng giá</a>
-            <a href="tel:18001234">1800 1234</a>
           </div>
         </div>
       </div>

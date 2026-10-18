@@ -93,10 +93,10 @@ export default function Header({ onLead }) {
         <div className="mt-4 flex justify-between border-t border-white/10 pt-4 text-xs uppercase tracking-widest text-white/50">
           <span>Hotline</span>
           <a
-            href="tel:18001234"
+            href="tel:0934483138"
             className="text-base font-bold normal-case tracking-normal text-imperia-accent"
           >
-            1800 1234
+            093 448 3138
           </a>
         </div>
       </aside>

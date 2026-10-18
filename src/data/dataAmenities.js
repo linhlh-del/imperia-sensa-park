@@ -1,33 +1,41 @@
 export const FILTERS = [
   { key: "canhquan", label: "Cảnh quan" },
   { key: "tienich", label: "Tiện ích" },
-  { key: "congdong", label: "Cộng đồng" },
-  { key: "ketnoi", label: "Kết nối" },
 ];
 
 export const GALLERY_ITEMS = [
-  {
+  ...Array.from({ length: 5 }, (_, index) => ({
     category: "canhquan",
-    src: "/assets/overview.jpg",
-    alt: "Không gian cảnh quan Imperia Sensa Park",
-    label: "Cảnh quan xanh và thư giãn",
-  },
-  {
-    category: "tienich",
-    src: "/assets/hero1.png",
-    alt: "Tiện ích nổi bật Imperia Sensa Park",
-    label: "Tiện ích dành cho mọi thế hệ",
-  },
-  {
-    category: "congdong",
-    src: "/assets/hero2.png",
-    alt: "Không gian cộng đồng Imperia Sensa Park",
-    label: "Không gian kết nối cộng đồng",
-  },
-  {
-    category: "ketnoi",
-    src: "/assets/map.jpg",
-    alt: "Vị trí kết nối Imperia Sensa Park",
-    label: "Kết nối thuận tiện trong khu vực",
-  },
+    src: `/assets/amenities/canhquan/${index + 1}.webp`,
+    alt: `Cảnh quan Imperia Sensa Park - Hình ảnh ${index + 1}`,
+    label: `Cảnh quan xanh và thư giãn ${index + 1}`,
+  })),
+  ...[
+    "Business Lounge.webp",
+    "Bể sục Jacuzzi.webp",
+    "C19_Final_WM.webp",
+    "Creative Studio 01.webp",
+    "Creative Studio 02.webp",
+    "Creative Studio 03.webp",
+    "Drop Off.webp",
+    "Gym 01.webp",
+    "Himalaya Salt Room.webp",
+    "Hồ Bơi Aura Flow.webp",
+    "Hồ Bơi Trẻ Em.webp",
+    "Joy Yard.webp",
+    "MP_T1_Lobby_V6-S.webp",
+    "Phòng Giải Trí Đa Phương Tiện.webp",
+    "Phòng Khách.webp",
+    "Sảnh Thang Máy.webp",
+    "Wonder Club 01.webp",
+    "Đường Dạo Ven Hồ.webp",
+  ].map((filename) => {
+    const label = filename.replace(/\.webp$/i, "");
+    return {
+      category: "tienich",
+      src: `/assets/amenities/tienich/${encodeURIComponent(filename)}`,
+      alt: `${label} - Tiện ích Imperia Sensa Park`,
+      label,
+    };
+  }),
 ];
