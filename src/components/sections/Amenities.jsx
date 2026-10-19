@@ -83,7 +83,7 @@ export default function Amenities() {
     <section
       id="tien-ich"
       data-section="amenities-map"
-      className="section-y overflow-hidden bg-white"
+      className="section-y overflow-hidden bg-imperia-cream"
     >
       <div className="container-page">
         {/* HEADER */}

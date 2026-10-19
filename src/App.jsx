@@ -49,6 +49,10 @@ function HomePage({ onOpenModal, submitLead }) {
         <Overview data={project.overview} />
         <Location data={project.location} />
         <Amenities items={project.amenities} />
+        <ExclusiveServicesSection />
+        {/* Không truyền `items` nữa — để News tự lấy dữ liệu (hiện là mock
+            trong newsService/newsData, sau này là API thật) thay vì dùng
+            project.news (dữ liệu cũ, sai shape, gây ra /tin-tuc/undefined). */}
         <FeaturedAmenities />
         <FloorPlan
           images={{
@@ -56,10 +60,7 @@ function HomePage({ onOpenModal, submitLead }) {
             B: "/assets/layout/sensaB.png",
           }}
         />
-        <ExclusiveServicesSection />
-        {/* Không truyền `items` nữa — để News tự lấy dữ liệu (hiện là mock
-            trong newsService/newsData, sau này là API thật) thay vì dùng
-            project.news (dữ liệu cũ, sai shape, gây ra /tin-tuc/undefined). */}
+
         <News />
         <LeadSection onSubmit={submitLead} />
       </main>

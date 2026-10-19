@@ -100,7 +100,7 @@ export default function ExclusiveServicesSection() {
               The Luxe
             </span>
             <span className="mt-auto pb-1 text-[12px] font-semibold text-imperia-primary/70">
-              14
+          
             </span>
           </div>
 
