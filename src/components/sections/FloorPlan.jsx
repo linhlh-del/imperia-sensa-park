@@ -24,31 +24,31 @@ const UNIT_LAYOUT_IMAGES = {
   "A.07": "/assets/aparments/2PN-94-9m2.png",
   "A.08": "/assets/aparments/A08.png",
   "A.09": "/assets/aparments/2PN -70m2.png",
-  "A.10": "/assets/aparments/", //CHƯA CÓ ẢNH
+  "A.10": "/assets/aparments/2PN -70m2.png", //CHƯA CÓ ẢNH
   "A.11": "/assets/aparments/2PN -70m2.png",
   "A.12": "/assets/aparments/2PN -70m2.png",
   "A.12A": "/assets/aparments/A12A.png",
-  "A.12B": "/assets/aparments/", //CHƯA CÓ ẢNH
+  "A.12B": "/assets/aparments/2PN -70m2.png", //CHƯA CÓ ẢNH
   "A.15": "/assets/aparments/2PN -70m2.png",
-  "A.16": "/assets/aparments/", //CHƯA CÓ ẢNH
+  "A.16": "/assets/aparments/2PN -70m2.png", //CHƯA CÓ ẢNH
   "A.17": "/assets/aparments/2PN -70m2.png",
-  "A.18": "/assets/aparments/", //CHƯA CÓ ẢNH
+  "A.18": "/assets/aparments/A18-1ST.PNG", //CHƯA CÓ ẢNH
   "A.19": "/assets/aparments/2PN-94-9m2.png",
   "A.20": "/assets/aparments/2PN-70-4m2.png",
-  "B.01": "/assets/aparments/", //CHƯA CÓ ẢNH
+  "B.01": "/assets/aparments/B12A.png",
   "B.02": "/assets/aparments/B02.png",
-  "B.03": "/assets/aparments/", //CHƯA CÓ ẢNH
+  "B.03": "/assets/aparments/B03-2ND.png",
   "B.03A": "/assets/aparments/2PN-70-1m2.png",
   "B.05": "/assets/aparments/2PN-70-1m2.png",
   "B.06": "/assets/aparments/2PN-70-1m2.png",
-  "B.07": "/assets/aparments/", //CHƯA CÓ ẢNH
-  "B.08": "/assets/aparments/", //CHƯA CÓ ẢNH
+  "B.07": "/assets/aparments/2PN-70-1m2.png", //CHƯA CÓ ẢNH
+  "B.08": "/assets/aparments/A18-1ST.png", //CHƯA CÓ ẢNH
   "B.09": "/assets/aparments/B09.png",
   "B.10": "/assets/aparments/2PN-70-1m2.png",
   "B.11": "/assets/aparments/2PN-70-1m2.png",
   "B.12": "/assets/aparments/B12.png",
   "B.12A": "/assets/aparments/B12A.png",
-  "B.12B": "/assets/aparments/", //CHƯA CÓ ẢNH
+  "B.12B": "/assets/aparments/B-DUPLEX.png",
   "B.15": "/assets/aparments/B15.png",
   "B.16": "/assets/aparments/2PN-70-4m2.png",
   "B.17": "/assets/aparments/2PN-70-4m2.png",
