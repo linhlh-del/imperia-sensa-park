@@ -1,0 +1,59 @@
+/* src/styles/motion.css — hiệu ứng đếm số + fade-in khi cuộn */
+
+/* ---------- Đếm số (CountUp) ---------- */
+.countup {
+  display: inline-grid;
+  transition: opacity 0.35s ease;
+}
+.countup__final {
+  grid-area: 1 / 1;
+}
+.countup[data-state="armed"] {
+  opacity: 0;
+}
+.countup[data-state="running"] > .countup__final {
+  visibility: hidden;
+}
+/* Số đang quay vẽ bằng pseudo-element: không nằm trong DOM text nên crawler không đọc phải */
+.countup[data-state="running"]::after {
+  content: attr(data-display);
+  grid-area: 1 / 1;
+  white-space: nowrap;
+}
+
+/* ---------- Fade-in từ dưới lên (chỉ bật khi JS đã sẵn sàng: html.reveal-ready) ---------- */
+html.reveal-ready [data-reveal]:not([data-revealed]) {
+  opacity: 0;
+  translate: 0 36px;
+}
+html.reveal-ready [data-reveal][data-revealed] {
+  animation: reveal-up 800ms cubic-bezier(0.2, 0.7, 0.2, 1) backwards;
+  animation-delay: var(--reveal-delay, 0ms);
+}
+@keyframes reveal-up {
+  from {
+    opacity: 0;
+    translate: 0 36px;
+  }
+  to {
+    opacity: 1;
+    translate: 0 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-reveal] {
+    opacity: 1 !important;
+    translate: none !important;
+    animation: none !important;
+  }
+  .countup[data-state] {
+    opacity: 1 !important;
+  }
+  .countup[data-state="running"] > .countup__final {
+    visibility: visible !important;
+  }
+  .countup[data-state="running"]::after {
+    content: none !important;
+  }
+}

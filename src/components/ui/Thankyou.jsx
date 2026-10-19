@@ -17,7 +17,7 @@ export default function ThankYou() {
   };
 
   return (
-    <div className="flex min-h-screen w-full items-center justify-center bg-gradient-to-b from-imperia-primary to-imperia-dark px-4 py-6 sm:py-8">
+    <div className="flex min-h-screen w-full items-center justify-center bg-gradient-to-b from-imperia-background-dark to-imperia-background-light px-4 py-6 sm:py-8">
       <div className="flex w-full max-w-[37.5rem] animate-[fadeInUp_0.4s_ease] flex-col gap-5 text-center text-white">
         {/* Success Icon */}
         <div className="flex animate-[scaleIn_0.5s_ease-out] justify-center">

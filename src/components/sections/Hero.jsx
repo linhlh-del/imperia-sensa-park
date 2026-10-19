@@ -1,11 +1,12 @@
 import Button from "../ui/Button";
+import CountUp from "../effects/CountUp";
 
 export default function Hero({ data }) {
   return (
     <section
       id="hero"
       data-section="hero"
-      className="relative z-20 flex min-h-[860px] items-center overflow-visible bg-imperia-dark pt-[76px] text-white"
+      className="relative z-20 flex min-h-[860px] items-center overflow-visible bg-imperia-background-dark pt-[76px] text-white"
     >
       {/* Wrapper riêng để crop ảnh, không ảnh hưởng overflow của section (cần visible cho stats bar) */}
       <div className="absolute inset-0 z-0 overflow-hidden">
@@ -50,19 +51,19 @@ export default function Hero({ data }) {
       </div>
 
       <div className="absolute inset-x-0 bottom-[-62px] z-30">
-        <div className="container-page grid overflow-hidden rounded-2xl bg-imperia-primary shadow-card grid-cols-2 md:grid-cols-4">
+        <div className="container-page grid overflow-hidden rounded-2xl bg-imperia-background-dark shadow-card grid-cols-2 md:grid-cols-4">
           {data.stats.map(([number, suffix, label]) => (
             <div
               key={label}
               className="border-r border-white/10 p-5 last:border-0 md:p-7"
             >
               <div className="font-display text-3xl md:text-4xl">
-                {number}
-                <small className="ml-1 text-base text-imperia-accent">
+                <CountUp value={number} />
+                <small className="ml-1 text-base text-imperia-black">
                   {suffix}
                 </small>
               </div>
-              <div className="mt-1 text-[13px] leading-[17px] text-white/55">
+              <div className="mt-1 text-[13px] leading-[17px] text-imperia-black">
                 {label}
               </div>
             </div>

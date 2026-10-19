@@ -78,7 +78,7 @@ export default function NewsPage({ onLead }) {
       <Header onLead={onLead} />
 
       {/* Hero */}
-      <section className="bg-imperia-primary py-16 text-center text-white md:py-20">
+      <section className="bg-imperia-background-dark py-16 text-center text-white md:py-20">
         <div className="container-page">
           <span className="eyebrow justify-center text-imperia-accent before:bg-imperia-accent">
             Cập nhật dự án

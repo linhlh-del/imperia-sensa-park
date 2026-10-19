@@ -104,7 +104,7 @@ export default function FeaturedAmenities() {
   const activeLightboxItem = lightbox != null ? gallery[lightbox.index] : null;
 
   return (
-    <section id="hinhanh" className="bg-imperia-primary py-16 font-body">
+    <section id="hinhanh" className="bg-imperia-background-dark py-16 font-body">
       <div className="mx-auto w-full max-w-[1400px] px-5">
         {/* HEADER */}
         <div className="mb-8 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
@@ -125,7 +125,7 @@ export default function FeaturedAmenities() {
               onClick={() => handleCategoryChange(filter.key)}
               className={`whitespace-nowrap rounded-full px-5 py-2.5 text-sm font-semibold transition-all duration-300 max-[576px]:px-4 max-[576px]:py-2 max-[576px]:text-[0.8rem] ${
                 activeCategory === filter.key
-                  ? "bg-gradient-to-r from-imperia-accent to-imperia-light text-imperia-dark shadow-soft"
+                  ? "bg-gradient-to-r from-imperia-background-dark to-imperia-background-light text-imperia-dark shadow-soft"
                   : "border border-imperia-light/30 bg-imperia-white/5 text-imperia-cream/70 hover:border-imperia-accent hover:text-imperia-accent"
               }`}
             >

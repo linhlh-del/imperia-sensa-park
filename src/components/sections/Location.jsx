@@ -1,11 +1,13 @@
 import Button from "../ui/Button";
 import SectionHeading from "../ui/SectionHeading";
+import CountUp from "../effects/CountUp";
+
 export default function Location({ data }) {
   return (
     <section
       id="vi-tri"
       data-section="location"
-      className="section-y bg-imperia-primary text-white"
+      className="section-y bg-imperia-background-dark text-white"
     >
       <div className="container-page">
         <SectionHeading light title={data.title} />
@@ -17,8 +19,8 @@ export default function Location({ data }) {
             <div className="mb-8 grid divide-y divide-white/10 border-y border-white/10">
               {data.distances.map(([time, label]) => (
                 <div key={label} className="flex items-center gap-6 py-5">
-                  <strong className="min-w-20 font-display text-3xl text-imperia-accent">
-                    {time}
+                  <strong className="min-w-20 font-display text-3xl text-imperia-black">
+                    <CountUp value={time} />
                   </strong>
                   <span className="text-sm text-white/70">{label}</span>
                 </div>

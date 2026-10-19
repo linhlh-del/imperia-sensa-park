@@ -119,7 +119,7 @@ export default function NewsDetailPage({ onLead }) {
       {/* Banner — KHÔNG dùng `relative` ở đây: position khác static sẽ tự
           động vẽ đè lên các phần tử static phía sau trong cùng stacking
           context, dù DOM order có sau đi nữa. */}
-      <div className="h-64 w-full overflow-hidden bg-imperia-primary md:h-96">
+      <div className="h-64 w-full overflow-hidden bg-imperia-background-dark md:h-96">
         <img
           src={getBannerSrc(article)}
           alt={article.title}
@@ -136,7 +136,7 @@ export default function NewsDetailPage({ onLead }) {
                 type="button"
                 onClick={handleFacebookShare}
                 aria-label="Chia sẻ lên Facebook"
-                className="flex h-11 w-11 items-center justify-center rounded-full border border-imperia-primary/25 text-imperia-primary transition hover:bg-imperia-primary hover:text-white"
+                className="flex h-11 w-11 items-center justify-center rounded-full border border-imperia-primary/25 text-imperia-primary transition hover:bg-imperia-background-dark hover:text-white"
               >
                 <svg
                   width="18"
@@ -155,7 +155,7 @@ export default function NewsDetailPage({ onLead }) {
                 type="button"
                 onClick={handleCopyLink}
                 aria-label="Sao chép liên kết"
-                className="flex h-11 w-11 items-center justify-center rounded-full border border-imperia-primary/25 text-imperia-primary transition hover:bg-imperia-primary hover:text-white"
+                className="flex h-11 w-11 items-center justify-center rounded-full border border-imperia-primary/25 text-imperia-primary transition hover:bg-imperia-background-dark hover:text-white"
               >
                 <svg
                   width="18"

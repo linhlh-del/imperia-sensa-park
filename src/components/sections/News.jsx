@@ -129,7 +129,7 @@ export default function News({
                   onClick={() => scrollByCard(-1)}
                   disabled={!canPrev}
                   aria-label="Tin trước"
-                  className="flex h-11 w-11 items-center justify-center rounded-full border border-imperia-primary/25 text-imperia-primary transition duration-300 hover:bg-imperia-primary hover:text-white disabled:cursor-default disabled:opacity-30 disabled:hover:bg-transparent disabled:hover:text-imperia-primary"
+                  className="flex h-11 w-11 items-center justify-center rounded-full border border-imperia-primary/25 text-imperia-primary transition duration-300 hover:bg-imperia-background-dark hover:text-white disabled:cursor-default disabled:opacity-30 disabled:hover:bg-transparent disabled:hover:text-imperia-primary"
                 >
                   <ChevronIcon direction="left" />
                 </button>
@@ -138,7 +138,7 @@ export default function News({
                   onClick={() => scrollByCard(1)}
                   disabled={!canNext}
                   aria-label="Tin tiếp theo"
-                  className="flex h-11 w-11 items-center justify-center rounded-full border border-imperia-primary/25 text-imperia-primary transition duration-300 hover:bg-imperia-primary hover:text-white disabled:cursor-default disabled:opacity-30 disabled:hover:bg-transparent disabled:hover:text-imperia-primary"
+                  className="flex h-11 w-11 items-center justify-center rounded-full border border-imperia-primary/25 text-imperia-primary transition duration-300 hover:bg-imperia-background-dark hover:text-white disabled:cursor-default disabled:opacity-30 disabled:hover:bg-transparent disabled:hover:text-imperia-primary"
                 >
                   <ChevronIcon direction="right" />
                 </button>
@@ -169,7 +169,7 @@ export default function News({
                   >
                     <Link
                       to={href}
-                      className="relative block h-56 overflow-hidden bg-gradient-to-br from-imperia-primary/15 to-imperia-beige/60"
+                      className="relative block h-56 overflow-hidden bg-gradient-to-br from-imperia-background-dark/15 to-imperia-beige/60"
                     >
                       {item.image_url && (
                         <img
@@ -179,7 +179,7 @@ export default function News({
                           className="h-full w-full object-cover transition duration-500 hover:scale-105"
                         />
                       )}
-                      <span className="absolute bottom-3 left-3 rounded-full bg-imperia-primary px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-white">
+                      <span className="absolute bottom-3 left-3 rounded-full bg-imperia-background-dark px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-white">
                         {item.tag}
                       </span>
                     </Link>
@@ -219,8 +219,8 @@ export default function News({
                   className={
                     "h-1.5 rounded-full transition-all duration-300 " +
                     (i === activeIndex
-                      ? "w-6 bg-imperia-primary"
-                      : "w-1.5 bg-imperia-primary/25")
+                      ? "w-6 bg-imperia-background-dark"
+                      : "w-1.5 bg-imperia-background-dark/25")
                   }
                 />
               ))}

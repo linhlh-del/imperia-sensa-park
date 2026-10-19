@@ -8,6 +8,8 @@ export default {
           primary: "#4D5538",
           dark: "#353C27",
           light: "#68734B",
+          "background-dark": "#8C915E",
+          "background-light": "#919962",
           accent: "#A9B578",
           secondary: "#917663",
           "secondary-dark": "#6F594C",

@@ -1,5 +1,7 @@
 import Button from "../ui/Button";
 import SectionHeading from "../ui/SectionHeading";
+import CountUp from "../effects/CountUp";
+
 export default function Overview({ data }) {
   return (
     <section
@@ -39,7 +41,7 @@ export default function Overview({ data }) {
           ].map(([n, l]) => (
             <div key={l} className="border border-imperia-primary/10 px-4 py-7">
               <strong className="font-display text-3xl text-imperia-primary">
-                {n}
+                <CountUp value={n} />
               </strong>
               <span className="mt-1 block text-xs text-[#777]">{l}</span>
             </div>

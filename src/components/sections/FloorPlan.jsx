@@ -192,7 +192,7 @@ function TowerSelect({ towers, value, onChange }) {
         }}
         aria-haspopup="listbox"
         aria-expanded={open}
-        className="inline-flex min-h-10 items-center gap-2 rounded-full border border-imperia-primary bg-imperia-primary px-4 py-2 text-xs font-bold uppercase tracking-[.08em] text-white shadow-soft transition-colors duration-300 hover:bg-imperia-dark"
+        className="inline-flex min-h-10 items-center gap-2 rounded-full border border-imperia-primary bg-imperia-background-dark px-4 py-2 text-xs font-bold uppercase tracking-[.08em] text-white shadow-soft transition-colors duration-300 hover:bg-imperia-background-dark"
       >
         {current?.label}
         <svg
@@ -228,7 +228,7 @@ function TowerSelect({ towers, value, onChange }) {
                 className={[
                   "flex w-full items-center justify-between px-4 py-2.5 text-left text-xs font-bold uppercase tracking-[.06em] transition-colors duration-200",
                   t.key === value
-                    ? "bg-imperia-primary text-white"
+                    ? "bg-imperia-background-dark text-white"
                     : "text-imperia-black hover:bg-imperia-cream",
                 ].join(" ")}
               >
@@ -440,7 +440,7 @@ export default function FloorPlan({
             />
           </div>
           <div className="flex w-full flex-wrap items-center gap-3 sm:w-auto">
-            <span className="hidden h-6 w-px bg-imperia-primary/15 sm:block" />
+            <span className="hidden h-6 w-px bg-imperia-background-dark/15 sm:block" />
             {legend.map((l) => {
               const isActive = activeTypeKey === l.key;
               const isDimmed = isSelectionActive && !isActive;
@@ -456,7 +456,7 @@ export default function FloorPlan({
                   className={[
                     "inline-flex items-center gap-2 rounded-full border px-4 py-2 text-xs font-bold uppercase tracking-[.08em] transition-all duration-300",
                     isActive
-                      ? "border-imperia-primary bg-imperia-primary text-white shadow-soft"
+                      ? "border-imperia-primary bg-imperia-background-dark text-white shadow-soft"
                       : "border-imperia-primary/20 bg-white text-imperia-black",
                     isDimmed ? "opacity-35" : "opacity-100",
                   ].join(" ")}
@@ -634,7 +634,7 @@ export default function FloorPlan({
                   className={[
                     "absolute z-10 inline-flex -translate-x-1/2 -translate-y-1/2 items-center gap-1.5 whitespace-nowrap rounded-full border px-2.5 py-1 text-[11px] font-bold uppercase tracking-[.03em] backdrop-blur-sm transition-all duration-300",
                     isActive
-                      ? "scale-110 border-imperia-primary bg-imperia-primary text-white shadow-soft"
+                      ? "scale-110 border-imperia-primary bg-imperia-background-dark text-white shadow-soft"
                       : "border-imperia-primary/25 bg-white/85 text-imperia-black",
                     isDimmed ? "!opacity-25" : "opacity-100",
                   ].join(" ")}
@@ -672,7 +672,7 @@ export default function FloorPlan({
                           {activeUnit.unit_code}
                         </span>
                         {activeItem?.floor ? (
-                          <span className="rounded-full bg-imperia-primary px-3 py-1 text-xs font-bold uppercase tracking-[.06em] text-white">
+                          <span className="rounded-full bg-imperia-background-dark px-3 py-1 text-xs font-bold uppercase tracking-[.06em] text-white">
                             Floor {activeItem.floor}
                           </span>
                         ) : null}

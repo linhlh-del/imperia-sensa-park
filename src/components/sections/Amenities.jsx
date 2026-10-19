@@ -140,12 +140,12 @@ export default function Amenities() {
 
           {/* LIST WRAPPER — maxHeight = chiều cao map, đo bằng ResizeObserver */}
           <div
-            className="flex h-full flex-col overflow-hidden rounded-[28px] border border-imperia-primary/10 bg-imperia-dark shadow-soft max-[1084px]:!max-h-none"
+            className="flex h-full flex-col overflow-hidden rounded-[28px] border border-imperia-primary/10 bg-imperia-background-dark shadow-soft max-[1084px]:!max-h-none"
             style={mapHeight ? { maxHeight: mapHeight } : undefined}
           >
             {/* Desktop list (> 600px): scroll dọc */}
             <div
-              className="flex min-h-0 flex-1 flex-col gap-0 overflow-y-auto bg-imperia-dark p-4 text-white
+              className="flex min-h-0 flex-1 flex-col gap-0 overflow-y-auto bg-imperia-background-dark p-4 text-white
                          [scrollbar-color:rgba(255,255,255,0.35)_transparent] [scrollbar-width:thin]
                          [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-thumb]:rounded-full
                          [&::-webkit-scrollbar-thumb]:bg-white/35 [&::-webkit-scrollbar-track]:bg-transparent
@@ -159,8 +159,8 @@ export default function Amenities() {
                   onClick={() => setActiveId(item.id)}
                   className={`flex items-center gap-2.5 p-1.5 font-body cursor-pointer transition duration-300 ${
                     activeId === item.id
-                      ? "bg-imperia-light"
-                      : "hover:bg-imperia-primary"
+                      ? "bg-imperia-background-light"
+                      : "hover:bg-imperia-background-dark"
                   }`}
                 >
                   <span
@@ -183,7 +183,7 @@ export default function Amenities() {
             <div
               onTouchStart={handleTouchStart}
               onTouchEnd={handleTouchEnd}
-              className="hidden flex-col overflow-hidden bg-imperia-dark max-[600px]:flex"
+              className="hidden flex-col overflow-hidden bg-imperia-background-dark max-[600px]:flex"
             >
               <div
                 className="flex transition-transform duration-500 ease-in-out will-change-transform"
@@ -192,7 +192,7 @@ export default function Amenities() {
                 {slides.map((cols, slideIdx) => (
                   <div
                     key={slideIdx}
-                    className={`grid w-full flex-shrink-0 bg-imperia-dark ${
+                    className={`grid w-full flex-shrink-0 bg-imperia-background-dark ${
                       cols.length === 1 ? "grid-cols-1" : "grid-cols-2"
                     }`}
                   >
@@ -209,8 +209,8 @@ export default function Amenities() {
                             onClick={() => setActiveId(item.id)}
                             className={`box-border flex min-h-[56px] items-center gap-2.5 border-b border-white/10 p-2 font-body cursor-pointer transition duration-300 ${
                               activeId === item.id
-                                ? "bg-imperia-light"
-                                : "hover:bg-imperia-primary"
+                                ? "bg-imperia-background-light"
+                                : "hover:bg-imperia-background-dark"
                             }`}
                           >
                             <span
@@ -234,7 +234,7 @@ export default function Amenities() {
               </div>
 
               {totalSlides > 1 && (
-                <div className="hidden justify-center gap-1.5 bg-imperia-dark pt-[6px] pb-1 max-[600px]:flex">
+                <div className="hidden justify-center gap-1.5 bg-imperia-background-dark pt-[6px] pb-1 max-[600px]:flex">
                   {Array.from({ length: totalSlides }).map((_, idx) => (
                     <span
                       key={idx}

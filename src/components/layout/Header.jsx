@@ -19,7 +19,7 @@ export default function Header({ onLead }) {
   const close = () => setOpen(false);
   return (
     <>
-      <header className="fixed inset-x-0 top-0 z-[1000] h-[76px] border-b border-white/10 bg-imperia-dark/90 text-white backdrop-blur-xl">
+      <header className="fixed inset-x-0 top-0 z-[1000] h-[76px] border-b border-white/10 bg-imperia-background-dark/90 text-white backdrop-blur-xl">
         <div className="container-page flex h-full items-center justify-between gap-8">
           <Brand />
           <nav className="hidden items-center gap-7 text-[13px] text-white/85 lg:flex">
@@ -53,7 +53,7 @@ export default function Header({ onLead }) {
         onClick={close}
       />
       <aside
-        className={`fixed right-0 top-0 z-[1100] flex h-dvh w-[min(88vw,390px)] flex-col bg-gradient-to-br from-imperia-dark to-imperia-primary p-6 text-white shadow-2xl transition-transform duration-300 ${open ? "translate-x-0" : "translate-x-full"}`}
+        className={`fixed right-0 top-0 z-[1100] flex h-dvh w-[min(88vw,390px)] flex-col bg-gradient-to-br from-imperia-background-dark to-imperia-background-light p-6 text-white shadow-2xl transition-transform duration-300 ${open ? "translate-x-0" : "translate-x-full"}`}
       >
         <div className="flex items-center justify-between border-b border-white/10 pb-6">
           <Brand />

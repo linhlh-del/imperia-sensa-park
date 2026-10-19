@@ -89,7 +89,7 @@ export default function GetInfor({
       className={
         embedded
           ? "bg-transparent"
-          : "border-t border-imperia-primary/20 bg-imperia-dark bg-[url('../../assets/images/bg-web.jpg')] bg-cover bg-center"
+          : "border-t border-imperia-primary/20 bg-imperia-background-dark bg-[url('../../assets/images/bg-web.jpg')] bg-cover bg-center"
       }
     >
       <div
@@ -186,7 +186,7 @@ export default function GetInfor({
             <button
               type="submit"
               disabled={loading}
-              className="h-[42px] rounded-md bg-imperia-primary px-8 font-semibold text-white transition-colors duration-300 hover:bg-imperia-dark disabled:cursor-not-allowed disabled:opacity-70"
+              className="h-[42px] rounded-md bg-imperia-background-dark px-8 font-semibold text-white transition-colors duration-300 hover:bg-imperia-background-dark disabled:cursor-not-allowed disabled:opacity-70"
             >
               {loading ? "ĐANG GỬI..." : "NHẬN THÔNG TIN"}
             </button>

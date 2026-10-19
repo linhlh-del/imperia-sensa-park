@@ -2,7 +2,7 @@ export default function ThankYouPage({ onBack }) {
   return (
     <main className="grid min-h-screen place-items-center bg-imperia-cream px-6 py-16 text-center">
       <section className="w-full max-w-xl rounded-3xl bg-white p-8 shadow-2xl md:p-12">
-        <div className="mx-auto mb-6 grid h-16 w-16 place-items-center rounded-full bg-imperia-primary text-3xl text-white">
+        <div className="mx-auto mb-6 grid h-16 w-16 place-items-center rounded-full bg-imperia-background-dark text-3xl text-white">
           ✓
         </div>
         <p className="eyebrow">Imperia Sensa Park</p>

@@ -18,6 +18,7 @@ import FloatingButtons from "./components/ui/FloatingButton";
 import NewsPage from "./pages/NewsPage";
 import NewsDetailPage from "./pages/NewsDetailPage";
 import RouteSeo from "./components/seo/RouteSeo";
+import ScrollEffects from "./components/effects/ScrollEffects";
 
 function HomePage({ onOpenModal, submitLead }) {
   const location = useLocation();
@@ -124,6 +125,7 @@ export default function App() {
   return (
     <>
       <RouteSeo />
+      <ScrollEffects />
       <Routes>
         <Route
           path="/"

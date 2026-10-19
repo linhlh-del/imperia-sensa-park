@@ -52,7 +52,7 @@ const SERVICES = [
 function ServiceCopy({ service, className = "" }) {
   return (
     <div data-cms-item className={className}>
-      <span className="mb-3 block h-px w-7 bg-imperia-primary/40" />
+      <span className="mb-3 block h-px w-7 bg-imperia-background-dark/40" />
       <h3 className="text-[15px] font-bold tracking-[0.01em] text-imperia-black">
         {service.title}
       </h3>
@@ -95,7 +95,7 @@ export default function ExclusiveServicesSection() {
             <span className="mt-16 whitespace-nowrap text-[11px] font-medium uppercase tracking-[0.25em] text-imperia-primary/55 [writing-mode:vertical-rl] rotate-180">
               The Matrix One Premium
             </span>
-            <span className="my-4 h-8 w-px bg-imperia-primary/30" />
+            <span className="my-4 h-8 w-px bg-imperia-background-dark/30" />
             <span className="whitespace-nowrap text-[11px] font-medium uppercase tracking-[0.25em] text-imperia-primary/55 [writing-mode:vertical-rl] rotate-180">
               The Luxe
             </span>
@@ -108,7 +108,7 @@ export default function ExclusiveServicesSection() {
             {/* Column 1 — heading + VIP concierge */}
             <div className="flex flex-col">
               <div className="mb-8">
-                <span className="mb-4 block h-10 w-px bg-imperia-primary/50" />
+                <span className="mb-4 block h-10 w-px bg-imperia-background-dark/50" />
                 <h2 className="font-title text-[30px] leading-[1.15] text-imperia-primary sm:text-[34px]">
                   Dịch vụ đặc quyền
                   <br />
