@@ -3,45 +3,116 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Imperia Sensa Park – Căn hộ MIK Group đường Võ Chí Công, Khu Đông TP.HCM</title>
     <meta
       name="description"
-      content="Imperia Sensa Park — Landing page bất động sản."
+      content="Imperia Sensa Park – dự án căn hộ I Series của MIK Group trên đường Võ Chí Công, Khu Đông TP.HCM. Hành trình sống đa trải nghiệm cho cư dân trẻ ưu tú, có gu."
     />
     <meta
       name="google-site-verification"
       content="X-aD_oBwf5he2ZYdl37-ob5I0VxNskyrNrwncFRcbXU"
     />
-    <title>Imperia Sensa Park</title>
-    <link rel="icon" type="image/png" href="/assets/logo.png" />
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+    <meta name="theme-color" content="#4D5538" />
+    <meta name="author" content="Imperia Sensa Park" />
+    <meta name="geo.region" content="VN-SG" />
+    <meta name="geo.placename" content="Thủ Đức, Thành phố Hồ Chí Minh" />
 
-    <meta
-      name="description"
-      content="Hành trình sống đa trải nghiệm dành cho thế hệ cư dân trẻ ưu tú, có gu. Mỗi không gian đều được thiết kế để truyền cảm hứng cho hành trình khám phá cuộc sống, khám phá bản sắc cá nhân, vun đắp những kết nối sâu sắc và tìm thấy nhịp điệu cân bằng của riêng mình trong một cộng đồng đầy tính riêng tư đồng điệu."
-    />
     <link rel="canonical" href="https://imperia-sensa-park.vercel.app/" />
+    <link rel="alternate" hreflang="vi-VN" href="https://imperia-sensa-park.vercel.app/" />
+    <link rel="alternate" hreflang="x-default" href="https://imperia-sensa-park.vercel.app/" />
+    <link rel="icon" type="image/png" href="/assets/logo.png" />
+    <link rel="apple-touch-icon" href="/assets/logo.png" />
+    <link rel="sitemap" type="application/xml" href="/sitemap.xml" />
 
-    <meta name="robots" content="index, follow, max-image-preview:large" />
-    <meta property="og:title" content="Imperia Sensa Park" />
+    <!-- Tăng tốc LCP: ảnh hero. Script prerender sẽ tự gỡ dòng này khỏi các trang con. -->
+    <link rel="preload" as="image" href="/assets/hero2.png" fetchpriority="high" />
+    <link rel="dns-prefetch" href="https://media.sachicloud.io.vn" />
+    <link rel="preconnect" href="https://media.sachicloud.io.vn" crossorigin />
 
+    <!-- Open Graph / Facebook / Zalo -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Imperia Sensa Park" />
+    <meta property="og:locale" content="vi_VN" />
+    <meta property="og:url" content="https://imperia-sensa-park.vercel.app/" />
+    <meta property="og:title" content="Imperia Sensa Park – Căn hộ MIK Group đường Võ Chí Công, Khu Đông TP.HCM" />
     <meta
       property="og:description"
-      content="Hành trình sống đa trải nghiệm dành cho thế hệ cư dân trẻ ưu tú, có gu..."
+      content="Imperia Sensa Park – dự án căn hộ I Series của MIK Group trên đường Võ Chí Công, Khu Đông TP.HCM. Hành trình sống đa trải nghiệm cho cư dân trẻ ưu tú, có gu."
     />
-    <!-- thay ảnh thumbnail -->
-    <meta
-      property="og:image"
-      content="https://imperia-sensa-park.vercel.app/assets/thumbnail.jpg"
-    />
-
-    <meta property="og:url" content="https://imperia-sensa-park.vercel.app/" />
-
-    <meta property="og:type" content="website" />
-
+    <meta property="og:image" content="https://imperia-sensa-park.vercel.app/assets/thumbnail.jpg" />
+    <meta property="og:image:alt" content="Phối cảnh dự án Imperia Sensa Park" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
 
-    <meta property="og:locale" content="vi_VN" />
-    <meta property="og:site_name" content="Imperia Sensa Park" />
+    <!-- Twitter / X -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Imperia Sensa Park – Căn hộ MIK Group đường Võ Chí Công, Khu Đông TP.HCM" />
+    <meta
+      name="twitter:description"
+      content="Imperia Sensa Park – dự án căn hộ I Series của MIK Group trên đường Võ Chí Công, Khu Đông TP.HCM."
+    />
+    <meta name="twitter:image" content="https://imperia-sensa-park.vercel.app/assets/thumbnail.jpg" />
+
+    <!-- Structured data (trang chủ). RouteSeo sẽ vô hiệu hoá khối này ở các trang con. -->
+    <script type="application/ld+json" id="ld-home">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "Organization",
+            "@id": "https://imperia-sensa-park.vercel.app/#developer",
+            "name": "MIK Group",
+            "description": "Nhà phát triển bất động sản của dự án Imperia Sensa Park.",
+            "logo": "https://imperia-sensa-park.vercel.app/assets/logo.png"
+          },
+          {
+            "@type": "WebSite",
+            "@id": "https://imperia-sensa-park.vercel.app/#website",
+            "url": "https://imperia-sensa-park.vercel.app/",
+            "name": "Imperia Sensa Park",
+            "inLanguage": "vi-VN",
+            "publisher": { "@id": "https://imperia-sensa-park.vercel.app/#developer" }
+          },
+          {
+            "@type": "WebPage",
+            "@id": "https://imperia-sensa-park.vercel.app/#webpage",
+            "url": "https://imperia-sensa-park.vercel.app/",
+            "name": "Imperia Sensa Park – Căn hộ MIK Group đường Võ Chí Công, Khu Đông TP.HCM",
+            "isPartOf": { "@id": "https://imperia-sensa-park.vercel.app/#website" },
+            "about": { "@id": "https://imperia-sensa-park.vercel.app/#project" },
+            "inLanguage": "vi-VN",
+            "primaryImageOfPage": "https://imperia-sensa-park.vercel.app/assets/thumbnail.jpg"
+          },
+          {
+            "@type": "ApartmentComplex",
+            "@id": "https://imperia-sensa-park.vercel.app/#project",
+            "name": "Imperia Sensa Park",
+            "description": "Hành trình sống đa trải nghiệm dành cho thế hệ cư dân trẻ ưu tú, có gu. Dự án căn hộ thuộc dòng I Series của MIK Group tại Khu Đông TP.HCM.",
+            "url": "https://imperia-sensa-park.vercel.app/",
+            "image": "https://imperia-sensa-park.vercel.app/assets/thumbnail.jpg",
+            "telephone": "+84934483138",
+            "brand": { "@id": "https://imperia-sensa-park.vercel.app/#developer" },
+            "address": {
+              "@type": "PostalAddress",
+              "streetAddress": "Đường Võ Chí Công",
+              "addressLocality": "Thủ Đức",
+              "addressRegion": "Thành phố Hồ Chí Minh",
+              "addressCountry": "VN"
+            },
+            "amenityFeature": [
+              { "@type": "LocationFeatureSpecification", "name": "Hồ bơi", "value": true },
+              { "@type": "LocationFeatureSpecification", "name": "Phòng gym", "value": true },
+              { "@type": "LocationFeatureSpecification", "name": "Phòng yoga", "value": true },
+              { "@type": "LocationFeatureSpecification", "name": "Co-working Space", "value": true },
+              { "@type": "LocationFeatureSpecification", "name": "Khu BBQ ngoài trời", "value": true },
+              { "@type": "LocationFeatureSpecification", "name": "Sân chơi trẻ em", "value": true }
+            ]
+          }
+        ]
+      }
+    </script>
   </head>
   <body>
     <div id="root"></div>

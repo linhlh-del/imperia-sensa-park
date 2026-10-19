@@ -1,0 +1,24 @@
+# Imperia Sensa Park
+
+> Imperia Sensa Park là dự án căn hộ thuộc dòng I Series (Imperia) do MIK Group phát triển, tọa lạc trên đường Võ Chí Công, kết nối trực tiếp với trục Liên Phường, Khu Đông TP.HCM. Dự án theo tinh thần "Discovery Residences": không gian sống đa trải nghiệm dành cho thế hệ cư dân trẻ, đề cao gu sống riêng.
+
+## Thông tin chính
+- Chủ đầu tư / nhà phát triển: MIK Group
+- Vị trí: đường Võ Chí Công, giáp sông Rạch Chiếc và kênh Một Tấn, Khu Đông TP.HCM (khu vực Thủ Đức)
+- Khởi công: 6/8/2026; dự kiến bàn giao căn hộ quý IV/2028
+- Đơn vị thiết kế và thi công: studioMilou (kiến trúc, cảnh quan), Ong&Ong (nội thất), Ricons (tổng thầu), CORE (tư vấn giám sát)
+- Hệ tiện ích chia ba nhóm: Creative Hub (không gian sáng tạo), Vitality Sanctuary (vận động, tái tạo), Social Club (kết nối cộng đồng)
+- Loại hình căn hộ: Studio, 1PN+, 2PN, 3PN, Duplex
+- Hotline tư vấn: 093 448 3138
+
+## Trang chính
+- [Trang chủ](https://imperia-sensa-park.vercel.app/): tổng quan, vị trí, tiện ích, mặt bằng tầng điển hình, đăng ký nhận thông tin
+- [Tin tức & sự kiện](https://imperia-sensa-park.vercel.app/tin-tuc): thông báo mới nhất, tiến độ và sự kiện của dự án
+
+## Bài viết tiêu biểu
+- [MIK Group khởi công dự án Imperia Sensa Park](https://imperia-sensa-park.vercel.app/tin-tuc/mik-group-khoi-cong-du-an-imperia-sensa-park)
+- [Chiến lược mở rộng của MIK Group tại phía Nam](https://imperia-sensa-park.vercel.app/tin-tuc/chien-luoc-mo-rong-mik-group-tai-phia-nam)
+- [Imperia Sensa Park thiết kế căn hộ theo tinh thần khám phá](https://imperia-sensa-park.vercel.app/tin-tuc/imperia-sensa-park-thiet-ke-can-ho-theo-tinh-than-kham-pha)
+- [Chuỗi hơn 40 tiện ích trong dự án](https://imperia-sensa-park.vercel.app/tin-tuc/chuoi-hon-40-tien-ich-imperia-sensa-park)
+- [Discovery Residences tiên phong tại TP.HCM](https://imperia-sensa-park.vercel.app/tin-tuc/imperia-sensa-park-discovery-residences)
+- [MIK Group khai trương House of MIK](https://imperia-sensa-park.vercel.app/tin-tuc/mik-group-khai-truong-house-of-mik-mien-nam)

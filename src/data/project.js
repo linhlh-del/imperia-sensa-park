@@ -16,10 +16,10 @@ export const project = {
     description:
       "Không gian sống xanh, hiện đại và tinh tế — nơi mỗi ngày được tận hưởng một nhịp sống cân bằng giữa lòng đại đô thị.",
     stats: [
-      ["10,2", "ha", "Quy mô dự án"],
-      ["05", "", "Tòa cao tầng"],
-      ["5.000", "+", "Căn hộ cao cấp"],
-      ["20", "+", "Tiện ích nổi bật"],
+      ["~5", "ha", "QUY MÔ DỰ ÁN"],
+      ["02", "THÁP", "THE SENSA"],
+      ["922", "CĂN", "TỔNG SỐ CĂN HỘ"],
+      ["40+", "+", "Tiện ích nổi bật"],
     ],
   },
   overview: {
@@ -38,10 +38,10 @@ export const project = {
     subtitle:
       "Từ vị trí dự án, cư dân có thể tiếp cận nhanh các trung tâm thương mại, giáo dục, vui chơi và những khu vực trọng điểm.",
     distances: [
-      ["05'", "Đến các tuyến đường huyết mạch"],
-      ["15'", "Đến trung tâm thương mại & dịch vụ"],
-      ["20'", "Đến khu vực trung tâm thành phố"],
-      ["40'", "Đến sân bay / khu vực ngoại thành"],
+      ["05'", "Khu Công nghệ cao TP.HCM"],
+      ["10'", "Khu liên hợp Thể dục Thể thao Quốc gia Rạch Chiếc"],
+      ["15'", "Trung tâm Hành chính Thủ Thiêm"],
+      ["30'", "Sân bay Quốc tế Tân Sơn Nhất, Sân bay Quốc tế Long Thành"],
     ],
   },
   amenities: [

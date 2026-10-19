@@ -87,7 +87,7 @@ export default function ThankYou() {
         <p className="mt-2 text-[clamp(0.8rem,1.5vw,0.95rem)] opacity-85">
           Nếu bạn có thắc mắc gấp, vui lòng gọi cho chúng tôi: <br />
           <strong className="mt-2 block text-[clamp(0.95rem,2vw,1.1rem)] text-white">
-            0906 757 276
+            093 448 3138
           </strong>
         </p>
       </div>

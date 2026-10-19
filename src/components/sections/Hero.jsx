@@ -62,7 +62,9 @@ export default function Hero({ data }) {
                   {suffix}
                 </small>
               </div>
-              <div className="mt-1 text-xs text-white/55">{label}</div>
+              <div className="mt-1 text-[13px] leading-[17px] text-white/55">
+                {label}
+              </div>
             </div>
           ))}
         </div>

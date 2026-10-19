@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "vite build && node scripts/prerender.mjs",
+    "build:spa": "vite build",
     "preview": "vite preview"
   },
   "dependencies": {
@@ -17,5 +18,8 @@
     "react-router-dom": "^7.18.3",
     "tailwindcss": "3.4.17",
     "vite": "latest"
+  },
+  "devDependencies": {
+    "puppeteer": "^24.0.0"
   }
 }

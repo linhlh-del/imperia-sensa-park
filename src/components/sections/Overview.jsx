@@ -32,10 +32,10 @@ export default function Overview({ data }) {
         </div>
         <div className="mt-16 grid grid-cols-2 md:grid-cols-4">
           {[
-            ["10,2", "Hecta quy mô"],
-            ["05", "Tòa cao tầng"],
-            ["5.000+", "Căn hộ"],
-            ["20+", "Tiện ích"],
+            ["05", "LOẠI HÌNH CĂN HỘ"],
+            ["28%", "MẬT ĐỘ XÂY DỰNG"],
+            ["93 CĂN", "NHÀ PHỐ & BIỆT THỰ"],
+            ["QUÝ IV/ 2028", "DỰ KIẾN BÀN GIAO"],
           ].map(([n, l]) => (
             <div key={l} className="border border-imperia-primary/10 px-4 py-7">
               <strong className="font-display text-3xl text-imperia-primary">

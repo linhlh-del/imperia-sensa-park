@@ -17,6 +17,7 @@ import ThankYouPage from "./components/sections/ThankYouPage";
 import FloatingButtons from "./components/ui/FloatingButton";
 import NewsPage from "./pages/NewsPage";
 import NewsDetailPage from "./pages/NewsDetailPage";
+import RouteSeo from "./components/seo/RouteSeo";
 
 function HomePage({ onOpenModal, submitLead }) {
   const location = useLocation();
@@ -49,7 +50,7 @@ function HomePage({ onOpenModal, submitLead }) {
         <Overview data={project.overview} />
         <Location data={project.location} />
         <Amenities items={project.amenities} />
-        <ExclusiveServicesSection />
+        {/* <ExclusiveServicesSection /> */}
         {/* Không truyền `items` nữa — để News tự lấy dữ liệu (hiện là mock
             trong newsService/newsData, sau này là API thật) thay vì dùng
             project.news (dữ liệu cũ, sai shape, gây ra /tin-tuc/undefined). */}
@@ -122,6 +123,7 @@ export default function App() {
 
   return (
     <>
+      <RouteSeo />
       <Routes>
         <Route
           path="/"
