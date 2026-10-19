@@ -38,7 +38,7 @@ export const project = {
     subtitle:
       "Từ vị trí dự án, cư dân có thể tiếp cận nhanh các trung tâm thương mại, giáo dục, vui chơi và những khu vực trọng điểm.",
     distances: [
-      ["05'", "Khu Công nghệ cao TP.HCM"],
+      ["5'", "Khu Công nghệ cao TP.HCM"],
       ["10'", "Khu liên hợp Thể dục Thể thao Quốc gia Rạch Chiếc"],
       ["15'", "Trung tâm Hành chính Thủ Thiêm"],
       ["30'", "Sân bay Quốc tế Tân Sơn Nhất, Sân bay Quốc tế Long Thành"],
