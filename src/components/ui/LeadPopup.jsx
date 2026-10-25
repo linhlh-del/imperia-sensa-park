@@ -1,16 +1,8 @@
 import { useEffect, useRef } from "react";
 import Button from "./Button";
-
-const APARTMENT_TYPES = ["Studio", "1PN+", "2PN", "3PN", "Duplex"];
-
-const HIGHLIGHTS = [
-  "Brochure thông tin chi tiết dự án",
-  "Bản đồ vị trí & quy hoạch hạ tầng dự án",
-  "Mặt bằng tổng thể & vị trí từng căn",
-  "Bảng tính giá gốc & dòng tiền",
-  "Chính sách bán hàng & hỗ trợ lãi suất",
-  "Hồ sơ pháp lý: Chấp thuận ĐT, GPXD, 1/500",
-];
+import { clearPhoneError } from "../../lib/lead";
+import FormExtras from "./FormExtras";
+import { img, site, t, tList } from "../../cms/content";
 
 /* ------------------------- Icon set (inline SVG) ------------------------- */
 const CheckIcon = () => (
@@ -117,7 +109,7 @@ export default function LeadPopup({
   open,
   onClose,
   onSubmit,
-  address = "Imperia Sensa Park, TP. Thủ Đức",
+  address = `Imperia Sensa Park, ${site.contact.address.charAt(0).toLowerCase()}${site.contact.address.slice(1)}`,
 }) {
   const ref = useRef(null);
 
@@ -146,7 +138,8 @@ export default function LeadPopup({
       >
         <button
           onClick={onClose}
-          className="absolute right-4 top-4 z-20 grid h-10 w-10 place-items-center rounded-full border border-imperia-primary/15 bg-white text-2xl text-imperia-primary"
+          aria-label="Đóng"
+          className="absolute right-4 top-4 z-20 grid h-12 w-12 place-items-center rounded-full border border-imperia-primary/15 bg-white text-2xl text-imperia-primary"
         >
           ×
         </button>
@@ -155,8 +148,10 @@ export default function LeadPopup({
             phủ full chiều cao cột (object-cover) trên desktop */}
         <div className="relative aspect-square min-h-0 w-full overflow-hidden bg-[rgb(145,118,99)]">
           <img
-            src="/assets/popup.jpg"
-            alt="Phối cảnh Imperia Sensa Park"
+            src={img("popup.image", "/assets/popup.optimized.webp")}
+            alt={t("popup.imageAlt")}
+            width="1536"
+            height="1536"
             className="absolute inset-0 h-full w-full object-cover"
           />
           <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-imperia-black/75 via-imperia-black/10 to-transparent" />
@@ -171,14 +166,12 @@ export default function LeadPopup({
         {/* Cột phải: nội dung + form */}
         <div className="flex flex-col gap-2.5 overflow-y-auto p-6 md:p-8">
           <h2 id="lead-title" className="section-title text-3xl md:text-3xl">
-            Nhận thông tin dự án
+            {t("popup.title")}
           </h2>
-          <p className="text-sm text-[#6c6e65]">
-            Đăng ký nhận tài liệu chuyên sâu & tư vấn 1:1 từ chuyên viên
-          </p>
+          <p className="text-sm text-[#6c6e65]">{t("popup.intro")}</p>
 
           <ul className="mt-1 flex flex-col gap-1.5">
-            {HIGHLIGHTS.map((text) => (
+            {tList("lead.highlights").map((text) => (
               <li
                 key={text}
                 className="flex items-start gap-2.5 text-[0.875rem] leading-snug text-imperia-black/85"
@@ -191,55 +184,49 @@ export default function LeadPopup({
             ))}
           </ul>
 
-          <form onSubmit={onSubmit} className="mt-1 grid gap-2.5">
+          <form
+            onSubmit={onSubmit}
+            data-form-type="popup"
+            className="relative mt-1 grid gap-2.5"
+          >
             <div className="grid gap-2.5 md:grid-cols-2">
               <input
                 ref={ref}
                 required
                 name="name"
-                className="min-w-0 rounded-xl border border-imperia-primary/15 bg-white px-3 py-2.5 text-sm outline-none focus:border-imperia-primary"
+                autoComplete="name"
+                aria-label="Họ và tên"
+                className="min-h-12 min-w-0 rounded-xl border border-imperia-primary/15 bg-white px-3 py-2.5 text-sm outline-none focus:border-imperia-primary"
                 placeholder="Họ và tên *"
               />
               <input
                 required
                 type="tel"
                 name="phone"
-                className="min-w-0 rounded-xl border border-imperia-primary/15 bg-white px-3 py-2.5 text-sm outline-none focus:border-imperia-primary"
+                inputMode="tel"
+                autoComplete="tel"
+                aria-label="Số điện thoại"
+                onInput={clearPhoneError}
+                className="min-h-12 min-w-0 rounded-xl border border-imperia-primary/15 bg-white px-3 py-2.5 text-sm outline-none focus:border-imperia-primary"
                 placeholder="Số điện thoại *"
               />
             </div>
 
-            <div className="grid grid-cols-2 gap-x-3 gap-y-1.5 md:grid-cols-3">
-              {APARTMENT_TYPES.map((type) => (
-                <label
-                  key={type}
-                  className="flex items-center gap-1.5 text-[0.83rem] text-imperia-black/85"
-                >
-                  <input
-                    type="checkbox"
-                    name="apartmentTypes"
-                    value={type}
-                    className="h-[1.05rem] w-[1.05rem] flex-shrink-0 rounded border-imperia-primary accent-imperia-primary"
-                  />
-                  <span className="min-w-0 break-words">{type}</span>
-                </label>
-              ))}
-            </div>
-
-            <Button type="submit">Nhận thông tin</Button>
+            <FormExtras />
+            <Button type="submit">{t("lead.submit")}</Button>
 
             <div className="mt-0.5 flex flex-col gap-2 rounded-lg border border-imperia-primary/20 bg-white/60 p-3 text-left">
               <p className="flex min-w-0 items-center gap-2 text-[0.8125rem] text-imperia-black/85">
                 <span className="flex-shrink-0 text-imperia-primary">
                   <ShieldIcon />
                 </span>
-                Tuyệt đối <strong>bảo mật</strong> thông tin cá nhân.
+                {t("lead.privacy")}
               </p>
               <p className="flex min-w-0 items-center gap-2 text-[0.8125rem] text-imperia-black/85">
                 <span className="flex-shrink-0 text-imperia-primary">
                   <HeadsetIcon />
                 </span>
-                <strong>Giải đáp mọi thắc mắc</strong> của khách hàng.
+                {t("lead.support")}
               </p>
             </div>
           </form>

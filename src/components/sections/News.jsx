@@ -13,6 +13,7 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 import { Link } from "react-router-dom";
 import SectionHeading from "../ui/SectionHeading";
+import { t } from "../../cms/content";
 import { fetchNewsList, getHref, formatDate } from "../../services/newsService";
 
 function ChevronIcon({ direction = "right" }) {
@@ -26,7 +27,7 @@ function ChevronIcon({ direction = "right" }) {
       strokeWidth="2"
       strokeLinecap="round"
       strokeLinejoin="round"
-      style={{ transform: direction === "left" ? "scaleX(-1)" : "none" }}
+      className={direction === "left" ? "-scale-x-100" : undefined}
       aria-hidden="true"
     >
       <path d="M9 6l6 6-6 6" />
@@ -36,8 +37,8 @@ function ChevronIcon({ direction = "right" }) {
 
 export default function News({
   items,
-  heading = "Tin tức & sự kiện",
-  subtitle = "Cập nhật những thông báo mới nhất, tiến độ dự án và các sự kiện nổi bật.",
+  heading = t("news.title"),
+  subtitle = t("news.subtitle"),
   moreHref = "/tin-tuc",
 }) {
   const [fetchedItems, setFetchedItems] = useState(null);
@@ -129,7 +130,7 @@ export default function News({
                   onClick={() => scrollByCard(-1)}
                   disabled={!canPrev}
                   aria-label="Tin trước"
-                  className="flex h-11 w-11 items-center justify-center rounded-full border border-imperia-primary/25 text-imperia-primary transition duration-300 hover:bg-imperia-background-dark hover:text-white disabled:cursor-default disabled:opacity-30 disabled:hover:bg-transparent disabled:hover:text-imperia-primary"
+                  className="flex h-12 w-12 items-center justify-center rounded-full border border-imperia-primary/25 text-imperia-primary transition duration-300 hover:bg-imperia-background-dark hover:text-white disabled:cursor-default disabled:opacity-30 disabled:hover:bg-transparent disabled:hover:text-imperia-primary"
                 >
                   <ChevronIcon direction="left" />
                 </button>
@@ -138,7 +139,7 @@ export default function News({
                   onClick={() => scrollByCard(1)}
                   disabled={!canNext}
                   aria-label="Tin tiếp theo"
-                  className="flex h-11 w-11 items-center justify-center rounded-full border border-imperia-primary/25 text-imperia-primary transition duration-300 hover:bg-imperia-background-dark hover:text-white disabled:cursor-default disabled:opacity-30 disabled:hover:bg-transparent disabled:hover:text-imperia-primary"
+                  className="flex h-12 w-12 items-center justify-center rounded-full border border-imperia-primary/25 text-imperia-primary transition duration-300 hover:bg-imperia-background-dark hover:text-white disabled:cursor-default disabled:opacity-30 disabled:hover:bg-transparent disabled:hover:text-imperia-primary"
                 >
                   <ChevronIcon direction="right" />
                 </button>
@@ -155,8 +156,7 @@ export default function News({
             {/* Track */}
             <div
               ref={trackRef}
-              className="flex gap-6 overflow-x-auto pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
-              style={{ scrollSnapType: "x mandatory" }}
+              className="flex snap-x snap-mandatory gap-6 overflow-x-auto pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
             >
               {displayItems.map((item) => {
                 const href = getHref(item.id);
@@ -164,8 +164,7 @@ export default function News({
                   <article
                     key={item.id}
                     data-cms-item="news"
-                    className="flex w-[min(360px,82vw)] flex-none flex-col rounded-[22px] border border-imperia-primary/10 bg-imperia-cream"
-                    style={{ scrollSnapAlign: "start" }}
+                    className="flex w-[min(360px,82vw)] flex-none snap-start flex-col rounded-[22px] border border-imperia-primary/10 bg-imperia-cream"
                   >
                     <Link
                       to={href}

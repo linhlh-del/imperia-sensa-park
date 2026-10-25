@@ -45,7 +45,7 @@
   --imperia-white: #ffffff;
   --imperia-black: #3f5e0e;
   --container: 1400px;
-  --section-y: clamp(72px, 8vw, 120px);
+  --section-y: clamp(80px, 8vw, 120px);
   --transition: 280ms cubic-bezier(0.2, 0.7, 0.2, 1);
 }
 
@@ -84,6 +84,20 @@ img {
 }
 
 @layer components {
+  /* Lớp phủ gradient ảnh hero: giữ chữ bên trái luôn đọc rõ */
+  .hero-overlay {
+    background: linear-gradient(
+      90deg,
+      rgba(53, 60, 39, 0.92) 0%,
+      rgba(53, 60, 39, 0.75) 30%,
+      rgba(53, 60, 39, 0.15) 60%,
+      rgba(53, 60, 39, 0) 80%
+    );
+  }
+  /* Ảnh nền section form đăng ký (nằm dưới màn hình đầu) */
+  .lead-bg {
+    background-image: url("/assets/lead-bg.optimized.webp");
+  }
   .container-page {
     width: min(calc(100% - 40px), var(--container));
     margin-inline: auto;
@@ -139,7 +153,20 @@ img {
   }
 }
 
+/* Chừa chỗ cho sticky bar mobile (cao 48px + safe-area) */
 @media (max-width: 767px) {
+  body {
+    padding-bottom: calc(56px + env(safe-area-inset-bottom));
+  }
+  .mobile-sticky-bar {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+}
+
+@media (max-width: 768px) {
+  .section-y {
+    padding-block: 72px;
+  }
   .container-page {
     width: min(calc(100% - 28px), var(--container));
   }

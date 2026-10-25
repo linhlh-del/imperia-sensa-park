@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import Brand from "./Brand";
 import Button from "../ui/Button";
+import { site, t } from "../../cms/content";
 
 export default function Header({ onLead }) {
   const [open, setOpen] = useState(false);
@@ -35,14 +36,14 @@ export default function Header({ onLead }) {
           </nav>
           <div className="hidden lg:block">
             <Button variant="light" onClick={onLead}>
-              Nhận thông tin
+              {t("header.cta")}
             </Button>
           </div>
           <button
             aria-label="Mở menu"
             aria-expanded={open}
             onClick={() => setOpen(true)}
-            className="grid h-11 w-11 place-items-center rounded-full border border-white/20 bg-white/5 text-xl lg:hidden"
+            className="grid h-12 w-12 place-items-center rounded-full border border-white/20 bg-white/5 text-xl lg:hidden"
           >
             ☰
           </button>
@@ -60,7 +61,7 @@ export default function Header({ onLead }) {
           <button
             onClick={close}
             aria-label="Đóng menu"
-            className="grid h-10 w-10 place-items-center rounded-full border border-white/20 bg-white/5 text-2xl"
+            className="grid h-12 w-12 place-items-center rounded-full border border-white/20 bg-white/5 text-2xl"
           >
             ×
           </button>
@@ -88,15 +89,15 @@ export default function Header({ onLead }) {
           }}
           className="mt-auto w-full justify-between"
         >
-          Nhận thông tin dự án <span>→</span>
+          {t("header.ctaMobile")} <span>→</span>
         </Button>
         <div className="mt-4 flex justify-between border-t border-white/10 pt-4 text-xs uppercase tracking-widest text-white/50">
           <span>Hotline</span>
           <a
-            href="tel:0934483138"
+            href={site.contact.hotlineHref}
             className="text-base font-bold normal-case tracking-normal text-imperia-accent"
           >
-            093 448 3138
+            {site.contact.hotline}
           </a>
         </div>
       </aside>

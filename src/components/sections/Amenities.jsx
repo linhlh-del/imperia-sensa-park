@@ -1,5 +1,6 @@
 // src/components/sections/Amenities.jsx
 import { useState, useEffect, useRef } from "react";
+import { img, t } from "../../cms/content";
 import {
   AMENITIES,
   ITEMS_PER_COL,
@@ -7,7 +8,7 @@ import {
   AUTO_SLIDE_MS,
 } from "../../data/amenitiesMap";
 
-const mapNgoaiKhu = "/assets/map-p.png";
+const mapNgoaiKhu = img("amenities.map", "/assets/map-p.optimized.webp");
 
 export default function Amenities() {
   const [activeId, setActiveId] = useState(null);
@@ -88,11 +89,9 @@ export default function Amenities() {
       <div className="container-page">
         {/* HEADER */}
         <div className="mb-12 grid grid-cols-1 gap-6 max-[600px]:mb-8 max-[600px]:gap-3">
-          <h2 className="section-title m-0">TỔ HỢP TIỆN ÍCH ĐA CHIỀU</h2>
+          <h2 className="section-title m-0">{t("amenities.title")}</h2>
           <p className="section-subtitle !mt-0 max-w-full text-justify">
-            Dẫn lối đa thế hệ cư dân bước vào hành trình tạn hưởng cuộc sống
-            viên mãn toàn diện; vườn thiền, dạo bộ, thưởng trả, bi-a, lounge,
-            sân chơi trẻ en,..
+            {t("amenities.subtitle")}
           </p>
         </div>
 
@@ -105,7 +104,11 @@ export default function Amenities() {
           >
             <img
               src={mapNgoaiKhu}
-              alt="Sơ đồ tiện ích"
+              alt={t("amenities.mapAlt")}
+              width="1307"
+              height="1203"
+              loading="lazy"
+              decoding="async"
               className="block w-full"
             />
 
@@ -116,24 +119,33 @@ export default function Amenities() {
               const isActive = activeId === item.id;
 
               return positions.map((position, positionIndex) => (
-                <div
+                <button
+                  type="button"
                   key={`${item.id}-${positionIndex}`}
                   onMouseEnter={() => setActiveId(item.id)}
                   onMouseLeave={() => setActiveId(null)}
                   onClick={() => setActiveId(item.id)}
+                  aria-label={`Hiển thị ${item.name.join(" ")}`}
+                  aria-pressed={isActive}
                   style={{ top: position.top, left: position.left }}
                   className={[
-                    "absolute flex h-7 w-7 -translate-x-1/2 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full border border-imperia-cream font-body text-base font-semibold",
-                    "before:absolute before:inset-0 before:rounded-full before:content-['']",
-                    "after:absolute after:inset-0 after:rounded-full after:content-['']",
-                    "max-[600px]:h-4 max-[600px]:w-4 max-[600px]:text-[0.6rem]",
-                    isActive
-                      ? "scale-[1.4] bg-imperia-cream text-imperia-secondary-dark before:hidden after:hidden"
-                      : "animate-marker-shake bg-imperia-secondary-dark text-imperia-cream before:animate-marker-ring1 after:animate-marker-ring2 before:bg-imperia-cream/50 after:bg-imperia-cream/30",
+                    "absolute flex h-12 w-12 -translate-x-1/2 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full border-0 bg-transparent p-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-imperia-primary",
                   ].join(" ")}
                 >
-                  {item.id}
-                </div>
+                  <span
+                    className={[
+                      "relative flex h-7 w-7 items-center justify-center rounded-full border border-imperia-cream font-body text-base font-semibold",
+                      "before:absolute before:inset-0 before:rounded-full before:content-['']",
+                      "after:absolute after:inset-0 after:rounded-full after:content-['']",
+                      "max-[600px]:h-4 max-[600px]:w-4 max-[600px]:text-[0.6rem]",
+                      isActive
+                        ? "scale-[1.4] bg-imperia-cream text-imperia-secondary-dark before:hidden after:hidden"
+                        : "animate-marker-shake bg-imperia-secondary-dark text-imperia-cream before:animate-marker-ring1 after:animate-marker-ring2 before:bg-imperia-cream/50 after:bg-imperia-cream/30",
+                    ].join(" ")}
+                  >
+                    {item.id}
+                  </span>
+                </button>
               ));
             })}
           </div>
@@ -152,12 +164,13 @@ export default function Amenities() {
                          max-[600px]:hidden"
             >
               {filtered.map((item) => (
-                <div
+                <button
+                  type="button"
                   key={item.id}
                   onMouseEnter={() => setActiveId(item.id)}
                   onMouseLeave={() => setActiveId(null)}
                   onClick={() => setActiveId(item.id)}
-                  className={`flex items-center gap-2.5 p-1.5 font-body cursor-pointer transition duration-300 ${
+                  className={`flex min-h-12 w-full items-center gap-2.5 p-1.5 text-left font-body cursor-pointer transition duration-300 ${
                     activeId === item.id
                       ? "bg-imperia-background-light"
                       : "hover:bg-imperia-background-dark"
@@ -168,14 +181,14 @@ export default function Amenities() {
                   >
                     {item.id}
                   </span>
-                  <div className="flex flex-col justify-center">
+                  <span className="flex flex-col justify-center">
                     {item.name.map((t, i) => (
-                      <p key={i} className="m-0 text-xs text-white">
+                      <span key={i} className="text-xs text-white">
                         {t}
-                      </p>
+                      </span>
                     ))}
-                  </div>
-                </div>
+                  </span>
+                </button>
               ))}
             </div>
 
@@ -202,12 +215,13 @@ export default function Amenities() {
                         className="flex flex-col border-r border-white/10 last:border-r-0"
                       >
                         {colItems.map((item) => (
-                          <div
+                          <button
+                            type="button"
                             key={item.id}
                             onMouseEnter={() => setActiveId(item.id)}
                             onMouseLeave={() => setActiveId(null)}
                             onClick={() => setActiveId(item.id)}
-                            className={`box-border flex min-h-[56px] items-center gap-2.5 border-b border-white/10 p-2 font-body cursor-pointer transition duration-300 ${
+                            className={`box-border flex min-h-[56px] w-full items-center gap-2.5 border-b border-white/10 bg-transparent p-2 text-left font-body cursor-pointer transition duration-300 ${
                               activeId === item.id
                                 ? "bg-imperia-background-light"
                                 : "hover:bg-imperia-background-dark"
@@ -218,14 +232,14 @@ export default function Amenities() {
                             >
                               {item.id}
                             </span>
-                            <div className="flex flex-col justify-center">
+                            <span className="flex flex-col justify-center">
                               {item.name.map((t, i) => (
-                                <p key={i} className="m-0 text-xs text-white">
+                                <span key={i} className="text-xs text-white">
                                   {t}
-                                </p>
+                                </span>
                               ))}
-                            </div>
-                          </div>
+                            </span>
+                          </button>
                         ))}
                       </div>
                     ))}

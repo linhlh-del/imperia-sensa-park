@@ -1,7 +1,9 @@
 import Button from "../ui/Button";
 import CountUp from "../effects/CountUp";
+import { img, t } from "../../cms/content";
 
-export default function Hero({ data }) {
+/* variant (CMS): "left" (mặc định, chữ bên trái) | "center" (chữ giữa) */
+export default function Hero({ data, variant = "left" }) {
   return (
     <section
       id="hero"
@@ -11,23 +13,23 @@ export default function Hero({ data }) {
       {/* Wrapper riêng để crop ảnh, không ảnh hưởng overflow của section (cần visible cho stats bar) */}
       <div className="absolute inset-0 z-0 overflow-hidden">
         <img
-          src="/assets/hero2.png"
+          src={img("hero.background", "/assets/hero2.optimized.webp")}
           alt=""
           aria-hidden="true"
+          width="1491"
+          height="863"
+          fetchPriority="high"
+          decoding="async"
           className="h-full w-full object-contain object-center"
         />
         {/* Gradient overlay để chữ bên trái luôn đọc rõ trên mọi kích thước ảnh */}
-        <div
-          className="absolute inset-0"
-          style={{
-            background:
-              "linear-gradient(90deg, rgba(53,60,39,.92) 0%, rgba(53,60,39,.75) 30%, rgba(53,60,39,.15) 60%, rgba(53,60,39,0) 80%)",
-          }}
-        />
+        <div className="hero-overlay absolute inset-0" />
       </div>
 
       <div className="container-page relative z-10 py-24">
-        <div className="max-w-[560px]">
+        <div
+          className={`max-w-[560px] ${variant === "center" ? "mx-auto text-center [&_.flex]:justify-center" : ""}`}
+        >
           <div className="mb-4 text-xs font-bold uppercase tracking-[.16em] text-imperia-accent">
             {data.kicker}
           </div>
@@ -35,16 +37,17 @@ export default function Hero({ data }) {
             {data.title}
             <br />
             <span className="text-imperia-accent">{data.titleAccent}</span>
+            <span className="sr-only"> {t("hero.h1Seo")}</span>
           </h1>
           <p className="mt-7 max-w-[560px] text-[clamp(0.75rem,1.2vw,1.25rem)] leading-7 text-white/75">
             {data.description}
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
             <Button href="#tong-quan" variant="light">
-              Khám phá dự án
+              {t("hero.ctaExplore")}
             </Button>
             <Button href="#lien-he" variant="outlineLight">
-              Nhận bảng giá
+              {t("hero.ctaPrice")}
             </Button>
           </div>
         </div>

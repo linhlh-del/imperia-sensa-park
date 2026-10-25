@@ -1,6 +1,7 @@
 export default function SectionHeading({
   eyebrow,
   title,
+  semanticTitle,
   subtitle,
   light = false,
   center = false,
@@ -15,9 +16,21 @@ export default function SectionHeading({
           {eyebrow}
         </div>
       )}
-      <h2 className={`section-title ${light ? "section-title-light" : ""}`}>
-        {title}
-      </h2>
+      {semanticTitle ? (
+        <>
+          <h2 className="sr-only">{semanticTitle}</h2>
+          <p
+            aria-hidden="true"
+            className={`section-title ${light ? "section-title-light" : ""}`}
+          >
+            {title}
+          </p>
+        </>
+      ) : (
+        <h2 className={`section-title ${light ? "section-title-light" : ""}`}>
+          {title}
+        </h2>
+      )}
       {subtitle && (
         <p
           className={`section-subtitle ${light ? "section-subtitle-light" : ""} ${center ? "mx-auto" : ""}`}

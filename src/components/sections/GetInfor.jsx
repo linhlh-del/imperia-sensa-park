@@ -129,7 +129,7 @@ export default function GetInfor({
                 value={form.name}
                 onChange={handleChange}
                 required
-                className="h-10 border-0 border-b border-imperia-secondary bg-white px-2.5 py-1 text-sm text-imperia-black outline-none md:text-base"
+                className="h-10 min-h-12 border-0 border-b border-imperia-secondary bg-white px-2.5 py-1 text-sm text-imperia-black outline-none md:text-base"
               />
               {errors.name && (
                 <span className="absolute -bottom-5 left-0 text-xs text-imperia-primary">
@@ -149,7 +149,7 @@ export default function GetInfor({
                 value={form.phone}
                 onChange={handleChange}
                 required
-                className="h-10 border-0 border-b border-imperia-secondary bg-white px-2.5 py-1 text-sm text-imperia-black outline-none md:text-base"
+                className="h-10 min-h-12 border-0 border-b border-imperia-secondary bg-white px-2.5 py-1 text-sm text-imperia-black outline-none md:text-base"
               />
               {errors.phone && (
                 <span className="absolute -bottom-5 left-0 text-xs text-imperia-primary">
@@ -166,7 +166,7 @@ export default function GetInfor({
                 name="apartmentType"
                 value={form.apartmentType}
                 onChange={handleChange}
-                className="h-10 cursor-pointer appearance-none border-0 border-b border-imperia-secondary bg-white bg-[right_0.625rem_center] bg-no-repeat px-2.5 py-1 pr-8 text-sm text-imperia-black outline-none [background-image:url('data:image/svg+xml;utf8,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%2212%22%20height=%228%22%20viewBox=%220%200%2012%208%22%3E%3Cpath%20d=%22M1%201l5%205%205-5%22%20stroke=%22%2320231b%22%20stroke-width=%222%22%20fill=%22none%22/%3E%3C/svg%3E')] md:text-base"
+                className="h-10 min-h-12 cursor-pointer appearance-none border-0 border-b border-imperia-secondary bg-white bg-[right_0.625rem_center] bg-no-repeat px-2.5 py-1 pr-8 text-sm text-imperia-black outline-none [background-image:url('data:image/svg+xml;utf8,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%2212%22%20height=%228%22%20viewBox=%220%200%2012%208%22%3E%3Cpath%20d=%22M1%201l5%205%205-5%22%20stroke=%22%2320231b%22%20stroke-width=%222%22%20fill=%22none%22/%3E%3C/svg%3E')] md:text-base"
               >
                 <option value="" disabled hidden className="text-gray-400">
                   Chọn loại hình căn hộ (không bắt buộc)
@@ -186,7 +186,7 @@ export default function GetInfor({
             <button
               type="submit"
               disabled={loading}
-              className="h-[42px] rounded-md bg-imperia-background-dark px-8 font-semibold text-white transition-colors duration-300 hover:bg-imperia-background-dark disabled:cursor-not-allowed disabled:opacity-70"
+              className="h-[42px] min-h-12 rounded-md bg-imperia-background-dark px-8 font-semibold text-white transition-colors duration-300 hover:bg-imperia-background-dark disabled:cursor-not-allowed disabled:opacity-70"
             >
               {loading ? "ĐANG GỬI..." : "NHẬN THÔNG TIN"}
             </button>

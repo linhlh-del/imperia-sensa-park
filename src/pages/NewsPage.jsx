@@ -77,25 +77,27 @@ export default function NewsPage({ onLead }) {
     <div className="min-h-screen bg-imperia-cream pt-[76px]">
       <Header onLead={onLead} />
 
-      {/* Hero */}
-      <section className="bg-imperia-background-dark py-16 text-center text-white md:py-20">
-        <div className="container-page">
-          <span className="eyebrow justify-center text-imperia-accent before:bg-imperia-accent">
-            Cập nhật dự án
-          </span>
-          <h1 className="section-title section-title-light">
-            Tin tức &amp; sự kiện
-          </h1>
-          <p className="section-subtitle section-subtitle-light mx-auto text-center">
-            Theo dõi các thông báo mới nhất, tiến độ xây dựng và sự kiện nổi bật
-            của dự án.
-          </p>
-        </div>
-      </section>
+      <main>
+        {/* Hero */}
+        <section className="bg-imperia-background-dark py-16 text-center text-white md:py-20">
+          <div className="container-page">
+            <span className="eyebrow justify-center text-imperia-accent before:bg-imperia-accent">
+              Cập nhật dự án
+            </span>
+            <h1 className="section-title section-title-light">
+              Tin tức &amp; sự kiện
+            </h1>
+            <p className="section-subtitle section-subtitle-light mx-auto text-center">
+              Theo dõi các thông báo mới nhất, tiến độ xây dựng và sự kiện nổi
+              bật của dự án.
+            </p>
+          </div>
+        </section>
 
-      {/* Featured + highlights */}
-      <section className="container-page section-y">
-        <div className="grid gap-6 lg:grid-cols-[2fr_1fr]">
+        {/* Featured + highlights */}
+        <section className="container-page section-y">
+          <h2 className="sr-only">Tin tức nổi bật Imperia Sensa Park</h2>
+          <div className="grid gap-6 lg:grid-cols-[2fr_1fr]">
           <article className="rounded-[24px] border border-imperia-primary/10 bg-white shadow-soft">
             <Link
               to={getHref(featured.id)}
@@ -156,13 +158,15 @@ export default function NewsPage({ onLead }) {
               </article>
             ))}
           </div>
-        </div>
-      </section>
+          </div>
+        </section>
 
-      {/* Grid */}
-      <section className="container-page pb-24">
-        <p className="eyebrow justify-center before:hidden">Tất cả bài viết</p>
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        {/* Grid */}
+        <section className="container-page pb-24">
+          <h2 className="eyebrow justify-center before:hidden">
+            Tất cả bài viết
+          </h2>
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {grid.map((item) => (
             <article
               key={item.id}
@@ -208,8 +212,9 @@ export default function NewsPage({ onLead }) {
               </div>
             </article>
           ))}
-        </div>
-      </section>
+          </div>
+        </section>
+      </main>
 
       <Footer />
     </div>

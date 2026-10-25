@@ -1,5 +1,13 @@
 export const project = {
   brand: { name: "IMPERIA", project: "SENSA PARK" },
+  /* thông tin chung — sửa trong CMS (Thông tin chung) */
+  contact: {
+    hotline: "093 448 3138",
+    hotlineHref: "tel:0934483138",
+    zaloUrl: "https://zalo.me/1717736678695240623",
+    address:
+      "Mặt tiền đường Võ Chí Công, phường Phước Long, Thành phố Hồ Chí Minh (khu vực Phước Long B cũ, trước đây thuộc TP. Thủ Đức)",
+  },
   navigation: [
     ["tong-quan", "Tổng quan"],
     ["vi-tri", "Vị trí"],
@@ -31,6 +39,12 @@ export const project = {
       "Hệ sinh thái tiện ích đa dạng trong nội khu.",
       "Thiết kế hiện đại, tối ưu công năng căn hộ.",
       "Không gian dành cho gia đình và cộng đồng.",
+    ],
+    facts: [
+      ["05", "LOẠI HÌNH CĂN HỘ"],
+      ["28%", "MẬT ĐỘ XÂY DỰNG"],
+      ["93 CĂN", "NHÀ PHỐ & BIỆT THỰ"],
+      ["QUÝ IV/ 2028", "DỰ KIẾN BÀN GIAO"],
     ],
   },
   location: {

@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
+import { img, t } from "../../cms/content";
 import {
   TOWERS,
   UNIT_TYPE_LEGEND,
@@ -15,46 +16,52 @@ const LAYOUT_IMAGES = {
 };
 
 const UNIT_LAYOUT_IMAGES = {
-  "A.01": "/assets/aparments/2PN-70-4m2.png",
-  "A.02": "/assets/aparments/2PN-70-4m2.png",
-  "A.03": "/assets/aparments/A03.png",
+  "A.01": "/assets/aparments/2PN-70-4m2.optimized.webp",
+  "A.02": "/assets/aparments/2PN-70-4m2.optimized.webp",
+  "A.03": "/assets/aparments/A03.optimized.webp",
   "A.03A": "/assets/aparments/", //CHƯA CÓ ẢNH
-  "A.05": "/assets/aparments/2PN-70-4m2.png",
-  "A.06": "/assets/aparments/2PN-70-4m2.png",
-  "A.07": "/assets/aparments/2PN-94-9m2.png",
-  "A.08": "/assets/aparments/A08.png",
-  "A.09": "/assets/aparments/2PN -70m2.png",
-  "A.10": "/assets/aparments/2PN -70m2.png", //CHƯA CÓ ẢNH
-  "A.11": "/assets/aparments/2PN -70m2.png",
-  "A.12": "/assets/aparments/2PN -70m2.png",
-  "A.12A": "/assets/aparments/A12A.png",
-  "A.12B": "/assets/aparments/2PN -70m2.png", //CHƯA CÓ ẢNH
-  "A.15": "/assets/aparments/2PN -70m2.png",
-  "A.16": "/assets/aparments/2PN -70m2.png", //CHƯA CÓ ẢNH
-  "A.17": "/assets/aparments/2PN -70m2.png",
-  "A.18": "/assets/aparments/A18-1ST.PNG", //CHƯA CÓ ẢNH
-  "A.19": "/assets/aparments/2PN-94-9m2.png",
-  "A.20": "/assets/aparments/2PN-70-4m2.png",
-  "B.01": "/assets/aparments/B12A.png",
-  "B.02": "/assets/aparments/B02.png",
-  "B.03": "/assets/aparments/B03-2ND.png",
-  "B.03A": "/assets/aparments/2PN-70-1m2.png",
-  "B.05": "/assets/aparments/2PN-70-1m2.png",
-  "B.06": "/assets/aparments/2PN-70-1m2.png",
-  "B.07": "/assets/aparments/2PN-70-1m2.png", //CHƯA CÓ ẢNH
-  "B.08": "/assets/aparments/A18-1ST.png", //CHƯA CÓ ẢNH
-  "B.09": "/assets/aparments/B09.png",
-  "B.10": "/assets/aparments/2PN-70-1m2.png",
-  "B.11": "/assets/aparments/2PN-70-1m2.png",
-  "B.12": "/assets/aparments/B12.png",
-  "B.12A": "/assets/aparments/B12A.png",
-  "B.12B": "/assets/aparments/B-DUPLEX.png",
-  "B.15": "/assets/aparments/B15.png",
-  "B.16": "/assets/aparments/2PN-70-4m2.png",
-  "B.17": "/assets/aparments/2PN-70-4m2.png",
-  "B.18": "/assets/aparments/2PN-70-4m2.png",
-  "B.19": "/assets/aparments/2PN-70-4m2.png",
-  "B.20": "/assets/aparments/2PN-70-4m2.png",
+  "A.05": "/assets/aparments/2PN-70-4m2.optimized.webp",
+  "A.06": "/assets/aparments/2PN-70-4m2.optimized.webp",
+  "A.07": "/assets/aparments/2PN-94-9m2.optimized.webp",
+  "A.08": "/assets/aparments/A08.optimized.webp",
+  "A.09": "/assets/aparments/2PN -70m2.optimized.webp",
+  "A.10": "/assets/aparments/2PN -70m2.optimized.webp", //CHƯA CÓ ẢNH
+  "A.11": "/assets/aparments/2PN -70m2.optimized.webp",
+  "A.12": "/assets/aparments/2PN -70m2.optimized.webp",
+  "A.12A": "/assets/aparments/A12A.optimized.webp",
+  "A.12B": "/assets/aparments/2PN -70m2.optimized.webp", //CHƯA CÓ ẢNH
+  "A.15": "/assets/aparments/2PN -70m2.optimized.webp",
+  "A.16": "/assets/aparments/2PN -70m2.optimized.webp", //CHƯA CÓ ẢNH
+  "A.17": "/assets/aparments/2PN -70m2.optimized.webp",
+  "A.19": "/assets/aparments/2PN-94-9m2.optimized.webp",
+  "A.20": "/assets/aparments/2PN-70-4m2.optimized.webp",
+  "B.01": "/assets/aparments/B12A.optimized.webp",
+  "B.02": "/assets/aparments/B02.optimized.webp",
+  "B.03": "/assets/aparments/B03-2ND.optimized.webp",
+  "B.03A": "/assets/aparments/2PN-70-1m2.optimized.webp",
+  "B.05": "/assets/aparments/2PN-70-1m2.optimized.webp",
+  "B.06": "/assets/aparments/2PN-70-1m2.optimized.webp",
+  "B.07": "/assets/aparments/2PN-70-1m2.optimized.webp", //CHƯA CÓ ẢNH
+  "B.08": "/assets/aparments/A18-1ST.optimized.webp", //CHƯA CÓ ẢNH
+  "B.09": "/assets/aparments/B09.optimized.webp",
+  "B.10": "/assets/aparments/2PN-70-1m2.optimized.webp",
+  "B.11": "/assets/aparments/2PN-70-1m2.optimized.webp",
+  "B.12": "/assets/aparments/B12.optimized.webp",
+  "B.12A": "/assets/aparments/B12A.optimized.webp",
+  "B.12B": "/assets/aparments/B-DUPLEX.optimized.webp",
+  "B.15": "/assets/aparments/B15.optimized.webp",
+  "B.16": "/assets/aparments/2PN-70-4m2.optimized.webp",
+  "B.17": "/assets/aparments/2PN-70-4m2.optimized.webp",
+  "B.18": "/assets/aparments/2PN-70-4m2.optimized.webp",
+  "B.19": "/assets/aparments/2PN-70-4m2.optimized.webp",
+  "B.20": "/assets/aparments/2PN-70-4m2.optimized.webp",
+};
+
+const UNIT_FLOOR_LAYOUT_IMAGES = {
+  "A.18": {
+    1: "/assets/aparments/A18-1ST.optimized.webp",
+    2: "/assets/aparments/A18-2ND.optimized.webp",
+  },
 };
 
 function parsePolygonPoints(pointsStr) {
@@ -192,7 +199,7 @@ function TowerSelect({ towers, value, onChange }) {
         }}
         aria-haspopup="listbox"
         aria-expanded={open}
-        className="inline-flex min-h-10 items-center gap-2 rounded-full border border-imperia-primary bg-imperia-background-dark px-4 py-2 text-xs font-bold uppercase tracking-[.08em] text-white shadow-soft transition-colors duration-300 hover:bg-imperia-background-dark"
+        className="inline-flex min-h-12 items-center gap-2 rounded-full border border-imperia-primary bg-imperia-background-dark px-4 py-2 text-xs font-bold uppercase tracking-[.08em] text-white shadow-soft transition-colors duration-300 hover:bg-imperia-background-dark"
       >
         {current?.label}
         <svg
@@ -226,7 +233,7 @@ function TowerSelect({ towers, value, onChange }) {
                   setOpen(false);
                 }}
                 className={[
-                  "flex w-full items-center justify-between px-4 py-2.5 text-left text-xs font-bold uppercase tracking-[.06em] transition-colors duration-200",
+                  "flex min-h-12 w-full items-center justify-between px-4 py-2.5 text-left text-xs font-bold uppercase tracking-[.06em] transition-colors duration-200",
                   t.key === value
                     ? "bg-imperia-background-dark text-white"
                     : "text-imperia-black hover:bg-imperia-cream",
@@ -244,7 +251,7 @@ function TowerSelect({ towers, value, onChange }) {
 
 export default function FloorPlan({
   images = {}, // BẮT BUỘC — { A: "url-anh-sensa-a.jpg", B: "url-anh-sensa-b.jpg" }, tỉ lệ đúng 2444:1728
-  imageAlt = "Mặt bằng tầng điển hình",
+  imageAlt = t("floor.imageAlt"),
   towers = TOWERS,
   defaultTower = "A",
   legend = UNIT_TYPE_LEGEND,
@@ -261,7 +268,8 @@ export default function FloorPlan({
   const units = towerData.units;
   const zones = towerData.zones;
   const meta = towerData.meta;
-  const imageSrc = images[activeTower];
+  /* ảnh mặt bằng thay được trong CMS: images["floor.A"], images["floor.B"] */
+  const imageSrc = img(`floor.${activeTower}`, images[activeTower]);
   const breathOrder = activeTower === "B" ? BREATH_ORDER_B : BREATH_ORDER_A;
 
   useEffect(() => {
@@ -349,7 +357,9 @@ export default function FloorPlan({
   const showPanel = Boolean(activeUnit) || Boolean(hoverType);
   // Ưu tiên ảnh riêng theo mã căn; khi hover loại hình thì dùng ảnh chung.
   const activeLayoutImage = activeUnit
-    ? UNIT_LAYOUT_IMAGES[activeUnit.unit_code] || LAYOUT_IMAGES[activeUnit.type]
+    ? UNIT_FLOOR_LAYOUT_IMAGES[activeUnit.unit_code]?.[activeItem?.floor] ||
+      UNIT_LAYOUT_IMAGES[activeUnit.unit_code] ||
+      LAYOUT_IMAGES[activeUnit.type]
     : activeTypeKey
       ? LAYOUT_IMAGES[activeTypeKey]
       : null;
@@ -420,11 +430,9 @@ export default function FloorPlan({
       <div className="container-page">
         {/* Heading */}
         <div className="mb-10 max-w-4xl">
-          <h2 className="section-title">Mặt bằng tầng điển hình</h2>
+          <h2 className="section-title">{t("floor.title")}</h2>
           <p className="section-subtitle">
-            {meta.totalLayouts} căn hộ mỗi tầng, chia thành 5 loại hình. Di
-            chuột hoặc chạm vào từng căn trên mặt bằng để xem diện tích chi
-            tiết.
+            {t("floor.subtitle", { n: meta.totalLayouts })}
           </p>
         </div>
 
@@ -454,7 +462,7 @@ export default function FloorPlan({
                   onBlur={handleLegendLeave}
                   onClick={handleLegendClick(l.key)}
                   className={[
-                    "inline-flex items-center gap-2 rounded-full border px-4 py-2 text-xs font-bold uppercase tracking-[.08em] transition-all duration-300",
+                    "inline-flex min-h-12 items-center gap-2 rounded-full border px-4 py-2 text-xs font-bold uppercase tracking-[.08em] transition-all duration-300",
                     isActive
                       ? "border-imperia-primary bg-imperia-background-dark text-white shadow-soft"
                       : "border-imperia-primary/20 bg-white text-imperia-black",
@@ -485,6 +493,8 @@ export default function FloorPlan({
                 alt={`${imageAlt} — ${towerData.label}`}
                 width={VIEWBOX_WIDTH}
                 height={VIEWBOX_HEIGHT}
+                loading="lazy"
+                decoding="async"
                 role="button"
                 tabIndex={0}
                 onClick={() => setFloorPlanLightbox(true)}
@@ -776,7 +786,7 @@ export default function FloorPlan({
             type="button"
             aria-label="Đóng ảnh mặt bằng"
             onClick={() => setFloorPlanLightbox(false)}
-            className="absolute right-5 top-5 z-10 flex h-10 w-10 items-center justify-center rounded-full bg-imperia-white/10 text-2xl text-imperia-cream transition-colors hover:bg-imperia-white/20"
+            className="absolute right-5 top-5 z-10 flex h-12 w-12 items-center justify-center rounded-full bg-imperia-white/10 text-2xl text-imperia-cream transition-colors hover:bg-imperia-white/20"
           >
             ×
           </button>

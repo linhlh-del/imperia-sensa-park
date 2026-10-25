@@ -8,16 +8,83 @@ export const DEFAULT_IMAGE = `${SITE_URL}/assets/thumbnail.jpg`;
 export const LOGO_URL = `${SITE_URL}/assets/logo.png`;
 
 export const HOME_SEO = {
-  title:
-    "Imperia Sensa Park – Căn hộ MIK Group đường Võ Chí Công, Khu Đông TP.HCM",
+  title: "Imperia Sensa Park | Căn hộ MIK Group, Phước Long, TP.HCM",
   description:
-    "Imperia Sensa Park – dự án căn hộ I Series của MIK Group trên đường Võ Chí Công, Khu Đông TP.HCM. Hành trình sống đa trải nghiệm cho cư dân trẻ ưu tú, có gu.",
+    "Imperia Sensa Park của MIK Group tại phường Phước Long, TP.HCM: quy mô khoảng 5 ha, 2 tháp, 922 căn hộ và hơn 40 tiện ích. Đăng ký nhận thông tin dự án ngay!",
 };
+
+// Trang con theo nhóm từ khóa ngách. Dùng chung cho RouteSeo (client),
+// prerender + sitemap (Node). Title ≤ 60, description 150–160 ký tự (đã đếm).
+export const SUBPAGES = [
+  {
+    path: "/vi-tri",
+    name: "Vị trí",
+    title: "Vị trí Imperia Sensa Park | Võ Chí Công, Phước Long, TP.HCM",
+    description:
+      "Vị trí Imperia Sensa Park mặt tiền Võ Chí Công, phường Phước Long, TP.HCM: 5 phút đến Khu Công nghệ cao, 15 phút đến Thủ Thiêm. Nhận bản đồ vị trí ngay!",
+    h1: "Vị trí căn hộ Imperia Sensa Park – mặt tiền Võ Chí Công, phường Phước Long, TP.HCM",
+  },
+  {
+    path: "/tien-ich",
+    name: "Tiện ích",
+    title: "Tiện ích Imperia Sensa Park | 40+ tiện ích nội khu MIK Group",
+    description:
+      "Khám phá hơn 40 tiện ích nội khu Imperia Sensa Park: hồ bơi Aura Flow, gym, Himalaya Salt Room, Creative Studio, đường dạo ven hồ. Đăng ký tham quan ngay!",
+    h1: "Hệ thống tiện ích nội khu Imperia Sensa Park",
+  },
+  {
+    path: "/mat-bang",
+    name: "Mặt bằng",
+    title: "Mặt bằng Imperia Sensa Park | Studio, 2PN, 3PN, Duplex",
+    description:
+      "Mặt bằng tầng điển hình tháp Sensa A, Sensa B của Imperia Sensa Park: căn Studio, 1PN+, 2PN, 3PN, Duplex với diện tích GFA, NFA chi tiết. Nhận mặt bằng ngay!",
+    h1: "Mặt bằng chi tiết căn hộ Imperia Sensa Park – tháp Sensa A và Sensa B",
+  },
+  {
+    path: "/bang-gia",
+    name: "Bảng giá",
+    title: "Bảng giá Imperia Sensa Park | Tính trả góp căn hộ Phước Long",
+    description:
+      "Nhận bảng giá Imperia Sensa Park mới nhất và ước tính khoản vay, số tiền trả góp hàng tháng cho căn hộ Studio đến 3PN tại phường Phước Long, TP.HCM ngay.",
+    h1: "Bảng giá và công cụ tính trả góp căn hộ Imperia Sensa Park",
+  },
+];
 
 export function truncate(text = "", max = 158) {
   const clean = String(text).replace(/\s+/g, " ").trim();
   if (clean.length <= max) return clean;
   return `${clean.slice(0, max - 1).replace(/\s+\S*$/, "")}…`;
+}
+
+function normalizeDescription(text, min = 150, max = 158) {
+  const clean = String(text).replace(/\s+/g, " ").trim();
+  if (clean.length >= min) return truncate(clean, max);
+
+  const suffix = ` Tìm hiểu thêm về ${SITE_NAME}.`;
+  const prefixLimit = max - suffix.length - 1;
+  const prefix = clean
+    .slice(0, prefixLimit)
+    .replace(/\s+\S*$/, "")
+    .trim();
+  return `${prefix}…${suffix}`;
+}
+
+export function truncateTitle(text = "", max = 60) {
+  const clean = String(text).replace(/\s+/g, " ").trim();
+  if (clean.length <= max) return clean;
+
+  const brandSuffix = ` | ${SITE_NAME}`;
+  if (clean.endsWith(brandSuffix) && brandSuffix.length < max) {
+    const subject = clean.slice(0, -brandSuffix.length);
+    const subjectLimit = max - brandSuffix.length - 1;
+    const shortened = subject
+      .slice(0, subjectLimit)
+      .replace(/\s+\S*$/, "")
+      .trim();
+    return `${shortened}…${brandSuffix}`;
+  }
+
+  return `${clean.slice(0, max - 1).replace(/\s+\S*$/, "").trim()}…`;
 }
 
 export function toAbsoluteUrl(path = "/") {
@@ -90,9 +157,10 @@ export function applySeo({
   isHome = false,
 }) {
   const url = toAbsoluteUrl(path);
-  const desc = truncate(description);
+  const desc = normalizeDescription(description);
 
-  document.title = title;
+  const seoTitle = truncateTitle(title);
+  document.title = seoTitle;
   upsertMeta("name", "description", desc);
   upsertMeta(
     "name",
@@ -106,12 +174,12 @@ export function applySeo({
 
   upsertMeta("property", "og:type", type);
   upsertMeta("property", "og:url", url);
-  upsertMeta("property", "og:title", title);
+  upsertMeta("property", "og:title", seoTitle);
   upsertMeta("property", "og:description", desc);
   upsertMeta("property", "og:image", image);
   upsertMeta("property", "og:image:alt", title);
   upsertMeta("name", "twitter:card", "summary_large_image");
-  upsertMeta("name", "twitter:title", title);
+  upsertMeta("name", "twitter:title", seoTitle);
   upsertMeta("name", "twitter:description", desc);
   upsertMeta("name", "twitter:image", image);
 

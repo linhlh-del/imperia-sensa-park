@@ -1,6 +1,5 @@
-import { useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { Routes, Route, useLocation, useNavigate } from "react-router-dom";
-import { project } from "./data/project";
 import Header from "./components/layout/Header";
 import Footer from "./components/layout/Footer";
 import LeadPopup from "./components/ui/LeadPopup";
@@ -17,8 +16,55 @@ import ThankYouPage from "./components/sections/ThankYouPage";
 import FloatingButtons from "./components/ui/FloatingButton";
 import NewsPage from "./pages/NewsPage";
 import NewsDetailPage from "./pages/NewsDetailPage";
+import SubPage from "./pages/SubPage";
+import LoanCalculator from "./components/sections/LoanCalculator";
+import { SUBPAGES } from "./lib/seo";
 import RouteSeo from "./components/seo/RouteSeo";
 import ScrollEffects from "./components/effects/ScrollEffects";
+import { sendLead, validateLeadForm } from "./lib/lead";
+import { cmsTrack } from "./lib/cmsTracker";
+import { cmsLayout, site, t } from "./cms/content";
+import { HOME_SECTIONS } from "./cms/schema";
+
+/* id section (khớp HOME_SECTIONS trong src/cms/schema.js) → nội dung.
+   News tự lấy dữ liệu (newsService) — không truyền project.news (dữ liệu cũ, sai shape). */
+const SECTIONS = {
+  hero: ({ variant }) => <Hero data={site.hero} variant={variant} />,
+  "tong-quan": ({ variant }) => (
+    <Overview data={site.overview} variant={variant} />
+  ),
+  "vi-tri": ({ variant }) => (
+    <Location data={site.location} variant={variant} />
+  ),
+  "tien-ich": () => <Amenities items={site.amenities} />,
+  hinhanh: () => <FeaturedAmenities />,
+  "mat-bang": () => (
+    <FloorPlan
+      images={{
+        A: "/assets/layout/sensa-A.optimized.webp",
+        B: "/assets/layout/sensaB.optimized.webp",
+      }}
+    />
+  ),
+  "tin-tuc": () => <News />,
+  "tinh-tra-gop": ({ onOpenModal }) => <LoanCalculator onLead={onOpenModal} />,
+  "lien-he": ({ submitLead }) => <LeadSection onSubmit={submitLead} />,
+};
+
+/** Thứ tự section: theo CMS (section cố định giữ vị trí mặc định), bỏ section bị ẩn */
+function homeOrder() {
+  const ids = HOME_SECTIONS.map((s) => s.id);
+  const locked = new Set(
+    HOME_SECTIONS.filter((s) => s.locked).map((s) => s.id),
+  );
+  const movable = [
+    ...cmsLayout.order.filter((id) => ids.includes(id) && !locked.has(id)),
+    ...ids.filter((id) => !locked.has(id) && !cmsLayout.order.includes(id)),
+  ];
+  return ids
+    .map((id) => (locked.has(id) ? id : movable.shift()))
+    .filter((id) => locked.has(id) || !cmsLayout.hidden.has(id));
+}
 
 function HomePage({ onOpenModal, submitLead }) {
   const location = useLocation();
@@ -47,24 +93,19 @@ function HomePage({ onOpenModal, submitLead }) {
     <>
       <Header onLead={onOpenModal} />
       <main id="top">
-        <Hero data={project.hero} />
-        <Overview data={project.overview} />
-        <Location data={project.location} />
-        <Amenities items={project.amenities} />
-        {/* <ExclusiveServicesSection /> */}
-        {/* Không truyền `items` nữa — để News tự lấy dữ liệu (hiện là mock
-            trong newsService/newsData, sau này là API thật) thay vì dùng
-            project.news (dữ liệu cũ, sai shape, gây ra /tin-tuc/undefined). */}
-        <FeaturedAmenities />
-        <FloorPlan
-          images={{
-            A: "/assets/layout/sensa-A.png",
-            B: "/assets/layout/sensaB.png",
-          }}
-        />
-
-        <News />
-        <LeadSection onSubmit={submitLead} />
+        {/* Thứ tự / ẩn / biến thể section theo CMS (Bố cục section) */}
+        {homeOrder().map((id) => {
+          const render = SECTIONS[id];
+          return render ? (
+            <Fragment key={id}>
+              {render({
+                onOpenModal,
+                submitLead,
+                variant: cmsLayout.variants[id],
+              })}
+            </Fragment>
+          ) : null;
+        })}
       </main>
       <Footer />
     </>
@@ -112,8 +153,33 @@ export default function App() {
   }, [navigate, location.pathname]);
 
   const openLead = () => setLeadOpen(true);
-  const submitLead = (e) => {
+  // Mọi form đăng ký đều đi qua đây: chặn gửi nếu SĐT không hợp lệ,
+  // hợp lệ thì chuyển sang màn hình cảm ơn (thông báo gửi thành công).
+  const submitLead = async (e) => {
     e.preventDefault();
+    const form = e.currentTarget;
+    if (!validateLeadForm(form)) return;
+    const button = form.querySelector('[type="submit"]');
+    const errorBox = form.querySelector("[data-lead-error]");
+    const label = button?.textContent;
+    if (button) {
+      button.disabled = true;
+      button.textContent = t("form.sending");
+    }
+    const result = await sendLead(form);
+    if (button) {
+      button.disabled = false;
+      button.textContent = label;
+    }
+    if (!result.ok) {
+      if (errorBox) {
+        errorBox.textContent =
+          result.error || t("form.error", { phone: site.contact.hotline });
+        errorBox.hidden = false;
+      }
+      return;
+    }
+    cmsTrack("lead", form.dataset.formType);
     setLeadOpen(false);
     setSubmitted(true);
   };
@@ -131,13 +197,22 @@ export default function App() {
           path="/"
           element={<HomePage onOpenModal={openLead} submitLead={submitLead} />}
         />
+        {SUBPAGES.map(({ path }) => (
+          <Route
+            key={path}
+            path={path}
+            element={
+              <SubPage path={path} onLead={openLead} onSubmit={submitLead} />
+            }
+          />
+        ))}
         <Route path="/tin-tuc" element={<NewsPage onLead={openLead} />} />
         <Route
           path="/tin-tuc/:articleId"
           element={<NewsDetailPage onLead={openLead} />}
         />
       </Routes>
-      <FloatingButtons />
+      <FloatingButtons onLead={openLead} />
       <LeadPopup
         open={leadOpen}
         onClose={() => setLeadOpen(false)}

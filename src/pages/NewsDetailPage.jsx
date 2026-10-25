@@ -116,6 +116,7 @@ export default function NewsDetailPage({ onLead }) {
     <div className="min-h-screen bg-imperia-cream pt-[76px]">
       <Header onLead={onLead} />
 
+      <main>
       {/* Banner — KHÔNG dùng `relative` ở đây: position khác static sẽ tự
           động vẽ đè lên các phần tử static phía sau trong cùng stacking
           context, dù DOM order có sau đi nữa. */}
@@ -136,7 +137,7 @@ export default function NewsDetailPage({ onLead }) {
                 type="button"
                 onClick={handleFacebookShare}
                 aria-label="Chia sẻ lên Facebook"
-                className="flex h-11 w-11 items-center justify-center rounded-full border border-imperia-primary/25 text-imperia-primary transition hover:bg-imperia-background-dark hover:text-white"
+                className="flex h-12 w-12 items-center justify-center rounded-full border border-imperia-primary/25 text-imperia-primary transition hover:bg-imperia-background-dark hover:text-white"
               >
                 <svg
                   width="18"
@@ -155,7 +156,7 @@ export default function NewsDetailPage({ onLead }) {
                 type="button"
                 onClick={handleCopyLink}
                 aria-label="Sao chép liên kết"
-                className="flex h-11 w-11 items-center justify-center rounded-full border border-imperia-primary/25 text-imperia-primary transition hover:bg-imperia-background-dark hover:text-white"
+                className="flex h-12 w-12 items-center justify-center rounded-full border border-imperia-primary/25 text-imperia-primary transition hover:bg-imperia-background-dark hover:text-white"
               >
                 <svg
                   width="18"
@@ -213,7 +214,7 @@ export default function NewsDetailPage({ onLead }) {
                         <div className="border border-imperia-primary/10">
                           <img
                             src={block.src}
-                            alt={block.caption || ""}
+                            alt={block.caption || article.title}
                             loading="lazy"
                             className="w-full object-cover"
                           />
@@ -287,7 +288,7 @@ export default function NewsDetailPage({ onLead }) {
         <section className="border-t border-imperia-primary/10 bg-white py-16 md:py-20">
           <div className="container-page">
             <div className="mx-auto mb-10 max-w-xl text-center">
-              <h3 className="section-title">Bài viết liên quan</h3>
+              <h2 className="section-title">Bài viết liên quan</h2>
             </div>
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {related.map((item) => (
@@ -307,14 +308,14 @@ export default function NewsDetailPage({ onLead }) {
                     />
                   </Link>
                   <div className="flex flex-1 flex-col p-5">
-                    <h4 className="font-display text-base font-semibold text-imperia-primary">
+                    <h3 className="font-display text-base font-semibold text-imperia-primary">
                       <Link
                         to={getHref(item.id)}
                         className="hover:text-imperia-secondary"
                       >
                         {item.title}
                       </Link>
-                    </h4>
+                    </h3>
                     <div className="mt-auto flex justify-between pt-4 text-[11px] uppercase tracking-wide text-imperia-black/40">
                       <span>{item.tag}</span>
                       <span>{formatDate(item.published_at)}</span>
@@ -326,6 +327,7 @@ export default function NewsDetailPage({ onLead }) {
           </div>
         </section>
       )}
+      </main>
 
       <Footer />
     </div>

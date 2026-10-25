@@ -14,12 +14,14 @@ import { fileURLToPath, pathToFileURL } from "node:url";
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const dist = path.join(root, "dist");
 
-const { SITE_URL } = await import(pathToFileURL(path.join(root, "src/lib/seo.js")).href);
+const { SITE_URL, SUBPAGES } = await import(pathToFileURL(path.join(root, "src/lib/seo.js")).href);
 const { default: NEWS } = await import(pathToFileURL(path.join(root, "src/data/newsData.js")).href);
+const { buildCmsSchema } = await import(pathToFileURL(path.join(root, "src/cms/schema.js")).href);
 
 const routes = [
   { url: "/", ready: "document.querySelector('#tin-tuc article')" },
-  { url: "/tin-tuc", ready: "document.querySelectorAll('main article').length > 0" },
+  ...SUBPAGES.map((p) => ({ url: p.path, ready: "document.querySelector('main h1')" })),
+  { url: "/tin-tuc", ready: "document.querySelector('h1') && document.querySelector('article')" },
   ...NEWS.map((a) => ({
     url: `/tin-tuc/${a.id}`,
     ready: "document.querySelector('article h1')",
@@ -43,6 +45,7 @@ const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
 ${[
   urlEntry(`${SITE_URL}/`, today, "weekly", "1.0", [`${SITE_URL}/assets/thumbnail.jpg`]),
+  ...SUBPAGES.map((p) => urlEntry(`${SITE_URL}${p.path}`, today, "weekly", "0.9")),
   urlEntry(`${SITE_URL}/tin-tuc`, newestDate, "daily", "0.8"),
   ...NEWS.map((a) =>
     urlEntry(`${SITE_URL}/tin-tuc/${a.id}`, a.published_at, "monthly", "0.7", a.image_url ? [a.image_url] : []),
@@ -52,7 +55,11 @@ ${[
 `;
 await fs.mkdir(dist, { recursive: true });
 await fs.writeFile(path.join(dist, "sitemap.xml"), sitemap);
-console.log(`[seo] sitemap.xml: ${NEWS.length + 2} URL`);
+console.log(`[seo] sitemap.xml: ${NEWS.length + SUBPAGES.length + 2} URL`);
+
+/* ---------- 1b) schema cho CMS (sensa-park-cms đọc file này) ---------- */
+await fs.writeFile(path.join(dist, "cms-schema.json"), JSON.stringify(buildCmsSchema(), null, 2));
+console.log("[cms] cms-schema.json");
 
 /* ---------- 2) prerender ---------- */
 let puppeteer;
@@ -106,8 +113,10 @@ try {
     await page.waitForFunction(route.ready, { timeout: 30000 });
     await new Promise((r) => setTimeout(r, 300)); // chờ useEffect RouteSeo cập nhật <head>
     let html = await page.content();
+    /* bỏ thẻ script do snippet GA4 / Pixel / TikTok tự chèn lúc prerender (trình duyệt sẽ tự chèn lại khi chạy) */
+    html = html.replace(/<script[^>]+src="https:\/\/(?:www\.googletagmanager\.com|connect\.facebook\.net|analytics\.tiktok\.com)[^"]*"[^>]*><\/script>/g, "");
     if (route.url !== "/") {
-      html = html.replace(/<link[^>]*hero2\.png[^>]*>\s*/g, ""); // preload hero chỉ cần ở trang chủ
+      html = html.replace(/<link[^>]*hero2\.[^>]*>\s*/g, ""); // preload hero chỉ cần ở trang chủ
     }
     results.push({ url: route.url, html });
     await page.close();

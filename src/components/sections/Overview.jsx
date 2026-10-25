@@ -1,8 +1,10 @@
 import Button from "../ui/Button";
 import SectionHeading from "../ui/SectionHeading";
 import CountUp from "../effects/CountUp";
+import { img, t } from "../../cms/content";
 
-export default function Overview({ data }) {
+/* variant (CMS): "image-right" (mặc định) | "image-left" */
+export default function Overview({ data, variant = "image-right" }) {
   return (
     <section
       id="tong-quan"
@@ -10,8 +12,10 @@ export default function Overview({ data }) {
       className="section-y bg-imperia-cream pt-[calc(var(--section-y)+76px)]"
     >
       <div className="container-page">
-        <SectionHeading title={data.title} />
-        <div className="grid items-center gap-12 lg:grid-cols-[0.68fr_1.32fr]">
+        <SectionHeading title={data.title} semanticTitle={t("overview.seo")} />
+        <div
+          className={`grid items-center gap-12 ${variant === "image-left" ? "lg:grid-cols-[1.32fr_0.68fr] [&>img]:lg:order-first" : "lg:grid-cols-[0.68fr_1.32fr]"}`}
+        >
           <div>
             <p className="section-subtitle !mt-0 mb-7">{data.subtitle}</p>
             <ul className="mb-8 grid gap-4">
@@ -24,21 +28,18 @@ export default function Overview({ data }) {
                 </li>
               ))}
             </ul>
-            <Button href="#tien-ich">Khám phá tiện ích →</Button>
+            <Button href="#tien-ich">{t("overview.cta")}</Button>
           </div>
           <img
-            src="/assets/overview.jpg"
-            alt="Không gian Imperia Sensa Park"
+            src={img("overview.image", "/assets/overview.optimized.webp")}
+            alt={t("overview.imageAlt")}
+            loading="lazy"
+            decoding="async"
             className="aspect-[1619/972] w-full rounded-[28px] border border-imperia-primary/10 object-contain shadow-soft"
           />
         </div>
         <div className="mt-16 grid grid-cols-2 md:grid-cols-4">
-          {[
-            ["05", "LOẠI HÌNH CĂN HỘ"],
-            ["28%", "MẬT ĐỘ XÂY DỰNG"],
-            ["93 CĂN", "NHÀ PHỐ & BIỆT THỰ"],
-            ["QUÝ IV/ 2028", "DỰ KIẾN BÀN GIAO"],
-          ].map(([n, l]) => (
+          {data.facts.map(([n, l]) => (
             <div key={l} className="border border-imperia-primary/10 px-4 py-7">
               <strong className="font-display text-3xl text-imperia-primary">
                 <CountUp value={n} />

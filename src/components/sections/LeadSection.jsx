@@ -1,14 +1,8 @@
 import Button from "../ui/Button";
 import SectionHeading from "../ui/SectionHeading";
-
-const HIGHLIGHTS = [
-  "Brochure thông tin chi tiết dự án",
-  "Bản đồ vị trí & quy hoạch hạ tầng dự án",
-  "Mặt bằng tổng thể & vị trí từng căn",
-  "Bảng tính giá gốc & dòng tiền",
-  "Chính sách bán hàng & hỗ trợ lãi suất",
-  "Hồ sơ pháp lý: Chấp thuận ĐT, GPXD, 1/500",
-];
+import { clearPhoneError } from "../../lib/lead";
+import FormExtras from "../ui/FormExtras";
+import { img, site, t, tList } from "../../cms/content";
 
 const CheckIcon = () => (
   <svg
@@ -93,10 +87,14 @@ export default function LeadSection({ onSubmit }) {
       data-section="lead-form"
       className="section-y relative overflow-hidden bg-imperia-beige"
     >
-      <div
-        className="pointer-events-none absolute inset-0 bg-cover bg-center"
-        style={{ backgroundImage: "url('/assets/lead-bg.jpg')" }}
+      {/* ảnh nền (đổi được trong CMS), tải lười vì nằm cuối trang */}
+      <img
+        src={img("lead.background", "/assets/lead-bg.optimized.webp")}
+        alt=""
         aria-hidden="true"
+        loading="lazy"
+        decoding="async"
+        className="pointer-events-none absolute inset-0 h-full w-full object-cover"
       />
       <div
         className="pointer-events-none absolute inset-0 bg-white/25"
@@ -106,12 +104,12 @@ export default function LeadSection({ onSubmit }) {
         <div className="grid gap-0 overflow-hidden rounded-[28px] bg-white/50 shadow-soft backdrop-blur-md lg:grid-cols-[60%_40%]">
           <div className="p-6 md:p-8">
             <SectionHeading
-              title="Nhận thông tin dự án."
-              subtitle="Để lại thông tin để nhận bảng giá, chính sách ưu đãi và được chuyên viên tư vấn hỗ trợ nhanh chóng."
+              title={t("lead.title")}
+              subtitle={t("lead.subtitle")}
               className="[&_.section-subtitle]:!text-[#34362f]"
             />
             <ul className="mb-8 grid gap-3 text-sm font-medium text-[#34362f]">
-              {HIGHLIGHTS.map((text) => (
+              {tList("lead.highlights").map((text) => (
                 <li
                   key={text}
                   className="flex items-start gap-2.5 leading-snug"
@@ -124,44 +122,55 @@ export default function LeadSection({ onSubmit }) {
               ))}
             </ul>
             <strong className="font-display text-3xl text-imperia-primary">
-              Hotline: 093 448 3138
+              Hotline: {site.contact.hotline}
             </strong>
           </div>
           <form
             onSubmit={onSubmit}
-            className="grid gap-3 bg-white/35 p-7 md:p-9 lg:my-5 lg:mr-5 lg:w-[88%] lg:justify-self-end lg:rounded-[24px]"
+            data-form-type="register"
+            className="relative grid gap-3 bg-white/35 p-7 md:p-9 lg:my-5 lg:mr-5 lg:w-[88%] lg:justify-self-end lg:rounded-[24px]"
           >
+            {/* Form 3 trường: Họ tên, SĐT, nút gửi */}
+            <label htmlFor="lead-name" className="sr-only">
+              Họ và tên
+            </label>
             <input
+              id="lead-name"
+              name="name"
               required
-              className="rounded-xl border border-imperia-primary/15 bg-imperia-cream px-4 py-3 text-sm outline-none focus:border-imperia-primary"
+              autoComplete="name"
+              className="min-h-12 rounded-xl border border-imperia-primary/15 bg-imperia-cream px-4 py-3 text-sm outline-none focus:border-imperia-primary"
               placeholder="Họ và tên *"
             />
+            <label htmlFor="lead-phone" className="sr-only">
+              Số điện thoại
+            </label>
             <input
+              id="lead-phone"
+              name="phone"
               required
               type="tel"
-              className="rounded-xl border border-imperia-primary/15 bg-imperia-cream px-4 py-3 text-sm outline-none focus:border-imperia-primary"
+              inputMode="tel"
+              autoComplete="tel"
+              onInput={clearPhoneError}
+              className="min-h-12 rounded-xl border border-imperia-primary/15 bg-imperia-cream px-4 py-3 text-sm outline-none focus:border-imperia-primary"
               placeholder="Số điện thoại *"
             />
-            <select className="rounded-xl border border-imperia-primary/15 bg-imperia-cream px-4 py-3 text-sm outline-none">
-              <option>Nhu cầu quan tâm</option>
-              <option>Nhận bảng giá</option>
-              <option>Chọn căn hộ</option>
-              <option>Xem mặt bằng</option>
-            </select>
 
-            <Button type="submit">Đăng ký nhận thông tin</Button>
+            <FormExtras />
+            <Button type="submit">{t("lead.submit")}</Button>
             <div className="mt-0.5 flex flex-col gap-2 rounded-lg border border-imperia-primary/20 bg-white/60 p-3 text-left">
               <p className="flex min-w-0 items-center gap-2 text-[0.8125rem] text-imperia-black/85">
                 <span className="flex-shrink-0 text-imperia-primary">
                   <ShieldIcon />
                 </span>
-                Tuyệt đối <strong>bảo mật</strong> thông tin cá nhân.
+                {t("lead.privacy")}
               </p>
               <p className="flex min-w-0 items-center gap-2 text-[0.8125rem] text-imperia-black/85">
                 <span className="flex-shrink-0 text-imperia-primary">
                   <HeadsetIcon />
                 </span>
-                <strong>Giải đáp mọi thắc mắc</strong> của khách hàng.
+                {t("lead.support")}
               </p>
             </div>
           </form>

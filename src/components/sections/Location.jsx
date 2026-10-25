@@ -1,8 +1,10 @@
 import Button from "../ui/Button";
 import SectionHeading from "../ui/SectionHeading";
 import CountUp from "../effects/CountUp";
+import { img, t } from "../../cms/content";
 
-export default function Location({ data }) {
+/* variant (CMS): "map-right" (mặc định) | "map-left" */
+export default function Location({ data, variant = "map-right" }) {
   return (
     <section
       id="vi-tri"
@@ -10,7 +12,11 @@ export default function Location({ data }) {
       className="section-y bg-imperia-background-dark text-white"
     >
       <div className="container-page">
-        <SectionHeading light title={data.title} />
+        <SectionHeading
+          light
+          title={data.title}
+          semanticTitle={t("location.seo")}
+        />
         <div className="grid items-center gap-12 lg:grid-cols-2">
           <div>
             <p className="section-subtitle section-subtitle-light !mt-0 mb-7">
@@ -27,13 +33,19 @@ export default function Location({ data }) {
               ))}
             </div>
             <Button href="#lien-he" variant="light">
-              Xem vị trí & tư vấn
+              {t("location.cta")}
             </Button>
           </div>
-          <div className="relative aspect-[1872/1248] overflow-hidden rounded-[28px] border border-white/10">
+          <div
+            className={`relative aspect-[1872/1248] overflow-hidden rounded-[28px] border border-white/10 ${variant === "map-left" ? "lg:order-first" : ""}`}
+          >
             <img
-              src="/assets/map.jpg"
-              alt="Bản đồ vị trí Imperia Sensa Park"
+              src={img("location.map", "/assets/map.optimized.webp")}
+              alt={t("location.imageAlt")}
+              width="1872"
+              height="1248"
+              loading="lazy"
+              decoding="async"
               className="absolute inset-0 h-full w-full object-contain"
             />
           </div>

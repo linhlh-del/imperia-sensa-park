@@ -1,6 +1,7 @@
 // FeaturedAmenities.jsx
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { FILTERS, GALLERY_ITEMS } from "../../data/dataAmenities";
+import { t } from "../../cms/content";
 
 function ChevronIcon({ direction = "left", className = "" }) {
   return (
@@ -104,13 +105,16 @@ export default function FeaturedAmenities() {
   const activeLightboxItem = lightbox != null ? gallery[lightbox.index] : null;
 
   return (
-    <section id="hinhanh" className="bg-imperia-background-dark py-16 font-body">
+    <section
+      id="hinhanh"
+      className="section-y bg-imperia-background-dark font-body"
+    >
       <div className="mx-auto w-full max-w-[1400px] px-5">
         {/* HEADER */}
         <div className="mb-8 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
           <div className="text-left">
             <h2 className="section-title section-title-light">
-              Tiện ích nổi bật
+              {t("featured.title")}
             </h2>
             <div className="mt-4 h-[3px] w-16 rounded-full bg-imperia-accent" />
           </div>
@@ -123,7 +127,7 @@ export default function FeaturedAmenities() {
               key={filter.key}
               type="button"
               onClick={() => handleCategoryChange(filter.key)}
-              className={`whitespace-nowrap rounded-full px-5 py-2.5 text-sm font-semibold transition-all duration-300 max-[576px]:px-4 max-[576px]:py-2 max-[576px]:text-[0.8rem] ${
+              className={`min-h-12 whitespace-nowrap rounded-full px-5 py-2.5 text-sm font-semibold transition-all duration-300 max-[576px]:px-4 max-[576px]:py-2 max-[576px]:text-[0.8rem] ${
                 activeCategory === filter.key
                   ? "bg-gradient-to-r from-imperia-background-dark to-imperia-background-light text-imperia-dark shadow-soft"
                   : "border border-imperia-light/30 bg-imperia-white/5 text-imperia-cream/70 hover:border-imperia-accent hover:text-imperia-accent"
@@ -198,7 +202,7 @@ export default function FeaturedAmenities() {
             type="button"
             onClick={closeLightbox}
             aria-label="Đóng"
-            className="absolute right-5 top-5 flex h-10 w-10 items-center justify-center rounded-full bg-imperia-white/10 text-imperia-cream transition-colors duration-200 hover:bg-imperia-white/20"
+            className="absolute right-5 top-5 flex h-12 w-12 items-center justify-center rounded-full bg-imperia-white/10 text-imperia-cream transition-colors duration-200 hover:bg-imperia-white/20"
           >
             <CloseIcon />
           </button>
@@ -210,7 +214,7 @@ export default function FeaturedAmenities() {
               showPrev();
             }}
             aria-label="Ảnh trước"
-            className="absolute left-3 top-1/2 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full bg-imperia-white/10 text-imperia-cream transition-colors duration-200 hover:bg-imperia-white/20 sm:left-6"
+            className="absolute left-3 top-1/2 flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full bg-imperia-white/10 text-imperia-cream transition-colors duration-200 hover:bg-imperia-white/20 sm:left-6"
           >
             <ChevronIcon direction="left" />
           </button>
@@ -239,7 +243,7 @@ export default function FeaturedAmenities() {
               showNext();
             }}
             aria-label="Ảnh tiếp theo"
-            className="absolute right-3 top-1/2 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full bg-imperia-white/10 text-imperia-cream transition-colors duration-200 hover:bg-imperia-white/20 sm:right-6"
+            className="absolute right-3 top-1/2 flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full bg-imperia-white/10 text-imperia-cream transition-colors duration-200 hover:bg-imperia-white/20 sm:right-6"
           >
             <ChevronIcon direction="right" />
           </button>

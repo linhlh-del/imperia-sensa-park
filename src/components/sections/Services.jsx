@@ -99,9 +99,7 @@ export default function ExclusiveServicesSection() {
             <span className="whitespace-nowrap text-[11px] font-medium uppercase tracking-[0.25em] text-imperia-primary/55 [writing-mode:vertical-rl] rotate-180">
               The Luxe
             </span>
-            <span className="mt-auto pb-1 text-[12px] font-semibold text-imperia-primary/70">
-          
-            </span>
+            <span className="mt-auto pb-1 text-[12px] font-semibold text-imperia-primary/70"></span>
           </div>
 
           <div className="grid flex-1 grid-cols-1 gap-x-8 gap-y-14 sm:grid-cols-2 lg:grid-cols-4">

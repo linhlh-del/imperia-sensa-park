@@ -1,3 +1,7 @@
+import { Link } from "react-router-dom";
+import { SUBPAGES } from "../../lib/seo";
+import { site } from "../../cms/content";
+
 export default function Footer() {
   return (
     <footer className="bg-imperia-background-dark text-white">
@@ -6,20 +10,33 @@ export default function Footer() {
           <div className="font-display text-xl tracking-widest">
             IMPERIA <span className="text-imperia-accent">SENSA PARK</span>
           </div>
+          {/* Địa chỉ thống nhất với schema (index.html) và popup đăng ký */}
+          <address className="mt-4 max-w-md text-sm not-italic leading-6 text-white/60">
+            {site.contact.address}.
+            <br />
+            Hotline:{" "}
+            <a
+              href={site.contact.hotlineHref}
+              className="normal-case text-imperia-accent"
+            >
+              {site.contact.hotline}
+            </a>
+          </address>
         </div>
         <div>
-          <h4 className="font-bold">Dự án</h4>
+          <h2 className="font-bold">Dự án</h2>
           <div className="mt-4 grid gap-2 text-sm text-white/60">
-            <a href="#tong-quan">Tổng quan</a>
-            <a href="#vi-tri">Vị trí</a>
-            <a href="#tien-ich">Tiện ích</a>
-            <a href="#mat-bang">Mặt bằng</a>
+            {SUBPAGES.map((p) => (
+              <Link key={p.path} to={p.path}>
+                {p.name}
+              </Link>
+            ))}
           </div>
         </div>
         <div>
-          <h4 className="font-bold">Liên hệ</h4>
+          <h2 className="font-bold">Liên hệ</h2>
           <div className="mt-4 grid gap-2 text-sm text-white/60">
-            <a href="#tin-tuc">Tin tức</a>
+            <Link to="/tin-tuc">Tin tức</Link>
             <a href="#lien-he">Nhận bảng giá</a>
           </div>
         </div>

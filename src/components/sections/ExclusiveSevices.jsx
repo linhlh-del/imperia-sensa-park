@@ -10,42 +10,42 @@ const SERVICES = [
     title: "VIP CONCIERGE SERVICE",
     vi: "Ngay từ khoảnh khắc bước vào sảnh đón, đội ngũ nhân viên cùng dịch vụ xe đẩy đặc trưng sẽ mang đến sự thoải mái trọn vẹn cho từng cư dân.",
     en: "From the very first moment of arrival, residents are welcomed with personalised comfort through signature valet trolley service and a dedicated hospitality team.",
-    image: "/assets/services/1.jpg",
+    image: "/assets/services/1.optimized.webp",
   },
   {
     order: 2,
     title: "PREMIUM HOME-CARE SERVICE",
     vi: "Dịch vụ dọn dẹp nhà cửa cá nhân hóa, mang đến một không gian sống tận hưởng và thoải mái.",
     en: "Tailored housekeeping services ensure a pristine, relaxing living space designed for effortless enjoyment.",
-    image: "/assets/services/2.jpg",
+    image: "/assets/services/2.optimized.webp",
   },
   {
     order: 3,
     title: "EXCLUSIVE GREENERY-CARE SERVICE",
     vi: "Dịch vụ chăm sóc cây xanh chuyên nghiệp, duy trì không gian trong lành.",
     en: "Professional landscape care maintains a fresh, verdant environment throughout the property.",
-    image: "/assets/services/3.jpg",
+    image: "/assets/services/3.optimized.webp",
   },
   {
     order: 4,
     title: "ELITE PROPERTY LEASING & MANAGEMENT",
     vi: "Giải pháp quản lý và cho thuê căn hộ cao cấp, đảm bảo sự vận hành chuyên nghiệp.",
     en: "Premium property management and leasing solutions ensure seamless, professional operation of every residence.",
-    image: "/assets/services/4.jpg",
+    image: "/assets/services/4.optimized.webp",
   },
   {
     order: 5,
     title: "TECHNICAL SUPPORT",
     vi: "Xử lý nhanh chóng các sự cố nhỏ trong căn hộ, đảm bảo mọi thiết bị luôn vận hành ổn định.",
     en: "Quickly handle minor problems in the apartment, ensuring that all equipment always operates stably.",
-    image: "/assets/services/5.png",
+    image: "/assets/services/5.optimized.webp",
   },
   {
     order: 6,
     title: "PREMIUM FACILITY RESERVATION",
     vi: "Đặt chỗ tiện ích cao cấp: Trải nghiệm trọn vẹn những tiện ích đẳng cấp ngay tại tòa nhà với dịch vụ đặt chỗ nhanh chóng, thuận tiện.",
     en: "Fully experience high-class facilities in the building with a fast and convenient reservation service.",
-    image: "/assets/services/6.png",
+    image: "/assets/services/6.optimized.webp",
   },
 ];
 
@@ -99,9 +99,7 @@ export default function ExclusiveServicesSection() {
             <span className="whitespace-nowrap text-[11px] font-medium uppercase tracking-[0.25em] text-imperia-primary/55 [writing-mode:vertical-rl] rotate-180">
               The Luxe
             </span>
-            <span className="mt-auto pb-1 text-[12px] font-semibold text-imperia-primary/70">
-          
-            </span>
+            <span className="mt-auto pb-1 text-[12px] font-semibold text-imperia-primary/70"></span>
           </div>
 
           <div className="grid flex-1 grid-cols-1 gap-x-8 gap-y-14 sm:grid-cols-2 lg:grid-cols-4">

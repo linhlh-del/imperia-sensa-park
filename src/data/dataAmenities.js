@@ -6,7 +6,7 @@ export const FILTERS = [
 export const GALLERY_ITEMS = [
   ...Array.from({ length: 5 }, (_, index) => ({
     category: "canhquan",
-    src: `/assets/amenities/canhquan/${index + 1}.webp`,
+    src: `/assets/amenities/canhquan/${index + 1}.optimized.webp`,
     alt: `Cảnh quan Imperia Sensa Park - Hình ảnh ${index + 1}`,
     label: `Cảnh quan xanh và thư giãn ${index + 1}`,
   })),
@@ -33,7 +33,7 @@ export const GALLERY_ITEMS = [
     const label = filename.replace(/\.webp$/i, "");
     return {
       category: "tienich",
-      src: `/assets/amenities/tienich/${encodeURIComponent(filename)}`,
+      src: `/assets/amenities/tienich/${encodeURIComponent(filename.replace(/\.webp$/i, ".optimized.webp"))}`,
       alt: `${label} - Tiện ích Imperia Sensa Park`,
       label,
     };

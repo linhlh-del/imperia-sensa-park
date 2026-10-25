@@ -10,9 +10,12 @@ import {
   LOGO_URL,
   SITE_NAME,
   SITE_URL,
+  SUBPAGES,
   applySeo,
   toAbsoluteUrl,
 } from "../../lib/seo";
+import { cmsSeo } from "../../cms/content";
+import { cmsPageView } from "../../lib/cmsTracker";
 
 const toIso = (date) => (date ? `${date}T08:00:00+07:00` : undefined);
 
@@ -40,8 +43,48 @@ export default function RouteSeo() {
   useEffect(() => {
     const path = pathname.length > 1 ? pathname.replace(/\/+$/, "") : pathname;
 
+    cmsPageView(path);
+    /* title / description / ảnh chia sẻ chỉnh trong CMS (SEO từng trang) */
+    const o = cmsSeo(path);
+    const seoOverride = {
+      ...(o.title && { title: o.title }),
+      ...(o.description && { description: o.description }),
+      ...(o.ogImage && { image: toAbsoluteUrl(o.ogImage) }),
+    };
+
     if (path === "/") {
-      applySeo({ ...HOME_SEO, path: "/", isHome: true });
+      applySeo({ ...HOME_SEO, ...seoOverride, path: "/", isHome: true });
+      return;
+    }
+
+    const subpage = SUBPAGES.find((p) => p.path === path);
+    if (subpage) {
+      const url = toAbsoluteUrl(path);
+      applySeo({
+        title: subpage.title,
+        description: subpage.description,
+        ...seoOverride,
+        path,
+        jsonLd: {
+          "@context": "https://schema.org",
+          "@graph": [
+            {
+              "@type": "WebPage",
+              "@id": `${url}#page`,
+              url,
+              name: subpage.title,
+              description: subpage.description,
+              inLanguage: "vi-VN",
+              isPartOf: { "@id": `${SITE_URL}/#website` },
+              about: { "@id": `${SITE_URL}/#project` },
+            },
+            breadcrumb([
+              ["Trang chủ", "/"],
+              [subpage.name, path],
+            ]),
+          ],
+        },
+      });
       return;
     }
 
@@ -63,7 +106,11 @@ export default function RouteSeo() {
               url: toAbsoluteUrl(path),
               name: `Tin tức & sự kiện ${SITE_NAME}`,
               inLanguage: "vi-VN",
-              isPartOf: { "@type": "WebSite", name: SITE_NAME, url: `${SITE_URL}/` },
+              isPartOf: {
+                "@type": "WebSite",
+                name: SITE_NAME,
+                url: `${SITE_URL}/`,
+              },
               mainEntity: {
                 "@type": "ItemList",
                 itemListElement: sorted.map((a, i) => ({
