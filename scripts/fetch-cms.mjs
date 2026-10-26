@@ -1,6 +1,6 @@
 /* ============================================================
    LẤY NỘI DUNG CMS (bản đã đăng) TRƯỚC KHI BUILD
-   1. Gọi Supabase RPC get_published_content(p) bằng anon key (chỉ đọc bản đã đăng).
+   1. Gọi Supabase RPC cms_get_published_content(p) bằng anon key (chỉ đọc bản đã đăng).
    2. Tải mọi ảnh CMS (Supabase Storage) về public/assets/cms/ (ảnh đã được CMS nén WebP khi tải lên) —
       ảnh phục vụ từ domain website, không phụ thuộc Supabase lúc khách xem trang.
    3. Ghi src/generated/cms-content.json (đường dẫn ảnh đã đổi sang /assets/cms/…).
@@ -43,7 +43,7 @@ if (!url || !key) done('Chưa cấu hình CMS_SUPABASE_URL / CMS_SUPABASE_ANON_K
 
 let content;
 try {
-  const res = await fetch(`${url}/rest/v1/rpc/get_published_content`, {
+  const res = await fetch(`${url}/rest/v1/rpc/cms_get_published_content`, {
     method: 'POST',
     headers: { apikey: key, Authorization: `Bearer ${key}`, 'Content-Type': 'application/json' },
     body: JSON.stringify({ p: project }),
