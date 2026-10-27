@@ -7,3 +7,4 @@ dist/
 # nội dung CMS tải lúc build (scripts/fetch-cms.mjs)
 src/generated/cms-content.json
 public/assets/cms/
+public/cms-status.json

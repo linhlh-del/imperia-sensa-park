@@ -3,7 +3,9 @@
    1. Gọi Supabase RPC cms_get_published_content(p) bằng anon key (chỉ đọc bản đã đăng).
    2. Tải mọi ảnh CMS (Supabase Storage) về public/assets/cms/ (ảnh đã được CMS nén WebP khi tải lên) —
       ảnh phục vụ từ domain website, không phụ thuộc Supabase lúc khách xem trang.
-   3. Ghi src/generated/cms-content.json (đường dẫn ảnh đã đổi sang /assets/cms/…).
+   3. Ghi public/cms-status.json — CMS đọc để biết website đang chạy đúng bản đã đăng chưa
+      (so mã băm nội dung), build có cấu hình CMS không, build lúc nào, commit nào.
+   4. Ghi src/generated/cms-content.json (đường dẫn ảnh đã đổi sang /assets/cms/…).
    Chưa cấu hình biến môi trường → dùng nội dung mặc định trong code.
    ĐÃ cấu hình mà lỗi mạng / Supabase → DỪNG build (exit 1) để Vercel giữ bản đang chạy,
    tránh đưa lên website bản thiếu nội dung CMS.
@@ -18,6 +20,7 @@ import { fileURLToPath } from 'node:url';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const OUT = join(root, 'src/generated/cms-content.json');
+const STATUS = join(root, 'public/cms-status.json');
 const IMG_DIR = join(root, 'public/assets/cms');
 const PUBLIC_PREFIX = '/assets/cms/';
 
@@ -25,8 +28,23 @@ const url = (process.env.CMS_SUPABASE_URL || process.env.VITE_SUPABASE_URL || ''
 const key = process.env.CMS_SUPABASE_ANON_KEY || process.env.VITE_SUPABASE_ANON_KEY || '';
 const project = process.env.CMS_PROJECT_ID || 'sensa-park';
 
+/** Trạng thái build → public/cms-status.json (Vite chép sang dist) */
+function writeStatus(extra) {
+  mkdirSync(dirname(STATUS), { recursive: true });
+  writeFileSync(STATUS, JSON.stringify({
+    project,
+    built_at: new Date().toISOString(),
+    commit: (process.env.VERCEL_GIT_COMMIT_SHA || '').slice(0, 7) || undefined,
+    ...extra,
+  }, null, 2) + '\n');
+}
+
+/* mã băm nội dung đã đăng — CMS tính giống hệt trên cột published để so khớp */
+const contentHash = (obj) => createHash('sha256').update(JSON.stringify(obj)).digest('hex').slice(0, 16);
+
 function done(msg) {
   console.log(`[cms] ${msg}`);
+  writeStatus({ configured: false, message: msg });
   if (!existsSync(OUT)) {
     mkdirSync(dirname(OUT), { recursive: true });
     writeFileSync(OUT, '{}\n');
@@ -39,7 +57,11 @@ function fail(msg) {
   process.exit(1);
 }
 
-if (!url || !key) done('Chưa cấu hình CMS_SUPABASE_URL / CMS_SUPABASE_ANON_KEY — dùng nội dung mặc định trong code.');
+if (!url || !key) {
+  /* trên Vercel mà thiếu biến → gần như chắc chắn là quên cấu hình: tô đỏ log cho dễ thấy */
+  if (process.env.VERCEL) console.error('::error::[cms] Build trên Vercel nhưng thiếu CMS_SUPABASE_URL / CMS_SUPABASE_ANON_KEY (Settings → Environment Variables, môi trường Production) — website KHÔNG nhận nội dung CMS.');
+  done('Chưa cấu hình CMS_SUPABASE_URL / CMS_SUPABASE_ANON_KEY — dùng nội dung mặc định trong code.');
+}
 
 let content;
 try {
@@ -54,6 +76,8 @@ try {
 } catch (e) {
   fail(`Không lấy được nội dung CMS (${e.message})`);
 }
+
+const hash = contentHash(content); // tính TRƯỚC khi đổi đường dẫn ảnh
 
 /* ---------- tải ảnh về ---------- */
 mkdirSync(IMG_DIR, { recursive: true });
@@ -90,4 +114,11 @@ try {
 
 mkdirSync(dirname(OUT), { recursive: true });
 writeFileSync(OUT, JSON.stringify(content, null, 2) + '\n');
+writeStatus({
+  configured: true,
+  content_hash: hash,
+  texts: Object.keys(content.texts || {}).length,
+  images: count,
+  empty: Object.keys(content).length === 0,
+});
 console.log(`[cms] Đã lấy nội dung "${project}": ${Object.keys(content.texts || {}).length} chữ, ${count} ảnh.`);

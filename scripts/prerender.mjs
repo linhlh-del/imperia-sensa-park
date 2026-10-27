@@ -3,8 +3,11 @@
 //  1) Sinh dist/sitemap.xml (luôn chạy, không cần trình duyệt).
 //  2) Prerender "/", "/tin-tuc", "/tin-tuc/:id" thành HTML tĩnh để Googlebot,
 //     Bing và các crawler AI (GPTBot, ClaudeBot, PerplexityBot... không chạy JS)
-//     đọc được toàn bộ nội dung. Nếu puppeteer/Chrome không chạy được trong môi
-//     trường build thì chỉ cảnh báo và bỏ qua, KHÔNG làm hỏng build.
+//     đọc được toàn bộ nội dung. Nếu Chrome không chạy được trong môi trường build
+//     thì báo lỗi rõ (log + dist/cms-status.json) nhưng KHÔNG làm hỏng build.
+//  Chrome: trên Vercel dùng @sparticuz/chromium + puppeteer-core (Chrome đóng gói sẵn
+//  thư viện hệ thống — Chrome của gói `puppeteer` thiếu thư viện trên máy build Vercel);
+//  ở máy dev dùng `puppeteer` (tự tải Chrome).
 
 import http from "node:http";
 import fs from "node:fs/promises";
@@ -62,12 +65,49 @@ await fs.writeFile(path.join(dist, "cms-schema.json"), JSON.stringify(buildCmsSc
 console.log("[cms] cms-schema.json");
 
 /* ---------- 2) prerender ---------- */
-let puppeteer;
-try {
-  puppeteer = (await import("puppeteer")).default;
-} catch {
-  console.warn("[seo] Chưa cài puppeteer -> bỏ qua prerender (site vẫn chạy như SPA).");
-  process.exit(0);
+
+/** Ghi kết quả prerender vào dist/cms-status.json (CMS đọc để cảnh báo khi trang không có HTML tĩnh) */
+async function writePrerenderStatus(prerender) {
+  const file = path.join(dist, "cms-status.json");
+  let status = {};
+  try {
+    status = JSON.parse(await fs.readFile(file, "utf8"));
+  } catch {
+    /* chưa có (build không qua fetch-cms) */
+  }
+  await fs.writeFile(file, JSON.stringify({ ...status, prerender }, null, 2));
+}
+
+/** Mở Chrome: Vercel / Linux CI → @sparticuz/chromium; máy dev → puppeteer. Trả { browser, engine } */
+async function launchBrowser() {
+  const errors = [];
+  const serverless = process.env.VERCEL || process.env.PRERENDER_CHROMIUM === "sparticuz";
+  if (serverless) {
+    try {
+      const chromium = (await import("@sparticuz/chromium")).default;
+      const puppeteer = (await import("puppeteer-core")).default;
+      chromium.setGraphicsMode = false;
+      const browser = await puppeteer.launch({
+        args: chromium.args,
+        executablePath: await chromium.executablePath(),
+        headless: true,
+      });
+      return { browser, engine: "@sparticuz/chromium" };
+    } catch (err) {
+      errors.push(`@sparticuz/chromium: ${err.message}`);
+    }
+  }
+  try {
+    const puppeteer = (await import("puppeteer")).default;
+    const browser = await puppeteer.launch({
+      headless: true,
+      args: ["--no-sandbox", "--disable-setuid-sandbox", "--disable-dev-shm-usage"],
+    });
+    return { browser, engine: "puppeteer" };
+  } catch (err) {
+    errors.push(`puppeteer: ${err.message}`);
+  }
+  throw new Error(errors.join(" | "));
 }
 
 const template = await fs.readFile(path.join(dist, "index.html"), "utf8");
@@ -96,11 +136,11 @@ const base = `http://127.0.0.1:${server.address().port}`;
 
 const results = [];
 let browser;
+let engine = "";
+let failure = "";
 try {
-  browser = await puppeteer.launch({
-    headless: true,
-    args: ["--no-sandbox", "--disable-setuid-sandbox", "--disable-dev-shm-usage"],
-  });
+  ({ browser, engine } = await launchBrowser());
+  console.log(`[seo] Chrome: ${engine}`);
   for (const route of routes) {
     const page = await browser.newPage();
     await page.setViewport({ width: 1440, height: 900 });
@@ -123,7 +163,9 @@ try {
     console.log(`[seo] prerendered ${route.url}`);
   }
 } catch (err) {
-  console.warn("[seo] Prerender thất bại, giữ nguyên SPA:", err.message);
+  failure = err.message;
+  /* ::error:: → Vercel / GitHub Actions tô đỏ dòng log */
+  console.error(`::error::[seo] PRERENDER THẤT BẠI — website chạy như SPA (HTML rỗng, ảnh hưởng SEO): ${failure}`);
   results.length = 0;
 } finally {
   await browser?.close().catch(() => {});
@@ -136,3 +178,10 @@ for (const { url, html } of results) {
   await fs.writeFile(out, "<!doctype html>" + html.replace(/^<!doctype html>/i, ""));
 }
 console.log(`[seo] Xong: ${results.length}/${routes.length} trang đã prerender.`);
+await writePrerenderStatus({
+  ok: results.length === routes.length,
+  pages: results.length,
+  total: routes.length,
+  engine,
+  error: failure ? failure.slice(0, 300) : undefined,
+});

@@ -22,6 +22,11 @@
     "vite": "latest"
   },
   "devDependencies": {
-    "puppeteer": "^24.0.0"
+    "puppeteer": "^24.0.0",
+    "@sparticuz/chromium": "^153.0.0",
+    "puppeteer-core": "^25.16.0"
+  },
+  "engines": {
+    "node": "22.x"
   }
 }
