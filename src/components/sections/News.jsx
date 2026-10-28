@@ -178,7 +178,7 @@ export default function News({
                           className="h-full w-full object-cover transition duration-500 hover:scale-105"
                         />
                       )}
-                      <span className="absolute bottom-3 left-3 rounded-full bg-imperia-background-dark px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-white">
+                      <span className="absolute bottom-3 left-3 rounded-full bg-imperia-background-dark px-3 py-1 text-xs font-bold uppercase tracking-wider text-white">
                         {item.tag}
                       </span>
                     </Link>

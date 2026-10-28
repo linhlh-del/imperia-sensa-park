@@ -256,7 +256,22 @@ export default function FloorPlan({
   defaultTower = "A",
   legend = UNIT_TYPE_LEGEND,
   onSelectUnit,
+  onLead, // mở popup đăng ký — CTA "Nhận báo giá" trong panel chi tiết
 }) {
+  const mapRef = useRef(null);
+  const panelRef = useRef(null);
+  const [mapHeight, setMapHeight] = useState(null);
+
+  /* Cột phải (desktop) cao ĐÚNG bằng ảnh mặt bằng: panel dài hơn thì tự cuộn bên trong,
+     không bao giờ làm giãn hàng grid → khung ảnh + lớp zone luôn khớp nhau. */
+  useEffect(() => {
+    if (!mapRef.current) return undefined;
+    const ro = new ResizeObserver(([entry]) => {
+      setMapHeight(Math.round(entry.target.getBoundingClientRect().height));
+    });
+    ro.observe(mapRef.current);
+    return () => ro.disconnect();
+  }, []);
   const [activeTower, setActiveTower] = useState(defaultTower);
   const [hoverCode, setHoverCode] = useState(null);
   const [hoverType, setHoverType] = useState(null);
@@ -292,6 +307,24 @@ export default function FloorPlan({
   const legendByKey = useMemo(
     () => Object.fromEntries(legend.map((l) => [l.key, l])),
     [legend],
+  );
+
+  // Bảng tóm tắt loại hình của tháp đang xem (hiện khi chưa chọn căn): số căn/tầng + khoảng diện tích
+  const typeSummary = useMemo(
+    () =>
+      legend
+        .map((l) => {
+          const list = units.filter((u) => u.type === l.key);
+          const gfa = list.map((u) => u.gfa_sqm).filter(Number.isFinite);
+          return {
+            ...l,
+            count: list.length,
+            min: gfa.length ? Math.min(...gfa) : null,
+            max: gfa.length ? Math.max(...gfa) : null,
+          };
+        })
+        .filter((row) => row.count > 0),
+    [legend, units],
   );
 
   // Danh sách "mục hiển thị" trên mặt bằng. Căn thường -> 1 mục (id = mã căn,
@@ -354,7 +387,6 @@ export default function FloorPlan({
   const activeUnit = activeItem ? activeItem.unit : null;
   const activeTypeKey = activeUnit ? activeUnit.type : hoverType;
   const isSelectionActive = Boolean(hoverCode || hoverType);
-  const showPanel = Boolean(activeUnit) || Boolean(hoverType);
   // Ưu tiên ảnh riêng theo mã căn; khi hover loại hình thì dùng ảnh chung.
   const activeLayoutImage = activeUnit
     ? UNIT_FLOOR_LAYOUT_IMAGES[activeUnit.unit_code]?.[activeItem?.floor] ||
@@ -403,6 +435,15 @@ export default function FloorPlan({
     setHoverType(null);
     setPinned(true);
     onSelectUnit?.(item.unit, item.floor); // floor = null nếu căn 1 tầng
+    revealPanel();
+  };
+
+  /* < 1024px panel nằm DƯỚI mặt bằng: chạm căn xong cuộn nhẹ để thấy panel */
+  const revealPanel = () => {
+    if (window.matchMedia("(min-width: 1024px)").matches) return;
+    requestAnimationFrame(() =>
+      panelRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" }),
+    );
   };
 
   const handleLegendEnter = (key) => () => {
@@ -423,15 +464,208 @@ export default function FloorPlan({
     setHoverType(key);
     setHoverCode(null);
     setPinned(true);
+    revealPanel();
+  };
+
+  const floorLabel = (floor) => `Tầng ${floor}`;
+
+  /* Nội dung panel bên cạnh / bên dưới mặt bằng.
+     3 trạng thái: chi tiết 1 căn · tổng quan 1 loại hình · (mặc định) bảng tóm tắt các loại hình.
+     Mặc định không còn ô trống — khách thấy ngay số căn & diện tích từng loại. */
+  const cardClass =
+    "rounded-2xl border border-imperia-primary/15 bg-white p-5 shadow-card md:p-6";
+  const ctaLabel = activeUnit
+    ? `Nhận báo giá căn ${activeUnit.unit_code}`
+    : "Nhận bảng giá & chính sách";
+  const cta = onLead ? (
+    <button
+      type="button"
+      onClick={() => {
+        closePanel();
+        onLead();
+      }}
+      className="btn-base btn-primary mt-5 w-full"
+    >
+      {ctaLabel}
+    </button>
+  ) : null;
+
+  const renderPanel = () => {
+    if (activeUnit) {
+      const typeLabel = legendByKey[activeUnit.type]?.label || activeUnit.type;
+      return (
+        <div key="unit" className={`${cardClass} animate-pop-in`}>
+          <div className="mb-4 flex items-start justify-between gap-3">
+            <div>
+              <p className="text-xs font-bold uppercase tracking-[.12em] text-[#64675c]">
+                {towerData.label}
+              </p>
+              <p className="mt-1 flex flex-wrap items-center gap-2">
+                <span className="text-2xl font-semibold leading-tight text-imperia-primary">
+                  {activeUnit.unit_code}
+                </span>
+                {activeItem?.floor ? (
+                  <span className="rounded-full bg-imperia-background-dark px-2.5 py-1 text-xs font-bold uppercase tracking-[.06em] text-white">
+                    {floorLabel(activeItem.floor)}
+                  </span>
+                ) : null}
+              </p>
+            </div>
+            {pinned ? (
+              <button
+                type="button"
+                onClick={closePanel}
+                aria-label="Bỏ chọn căn"
+                className="-mr-2 -mt-2 grid h-11 w-11 shrink-0 place-items-center rounded-full text-xl text-[#64675c] transition-colors hover:bg-imperia-cream"
+              >
+                ×
+              </button>
+            ) : (
+              <span
+                className="mt-1 h-4 w-4 shrink-0 rounded-full ring-1 ring-black/10"
+                style={{ backgroundColor: activeItem?.color || activeUnit.color }}
+              />
+            )}
+          </div>
+          <dl className="space-y-2.5 text-sm">
+            <Row label="Loại hình" value={typeLabel} />
+            <Row label="Số phòng ngủ" value={activeUnit.bedrooms ?? "—"} />
+            <Row label="Diện tích tim tường (GFA)" value={`${activeUnit.gfa_sqm} m²`} />
+            <Row label="Diện tích thông thủy (NFA)" value={`${activeUnit.nfa_sqm} m²`} />
+          </dl>
+          {activeItem?.floor ? (
+            <p className="mt-3 text-xs leading-relaxed text-[#64675c]">
+              Căn Duplex gồm Tầng 1 và Tầng 2 — diện tích trên là tổng của cả căn.
+            </p>
+          ) : null}
+          {activeLayoutImage ? (
+            <div className="mt-4 overflow-hidden rounded-xl border border-imperia-primary/10 bg-imperia-cream/40">
+              <img
+                key={activeLayoutImage}
+                src={activeLayoutImage}
+                alt={`Phối cảnh layout căn ${activeUnit.unit_code} (${typeLabel})${activeItem?.floor ? ` — ${floorLabel(activeItem.floor)}` : ""}`}
+                className="mx-auto block aspect-[4/3] max-h-[240px] w-full object-contain"
+                loading="lazy"
+              />
+            </div>
+          ) : null}
+          {cta}
+        </div>
+      );
+    }
+
+    if (hoverType) {
+      const row = typeSummary.find((r) => r.key === hoverType);
+      return (
+        <div key="type" className={`${cardClass} animate-pop-in`}>
+          <div className="flex items-start justify-between gap-3">
+            <p className="text-lg font-semibold text-imperia-primary">
+              {legendByKey[hoverType]?.label}
+            </p>
+            {pinned ? (
+              <button
+                type="button"
+                onClick={closePanel}
+                aria-label="Bỏ chọn loại hình"
+                className="-mr-2 -mt-2 grid h-11 w-11 shrink-0 place-items-center rounded-full text-xl text-[#64675c] transition-colors hover:bg-imperia-cream"
+              >
+                ×
+              </button>
+            ) : null}
+          </div>
+          <p className="mt-1 text-sm text-[#64675c]">
+            {row?.count || 0} căn mỗi tầng · {towerData.label}
+            {row?.min != null
+              ? ` · ${row.min === row.max ? row.min : `${row.min}–${row.max}`} m² GFA`
+              : ""}
+          </p>
+          {activeLayoutImage ? (
+            <div className="mt-4 overflow-hidden rounded-xl border border-imperia-primary/10 bg-imperia-cream/40">
+              <img
+                key={activeLayoutImage}
+                src={activeLayoutImage}
+                alt={`Phối cảnh layout ${legendByKey[hoverType]?.label || hoverType}`}
+                className="mx-auto block aspect-[4/3] max-h-[240px] w-full object-contain"
+                loading="lazy"
+              />
+            </div>
+          ) : null}
+          {cta}
+        </div>
+      );
+    }
+
+    return (
+      <div key="summary" className={cardClass}>
+        <p className="text-xs font-bold uppercase tracking-[.12em] text-[#64675c]">
+          {towerData.label} · {meta.totalLayouts} căn / tầng
+        </p>
+        <table className="mt-3 w-full text-sm">
+          <thead className="sr-only">
+            <tr>
+              <th>Loại hình</th>
+              <th>Số căn mỗi tầng</th>
+              <th>Diện tích GFA</th>
+            </tr>
+          </thead>
+          <tbody>
+            {typeSummary.map((row) => (
+              <tr key={row.key} className="border-b border-black/5 last:border-0">
+                <td className="py-2.5">
+                  <button
+                    type="button"
+                    onClick={handleLegendClick(row.key)}
+                    className="inline-flex min-h-8 items-center gap-2 font-semibold text-imperia-black hover:text-imperia-primary"
+                  >
+                    <span
+                      className="h-2.5 w-2.5 rounded-full ring-1 ring-black/10"
+                      style={{ backgroundColor: row.swatch }}
+                    />
+                    {row.label}
+                  </button>
+                </td>
+                <td className="py-2.5 text-right tabular-nums text-[#64675c]">
+                  {row.count} căn
+                </td>
+                <td className="whitespace-nowrap py-2.5 pl-3 text-right tabular-nums font-semibold text-imperia-black">
+                  {row.min == null
+                    ? "—"
+                    : row.min === row.max
+                      ? `${row.min} m²`
+                      : `${row.min}–${row.max} m²`}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        <p className="mt-3 text-xs leading-relaxed text-[#64675c]">
+          <span className="lg:hidden">Chạm vào một căn trên mặt bằng để xem chi tiết.</span>
+          <span className="hidden lg:inline">Di chuột hoặc bấm vào một căn trên mặt bằng để xem chi tiết.</span>
+        </p>
+        {cta}
+      </div>
+    );
   };
 
   return (
     <section id="mat-bang" className="section-y bg-imperia-cream">
       <div className="container-page">
+        {/* BỐ CỤC
+            < 1024px: tiêu đề → bộ lọc → mặt bằng → panel (xếp dọc).
+            ≥ 1024px: mặt bằng bên trái (khung CỐ ĐỊNH theo tỉ lệ ảnh), cột phải cao đúng bằng
+            mặt bằng gồm tiêu đề, bộ lọc và panel (cuộn bên trong nếu dài).
+            Cột phải dùng `contents` dưới 1024px để các khối con tự xếp theo `order`. */}
+        <div className="floor-grid grid grid-cols-1 gap-6 lg:items-start lg:gap-10">
+        <div
+          className="contents lg:flex lg:h-[var(--map-h)] lg:min-h-0 lg:flex-col lg:gap-5"
+          style={mapHeight ? { "--map-h": `${mapHeight}px` } : undefined}
+        >
         {/* Heading */}
-        <div className="mb-10 max-w-4xl">
-          <h2 className="section-title">{t("floor.title")}</h2>
-          <p className="section-subtitle">
+        <div className="order-1 lg:order-none">
+          <h2 className="section-title lg:!text-[clamp(30px,2.6vw,44px)]">
+            {t("floor.title")}
+          </h2>
+          <p className="section-subtitle !mt-3">
             {t("floor.subtitle", { n: meta.totalLayouts })}
           </p>
         </div>
@@ -439,16 +673,13 @@ export default function FloorPlan({
         {/* Dropdown chọn tháp + Legend theo loại hình — lọc/soi sáng cả nhóm
             zone cùng loại. Legend dùng chung cho mọi tháp nên không đổi khi
             chuyển tháp. */}
-        <div className="mb-8 flex flex-col items-start gap-3 sm:flex-row sm:flex-wrap sm:items-center">
-          <div className="w-full sm:w-auto">
-            <TowerSelect
-              towers={towers}
-              value={activeTower}
-              onChange={handleTowerChange}
-            />
-          </div>
-          <div className="flex w-full flex-wrap items-center gap-3 sm:w-auto">
-            <span className="hidden h-6 w-px bg-imperia-background-dark/15 sm:block" />
+        <div className="order-2 flex flex-col items-start gap-3 lg:order-none">
+          <TowerSelect
+            towers={towers}
+            value={activeTower}
+            onChange={handleTowerChange}
+          />
+          <div className="flex w-full flex-wrap items-center gap-2">
             {legend.map((l) => {
               const isActive = activeTypeKey === l.key;
               const isDimmed = isSelectionActive && !isActive;
@@ -461,12 +692,13 @@ export default function FloorPlan({
                   onFocus={handleLegendEnter(l.key)}
                   onBlur={handleLegendLeave}
                   onClick={handleLegendClick(l.key)}
+                  aria-pressed={isActive}
                   className={[
-                    "inline-flex min-h-12 items-center gap-2 rounded-full border px-4 py-2 text-xs font-bold uppercase tracking-[.08em] transition-all duration-300",
+                    "inline-flex min-h-11 items-center gap-2 rounded-full border px-3.5 py-2 text-xs font-bold uppercase tracking-[.08em] transition-[background-color,color,opacity,box-shadow] duration-300",
                     isActive
                       ? "border-imperia-primary bg-imperia-background-dark text-white shadow-soft"
-                      : "border-imperia-primary/20 bg-white text-imperia-black",
-                    isDimmed ? "opacity-35" : "opacity-100",
+                      : "border-imperia-primary/20 bg-white text-imperia-black hover:border-imperia-primary/50",
+                    isDimmed ? "opacity-45" : "opacity-100",
                   ].join(" ")}
                 >
                   <span
@@ -480,13 +712,28 @@ export default function FloorPlan({
           </div>
         </div>
 
-        <div className="grid gap-8 lg:grid-cols-[1fr_320px]">
+          {/* Panel chi tiết — desktop: chiếm phần còn lại của cột phải, cuộn bên trong.
+              Bấm trong panel không đóng panel (chặn click lan ra document). */}
+          <aside
+            ref={panelRef}
+            data-hide-floating
+            onClick={(e) => e.stopPropagation()}
+            className="order-4 scroll-mb-[calc(72px+env(safe-area-inset-bottom))] lg:order-none lg:min-h-0 lg:flex-1 lg:overflow-y-auto lg:overscroll-contain lg:pr-1 [scrollbar-width:thin]"
+          >
+            {renderPanel()}
+          </aside>
+        </div>
+
           {/* Mặt bằng thật + overlay polygon.
-              LƯU Ý: bỏ `overflow-hidden` ở wrapper này — vì chip label nằm
-              NGOÀI polygon, có thể lấn ra sát mép ảnh; overflow-hidden ở đây
-              sẽ cắt mất chip. Bo góc được chuyển xuống từng lớp con (ảnh +
-              svg) thay vì clip cả khối. */}
-          <div className="relative leading-none shadow-soft">
+              KHUNG CỐ ĐỊNH: aspect-ratio đúng bằng ảnh (2444:1728) + self-start → không bao giờ
+              bị hàng grid kéo giãn. Lớp SVG (preserveAspectRatio="none") và chip label (% top/left)
+              vì vậy luôn khớp với ảnh, hover/chọn căn nào cũng không làm zone trôi.
+              Không dùng overflow-hidden: chip label có thể lấn sát mép ảnh. */}
+          <div
+            ref={mapRef}
+            className="relative order-3 self-start leading-none shadow-soft lg:order-first"
+            style={{ aspectRatio: `${VIEWBOX_WIDTH} / ${VIEWBOX_HEIGHT}` }}
+          >
             {imageSrc ? (
               <img
                 src={imageSrc}
@@ -504,7 +751,7 @@ export default function FloorPlan({
                     setFloorPlanLightbox(true);
                   }
                 }}
-                className="block h-auto w-full cursor-zoom-in select-none rounded-2xl"
+                className="block h-full w-full cursor-zoom-in select-none rounded-2xl bg-white object-contain"
                 draggable={false}
               />
             ) : (
@@ -576,7 +823,7 @@ export default function FloorPlan({
                   const isBreathing =
                     !isSelectionActive &&
                     unit.unit_code.toLowerCase() === breathOrder[breathIndex];
-                  const floorSuffix = it.floor ? ` — Floor ${it.floor}` : "";
+                  const floorSuffix = it.floor ? ` — Tầng ${it.floor}` : "";
 
                   return (
                     <polygon
@@ -618,9 +865,10 @@ export default function FloorPlan({
               </svg>
             )}
 
-            {/* Chip label — NỔI NGOÀI polygon. Căn thường: "A.05". Căn Duplex
-                tách riêng từng tầng: "B.03-F1", "B.03-F2". Hover/click chip
-                có cùng hiệu ứng active/dim với hover/click trực tiếp lên zone. */}
+            {/* Chip label — NỔI NGOÀI polygon. Căn thường: "A.05". Căn Duplex tách từng tầng:
+                "A.18 · T1", "A.18 · T2". Ẩn dưới 640px: nhãn quá dày sẽ chồng lên nhau — trên mobile
+                chạm thẳng vào căn (vùng polygon) hoặc bấm "Phóng to". Chip chỉ đổi màu + scale từ tâm
+                (transform), không đổi kích thước layout → không đẩy phần tử nào. */}
             {items.map((it) => {
               if (it.labelTop == null || it.labelLeft == null) return null;
               const isActive =
@@ -642,137 +890,41 @@ export default function FloorPlan({
                     left: it.labelLeft,
                   }}
                   className={[
-                    "absolute z-10 inline-flex -translate-x-1/2 -translate-y-1/2 items-center gap-1.5 whitespace-nowrap rounded-full border px-2.5 py-1 text-[11px] font-bold uppercase tracking-[.03em] backdrop-blur-sm transition-all duration-300",
+                    "absolute inline-flex -translate-x-1/2 -translate-y-1/2 items-center gap-1.5 whitespace-nowrap rounded-full border px-2 py-1 text-xs font-bold uppercase leading-none lg:px-2.5 tracking-[.03em] backdrop-blur-sm transition-[transform,background-color,color,opacity,box-shadow] duration-300 max-sm:hidden",
                     isActive
-                      ? "scale-110 border-imperia-primary bg-imperia-background-dark text-white shadow-soft"
-                      : "border-imperia-primary/25 bg-white/85 text-imperia-black",
+                      ? "z-20 scale-110 border-imperia-primary bg-imperia-background-dark text-white shadow-soft"
+                      : "z-10 border-imperia-primary/25 bg-white/90 text-imperia-black",
                     isDimmed ? "!opacity-25" : "opacity-100",
                   ].join(" ")}
                 >
                   <span
-                    className="h-2 w-2 shrink-0 rounded-full ring-1 ring-black/10"
+                    className="h-2 w-2 shrink-0 max-lg:hidden rounded-full ring-1 ring-black/10"
                     style={{ backgroundColor: it.color }}
                   />
-                  <span className="inline-flex items-baseline">
-                    {it.labelText}
-                    {it.floor ? (
-                      <>
-                        -{it.floor}
-                        <sup className="relative -top-0.5 text-[8px] leading-none">
-                          {it.floor === 1 ? "st" : it.floor === 2 ? "nd" : "th"}
-                        </sup>
-                        F
-                      </>
-                    ) : null}
-                  </span>
+                  {it.labelText}
+                  {it.floor ? ` · T${it.floor}` : null}
                 </button>
               );
             })}
-          </div>
 
-          {/* Panel chi tiết */}
-          <aside className="lg:sticky lg:top-24 lg:self-start">
-            {showPanel ? (
-              <div className="animate-pop-in rounded-2xl border border-imperia-primary/15 bg-white p-6 shadow-card">
-                {activeUnit ? (
-                  <>
-                    <div className="mb-4 flex items-center justify-between">
-                      <span className="flex items-center gap-3">
-                        <span className="text-2xl font-semibold text-imperia-primary">
-                          {activeUnit.unit_code}
-                        </span>
-                        {activeItem?.floor ? (
-                          <span className="rounded-full bg-imperia-background-dark px-3 py-1 text-xs font-bold uppercase tracking-[.06em] text-white">
-                            Floor {activeItem.floor}
-                          </span>
-                        ) : null}
-                      </span>
-                      <span
-                        className="h-4 w-4 rounded-full ring-1 ring-black/10"
-                        style={{
-                          backgroundColor:
-                            activeItem?.color || activeUnit.color,
-                        }}
-                      />
-                    </div>
-                    <dl className="space-y-3 text-sm">
-                      <Row
-                        label="Loại hình"
-                        value={
-                          legendByKey[activeUnit.type]?.label || activeUnit.type
-                        }
-                      />
-                      {activeItem?.floor ? (
-                        <Row
-                          label="Mặt bằng"
-                          value={`Floor ${activeItem.floor}`}
-                        />
-                      ) : null}
-                      <Row
-                        label="Số phòng ngủ"
-                        value={activeUnit.bedrooms ?? "—"}
-                      />
-                      <Row
-                        label="Diện tích tim tường (GFA)"
-                        value={`${activeUnit.gfa_sqm} m²`}
-                      />
-                      <Row
-                        label="Diện tích thông thủy (NFA)"
-                        value={`${activeUnit.nfa_sqm} m²`}
-                      />
-                    </dl>
-                    {activeItem?.floor ? (
-                      <p className="mt-3 text-xs text-[#64675c]">
-                        Căn Duplex gồm Floor 1 và Floor 2 — diện tích ở trên là
-                        tổng của cả căn.
-                      </p>
-                    ) : null}
-                    {activeLayoutImage ? (
-                      <div className="mt-5 overflow-hidden rounded-xl border border-imperia-primary/10">
-                        <img
-                          src={activeLayoutImage}
-                          alt={`Phối cảnh layout ${legendByKey[activeUnit.type]?.label || activeUnit.type}`}
-                          className="block h-auto w-full object-cover"
-                          loading="lazy"
-                        />
-                      </div>
-                    ) : null}
-                    <button
-                      type="button"
-                      onClick={closePanel}
-                      className="btn-base btn-outline mt-6 w-full"
-                    >
-                      Đóng
-                    </button>
-                  </>
-                ) : (
-                  <>
-                    <p className="mb-2 text-lg font-semibold text-imperia-primary">
-                      {legendByKey[hoverType]?.label}
-                    </p>
-                    <p className="text-sm text-[#64675c]">
-                      {units.filter((u) => u.type === hoverType).length} căn
-                      thuộc loại hình này trên mỗi tầng.
-                    </p>
-                    {activeLayoutImage ? (
-                      <div className="mt-4 overflow-hidden rounded-xl border border-imperia-primary/10">
-                        <img
-                          src={activeLayoutImage}
-                          alt={`Phối cảnh layout ${legendByKey[hoverType]?.label || hoverType}`}
-                          className="block h-auto w-full object-cover"
-                          loading="lazy"
-                        />
-                      </div>
-                    ) : null}
-                  </>
-                )}
-              </div>
-            ) : (
-              <div className="rounded-2xl border border-dashed border-imperia-primary/20 p-6 text-sm text-[#64675c]">
-                Chọn một căn hộ hoặc loại hình để xem diện tích chi tiết.
-              </div>
-            )}
-          </aside>
+            {/* Phóng to — luôn có (mobile không còn nhãn, desktop muốn xem rõ chi tiết) */}
+            {imageSrc ? (
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setFloorPlanLightbox(true);
+                }}
+                aria-label={`Phóng to mặt bằng ${towerData.label}`}
+                className="absolute right-3 top-3 z-30 inline-flex min-h-11 items-center gap-2 rounded-full bg-imperia-black/70 px-3.5 text-xs font-bold uppercase tracking-[.06em] text-white backdrop-blur-sm transition-colors hover:bg-imperia-black/85"
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+                Phóng to
+              </button>
+            ) : null}
+          </div>
         </div>
       </div>
 

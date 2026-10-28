@@ -19,7 +19,7 @@ const GROUPS = [
   { selector: "#hinhanh > div:first-child > *", step: 0 },
   // Hero: tiêu đề, mô tả, nút hiện lần lượt; thanh số liệu hiện lần lượt
   { selector: "#hero .container-page.z-10 > div > *", step: 130 },
-  { selector: "#hero .container-page.grid > div", step: 110 },
+  { selector: "#hero dl > div", step: 110 },
   // Trang /tin-tuc
   { selector: "section.container-page > *", step: 0 },
 ];

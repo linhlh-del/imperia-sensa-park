@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { site, t } from "../../cms/content";
 
 /* hotline / Zalo sửa trong CMS (Thông tin chung) */
@@ -47,24 +48,25 @@ function PdfIcon(props) {
   );
 }
 
+/* Nhãn chỉ hiện khi hover / focus bàn phím — mặc định không chiếm chỗ, không che nội dung */
 function FbLabel({ children }) {
   return (
-    <span className="pointer-events-none absolute right-full top-1/2 mr-3 -translate-y-1/2 whitespace-nowrap rounded-md bg-black/75 px-2.5 py-1 text-xs font-semibold text-imperia-accent max-[480px]:mr-2 max-[480px]:px-2 max-[480px]:py-1 max-[480px]:text-[10px]">
+    <span className="pointer-events-none absolute right-full top-1/2 mr-3 -translate-y-1/2 translate-x-1 whitespace-nowrap rounded-full bg-imperia-black/85 px-3 py-1.5 text-xs font-semibold uppercase tracking-[.06em] text-imperia-cream opacity-0 shadow-soft transition-[opacity,transform] duration-200 group-hover:translate-x-0 group-hover:opacity-100 group-focus-visible:translate-x-0 group-focus-visible:opacity-100">
       {children}
     </span>
   );
 }
 
-/* ── Sticky bar mobile: Gọi hotline | Chat Zalo | Nhận bảng giá ──
-   Chỉ hiện < 768px; body có padding-bottom tương ứng (xem index.css)
-   để thanh không che nội dung cuối trang. */
+/* ── Sticky bar: Gọi hotline | Chat Zalo | Nhận bảng giá ──
+   Hiện < 1024px (điện thoại + tablet — đồng bộ với menu hamburger); body có padding-bottom
+   tương ứng (xem index.css) để thanh không che nội dung cuối trang. */
 function MobileStickyBar({ onLead }) {
   const item =
     "flex min-h-12 flex-1 flex-col items-center justify-center gap-0.5 text-[11px] font-bold uppercase tracking-[.04em]";
   return (
     <nav
       aria-label="Liên hệ nhanh"
-      className="mobile-sticky-bar fixed inset-x-0 bottom-0 z-[9999] flex border-t border-white/15 bg-imperia-primary text-white shadow-[0_-6px_24px_rgba(0,0,0,.18)] md:hidden"
+      className="mobile-sticky-bar fixed inset-x-0 bottom-0 z-[9999] flex border-t border-white/15 bg-imperia-primary text-white shadow-[0_-6px_24px_rgba(0,0,0,.18)] lg:hidden"
     >
       <a
         href={PHONE_HREF}
@@ -102,31 +104,58 @@ function MobileStickyBar({ onLead }) {
   );
 }
 
+/* Tự ẩn cụm nút nổi khi một khối có [data-hide-floating] (form, kết quả tính vay, panel căn hộ,
+   danh sách tiện ích…) đi vào góc dưới màn hình — đúng vùng cụm nút đang đứng — để nút không che
+   nội dung / nút bấm. Cuộn qua là hiện lại. */
+function useAvoidOverlap() {
+  const [hidden, setHidden] = useState(false);
+  useEffect(() => {
+    if (!("IntersectionObserver" in window)) return undefined;
+    const visible = new Set();
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => (e.isIntersecting ? visible.add(e.target) : visible.delete(e.target)));
+        setHidden(visible.size > 0);
+      },
+      { rootMargin: "-55% 0px 0px 0px" }, // chỉ xét 45% dưới của màn hình
+    );
+    const observe = () => document.querySelectorAll("[data-hide-floating]").forEach((el) => io.observe(el));
+    observe();
+    // nội dung render sau (đổi route, section tải trễ) cũng được theo dõi
+    const mo = new MutationObserver(observe);
+    mo.observe(document.body, { childList: true, subtree: true });
+    return () => {
+      io.disconnect();
+      mo.disconnect();
+    };
+  }, []);
+  return hidden;
+}
+
+const fbBtn =
+  "group relative flex h-[52px] w-[52px] items-center justify-center rounded-full shadow-[0_6px_20px_rgba(32,35,27,.28)] transition-transform duration-200 hover:scale-[1.06] focus-visible:outline-offset-4";
+
 export default function FloatingButtons({ onLead }) {
+  const hidden = useAvoidOverlap();
   return (
     <>
       <MobileStickyBar onLead={onLead} />
-      {/* Cụm nút nổi cho tablet/desktop */}
-      <div className="fixed bottom-6 right-5 z-[9999] hidden flex-col items-center gap-3.5 md:flex">
-        {/* ── Phone ── */}
+      {/* Cụm nút nổi cho desktop (≥ 1024px) — màu theo palette thương hiệu */}
+      <div
+        aria-hidden={hidden || undefined}
+        className={`fixed bottom-6 right-5 z-[900] hidden flex-col items-center gap-3 transition-[opacity,transform] duration-300 lg:flex ${
+          hidden ? "pointer-events-none translate-x-4 opacity-0" : "opacity-100"
+        }`}
+      >
+        {/* ── Gọi hotline ── */}
         <a
           href={PHONE_HREF}
-          title={`Gọi ngay ${PHONE_DISPLAY}`}
-          aria-label={`Gọi ${PHONE_DISPLAY}`}
-          className="group relative flex h-14 w-14 items-center justify-center rounded-full bg-[#0068FF] text-white shadow-[0_4px_20px_rgba(0,104,255,0.5)] transition-transform duration-200 animate-fb-phone-glow hover:scale-[1.12] hover:[animation-play-state:paused] hover:shadow-[0_6px_28px_rgba(0,104,255,0.65)] max-[480px]:h-12 max-[480px]:w-12"
+          tabIndex={hidden ? -1 : undefined}
+          aria-label={`Gọi hotline ${PHONE_DISPLAY}`}
+          className={`${fbBtn} bg-imperia-primary text-imperia-cream`}
         >
-          <span
-            aria-hidden="true"
-            className="pointer-events-none absolute inset-0 z-0 rounded-full border-2 border-[#0068FF]/55 animate-fb-ring-1"
-          />
-          <span
-            aria-hidden="true"
-            className="pointer-events-none absolute inset-0 z-0 rounded-full border-2 border-[#0068FF]/35 animate-fb-ring-2"
-          />
-          <span className="relative z-[2] flex h-full w-full animate-fb-phone-wobble items-center justify-center rounded-full group-hover:[animation-play-state:paused]">
-            <PhoneIcon className="h-1/2 w-1/2 shrink-0" aria-hidden="true" />
-          </span>
-          <FbLabel>Tư Vấn</FbLabel>
+          <PhoneIcon className="h-6 w-6" aria-hidden="true" />
+          <FbLabel>Hotline {PHONE_DISPLAY}</FbLabel>
         </a>
 
         {/* ── Zalo ── */}
@@ -134,52 +163,35 @@ export default function FloatingButtons({ onLead }) {
           href={ZALO_URL}
           target="_blank"
           rel="noopener noreferrer"
-          title="Chat Zalo"
+          tabIndex={hidden ? -1 : undefined}
           aria-label="Chat qua Zalo"
-          className="group relative flex h-[50px] w-[50px] items-center justify-center rounded-full text-imperia-accent transition-transform duration-200 [filter:drop-shadow(0_3px_10px_rgba(0,104,255,0.4))] hover:scale-[1.08] hover:[filter:drop-shadow(0_5px_16px_rgba(0,104,255,0.65))] max-[480px]:h-12 max-[480px]:w-12"
+          className={`${fbBtn} border border-imperia-primary/15 bg-white`}
         >
-          <span
-            aria-hidden="true"
-            className="pointer-events-none absolute inset-0 z-0 rounded-full bg-[#0068FF]/25 animate-fb-zalo-ring-1 group-hover:[animation-play-state:paused]"
+          <img
+            src="/assets/logo-zalo.webp"
+            alt=""
+            width="30"
+            height="30"
+            className="h-[30px] w-[30px] object-contain"
           />
-          <span
-            aria-hidden="true"
-            className="pointer-events-none absolute inset-0 z-0 rounded-full bg-[#0068FF]/15 animate-fb-zalo-ring-2 group-hover:[animation-play-state:paused]"
-          />
-          <span
-            aria-hidden="true"
-            className="pointer-events-none absolute inset-0 z-0 rounded-full bg-[#0068FF]/10 animate-fb-zalo-ring-3 group-hover:[animation-play-state:paused]"
-          />
-          <span className="relative z-[2] flex h-full w-full animate-fb-zalo-shake items-center justify-center rounded-full group-hover:[animation-play-state:paused]">
-            <img
-              src="/assets/logo-zalo.webp"
-              alt="Chat Zalo Imperia Sensa Park"
-              className="h-[85%] w-[85%] object-contain"
-            />
-          </span>
           <FbLabel>Chat Zalo</FbLabel>
         </a>
 
-        {/* ── Bảng Giá ── */}
-        <a
-          href="#lien-he"
-          title="Bảng Giá"
-          aria-label="Xem Bảng Giá"
-          className="group relative flex h-[52px] w-[52px] items-center justify-center rounded-full bg-[#0068FF] text-white shadow-[0_4px_20px_rgba(0,104,255,0.5)] transition-transform duration-200 animate-fb-price-glow hover:scale-[1.12] hover:[animation-play-state:paused] hover:shadow-[0_6px_28px_rgba(0,104,255,0.65)] max-[480px]:h-12 max-[480px]:w-12"
+        {/* ── Nhận bảng giá (CTA chính: màu nhấn + vòng sáng nhẹ) ── */}
+        <button
+          type="button"
+          onClick={onLead}
+          tabIndex={hidden ? -1 : undefined}
+          aria-label="Nhận bảng giá"
+          className={`${fbBtn} bg-imperia-accent text-imperia-black`}
         >
           <span
             aria-hidden="true"
-            className="pointer-events-none absolute inset-0 z-0 rounded-full border-2 border-[#0068FF]/50 animate-fb-price-ring-1"
+            className="pointer-events-none absolute inset-0 rounded-full border-2 border-imperia-accent/60 animate-fb-ring-1 motion-reduce:hidden"
           />
-          <span
-            aria-hidden="true"
-            className="pointer-events-none absolute inset-0 z-0 rounded-full border-2 border-[#0068FF]/30 animate-fb-price-ring-2"
-          />
-          <span className="relative z-[2] flex h-full w-full animate-fb-price-wobble items-center justify-center rounded-full group-hover:[animation-play-state:paused]">
-            <PdfIcon className="h-1/2 w-1/2 shrink-0" aria-hidden="true" />
-          </span>
-          <FbLabel>Bảng Giá</FbLabel>
-        </a>
+          <PdfIcon className="relative h-6 w-6" aria-hidden="true" />
+          <FbLabel>Nhận bảng giá</FbLabel>
+        </button>
       </div>
     </>
   );

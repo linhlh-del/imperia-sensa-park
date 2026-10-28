@@ -2,16 +2,22 @@ import Button from "../ui/Button";
 import CountUp from "../effects/CountUp";
 import { img, t } from "../../cms/content";
 
-/* variant (CMS): "left" (mặc định, chữ bên trái) | "center" (chữ giữa) */
+/* variant (CMS): "left" (mặc định, chữ bên trái) | "center" (chữ giữa)
+
+   BỐ CỤC
+   - Mobile (< 768px): ảnh ở trên (~34svh), chữ + CTA + số liệu ở dưới trên nền olive đặc
+     → chữ không đè lên ảnh, không còn khoảng trống lớn phía trên tiêu đề.
+   - Tablet/desktop: ảnh phủ toàn khung + gradient trái; cả hero (kể cả thanh số liệu) vừa đúng
+     1 màn hình (min-height 100svh) thay cho 860px cố định. */
 export default function Hero({ data, variant = "left" }) {
+  const centered = variant === "center";
   return (
     <section
       id="hero"
       data-section="hero"
-      className="relative z-20 flex min-h-[860px] items-center overflow-visible bg-imperia-background-dark pt-[76px] text-white"
+      className="relative flex flex-col bg-imperia-primary pt-[var(--header-h)] text-white md:min-h-[100svh]"
     >
-      {/* Wrapper riêng để crop ảnh, không ảnh hưởng overflow của section (cần visible cho stats bar) */}
-      <div className="absolute inset-0 z-0 overflow-hidden">
+      <div className="relative h-[34svh] min-h-[220px] overflow-hidden md:absolute md:inset-0 md:h-auto">
         <img
           src={img("hero.background", "/assets/hero2.optimized.webp")}
           alt=""
@@ -20,29 +26,30 @@ export default function Hero({ data, variant = "left" }) {
           height="863"
           fetchPriority="high"
           decoding="async"
-          className="h-full w-full object-contain object-center"
+          className="h-full w-full object-cover object-[60%_center]"
         />
-        {/* Gradient overlay để chữ bên trái luôn đọc rõ trên mọi kích thước ảnh */}
-        <div className="hero-overlay absolute inset-0" />
+        {/* Desktop: gradient trái giữ chữ đọc rõ. Mobile: chân ảnh hoà dần vào nền chữ. */}
+        <div className="hero-overlay absolute inset-0 hidden md:block" />
+        <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-b from-transparent to-imperia-primary md:hidden" />
       </div>
 
-      <div className="container-page relative z-10 py-24">
+      <div className="container-page relative z-10 flex flex-1 items-center pb-6 pt-2 md:py-16">
         <div
-          className={`max-w-[560px] ${variant === "center" ? "mx-auto text-center [&_.flex]:justify-center" : ""}`}
+          className={`max-w-[580px] ${centered ? "mx-auto text-center [&_.flex]:justify-center" : ""}`}
         >
-          <div className="mb-4 text-xs font-bold uppercase tracking-[.16em] text-imperia-accent">
+          <div className="mb-4 text-[13px] font-bold uppercase tracking-[.16em] text-imperia-beige md:text-imperia-accent">
             {data.kicker}
           </div>
-          <h1 className="font-display text-[clamp(3rem,6vw,88px)] font-semibold uppercase leading-[.88] tracking-[-.04em]">
+          <h1 className="font-display text-[clamp(2.5rem,6vw,88px)] font-semibold uppercase leading-[.95] tracking-[-.03em]">
             {data.title}
             <br />
             <span className="text-imperia-accent">{data.titleAccent}</span>
             <span className="sr-only"> {t("hero.h1Seo")}</span>
           </h1>
-          <p className="mt-7 max-w-[560px] text-[clamp(0.75rem,1.2vw,1.25rem)] leading-7 text-white/75">
+          <p className="mt-4 max-w-[540px] md:mt-6 text-[clamp(15px,1.2vw,19px)] leading-relaxed text-white/90">
             {data.description}
           </p>
-          <div className="mt-8 flex flex-wrap gap-3">
+          <div className="mt-6 flex flex-wrap gap-3 md:mt-8">
             <Button href="#tong-quan" variant="light">
               {t("hero.ctaExplore")}
             </Button>
@@ -53,25 +60,26 @@ export default function Hero({ data, variant = "left" }) {
         </div>
       </div>
 
-      <div className="absolute inset-x-0 bottom-[-62px] z-30">
-        <div className="container-page grid overflow-hidden rounded-2xl bg-imperia-background-dark shadow-card grid-cols-2 md:grid-cols-4">
+      {/* Số liệu bán hàng: luôn nằm trong khung hình đầu tiên (không còn treo lơ lửng -62px) */}
+      <div className="container-page relative z-10 pb-6 md:pb-10 lg:pr-[72px]">
+        <dl className="grid grid-cols-2 overflow-hidden rounded-2xl border border-white/15 bg-imperia-dark/75 shadow-card backdrop-blur-md md:grid-cols-4">
           {data.stats.map(([number, suffix, label]) => (
             <div
               key={label}
-              className="border-r border-white/10 p-5 last:border-0 md:p-7"
+              className="flex flex-col-reverse border-white/10 p-4 [&:nth-child(-n+2)]:border-b md:border-r md:p-6 md:last:border-r-0 md:[&:nth-child(-n+2)]:border-b-0 [&:nth-child(odd)]:border-r"
             >
-              <div className="font-display text-3xl md:text-4xl">
+              <dt className="mt-1 text-[13px] uppercase leading-snug tracking-[.04em] text-white/85">
+                {label}
+              </dt>
+              <dd className="font-display text-3xl leading-none md:text-4xl">
                 <CountUp value={number} />
-                <small className="ml-1 text-base text-imperia-black">
+                <small className="ml-1 text-base text-imperia-accent">
                   {suffix}
                 </small>
-              </div>
-              <div className="mt-1 text-[13px] leading-[17px] text-imperia-black">
-                {label}
-              </div>
+              </dd>
             </div>
           ))}
-        </div>
+        </dl>
       </div>
     </section>
   );

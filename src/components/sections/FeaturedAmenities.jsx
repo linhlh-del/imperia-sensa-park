@@ -129,8 +129,8 @@ export default function FeaturedAmenities() {
               onClick={() => handleCategoryChange(filter.key)}
               className={`min-h-12 whitespace-nowrap rounded-full px-5 py-2.5 text-sm font-semibold transition-all duration-300 max-[576px]:px-4 max-[576px]:py-2 max-[576px]:text-[0.8rem] ${
                 activeCategory === filter.key
-                  ? "bg-gradient-to-r from-imperia-background-dark to-imperia-background-light text-imperia-dark shadow-soft"
-                  : "border border-imperia-light/30 bg-imperia-white/5 text-imperia-cream/70 hover:border-imperia-accent hover:text-imperia-accent"
+                  ? "bg-imperia-cream text-imperia-primary shadow-soft"
+                  : "border border-white/40 bg-white/5 text-white hover:border-imperia-cream hover:bg-white/10"
               }`}
             >
               {filter.label}

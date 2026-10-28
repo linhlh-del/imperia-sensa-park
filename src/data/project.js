@@ -27,7 +27,7 @@ export const project = {
       ["~5", "ha", "QUY MÔ DỰ ÁN"],
       ["02", "THÁP", "THE SENSA"],
       ["922", "CĂN", "TỔNG SỐ CĂN HỘ"],
-      ["40+", "+", "Tiện ích nổi bật"],
+      ["40", "+", "Tiện ích nổi bật"],
     ],
   },
   overview: {

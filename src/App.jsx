@@ -38,12 +38,13 @@ const SECTIONS = {
   ),
   "tien-ich": () => <Amenities items={site.amenities} />,
   hinhanh: () => <FeaturedAmenities />,
-  "mat-bang": () => (
+  "mat-bang": ({ onOpenModal }) => (
     <FloorPlan
       images={{
-        A: "/assets/layout/sensa-A.optimized.webp",
+        A: "/assets/layout/sensa-a.optimized.webp", // tên file viết thường (Vercel phân biệt hoa/thường)
         B: "/assets/layout/sensaB.optimized.webp",
       }}
+      onLead={onOpenModal}
     />
   ),
   "tin-tuc": () => <News />,

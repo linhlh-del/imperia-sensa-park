@@ -45,42 +45,27 @@ const ShieldIcon = () => (
   </svg>
 );
 
-const HeadsetIcon = () => (
-  <svg
-    width="18"
-    height="18"
-    viewBox="0 0 24 24"
-    fill="none"
-    aria-hidden="true"
-  >
-    <path
-      d="M4 13a8 8 0 0 1 16 0"
-      stroke="currentColor"
-      strokeWidth="1.6"
-      strokeLinecap="round"
-    />
-    <rect
-      x="3"
-      y="13"
-      width="4"
-      height="6"
-      rx="1.5"
-      stroke="currentColor"
-      strokeWidth="1.6"
-    />
-    <rect
-      x="17"
-      y="13"
-      width="4"
-      height="6"
-      rx="1.5"
-      stroke="currentColor"
-      strokeWidth="1.6"
-    />
-  </svg>
-);
+function HighlightList({ items, className = "" }) {
+  return (
+    <ul className={`grid gap-3 text-sm font-medium text-[#34362f] ${className}`}>
+      {items.map((text) => (
+        <li key={text} className="flex items-start gap-2.5 leading-snug">
+          <span className="mt-0.5 flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full bg-imperia-accent/30 text-imperia-primary">
+            <CheckIcon />
+          </span>
+          <span>{text}</span>
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+const fieldClass =
+  "min-h-12 w-full rounded-xl border border-imperia-primary/25 bg-white px-4 py-3 text-[15px] text-imperia-black outline-none transition-colors placeholder:text-[#7a7d70] focus:border-imperia-primary focus:ring-2 focus:ring-imperia-primary/15";
+const labelClass = "mb-1.5 block text-[13px] font-semibold text-[#34362f]";
 
 export default function LeadSection({ onSubmit }) {
+  const highlights = tList("lead.highlights");
   return (
     <section
       id="lien-he"
@@ -101,78 +86,82 @@ export default function LeadSection({ onSubmit }) {
         aria-hidden="true"
       />
       <div className="container-page relative z-10">
-        <div className="grid gap-0 overflow-hidden rounded-[28px] bg-white/50 shadow-soft backdrop-blur-md lg:grid-cols-[60%_40%]">
-          <div className="p-6 md:p-8">
+        <div className="grid gap-0 overflow-hidden rounded-[28px] bg-white/75 shadow-soft backdrop-blur-md lg:grid-cols-[58%_42%]">
+          <div className="p-6 pb-2 md:p-8 lg:pb-8">
             <SectionHeading
               title={t("lead.title")}
               subtitle={t("lead.subtitle")}
-              className="[&_.section-subtitle]:!text-[#34362f]"
+              className="!mb-6 lg:!mb-10 [&_.section-subtitle]:!text-[#34362f]"
             />
-            <ul className="mb-8 grid gap-3 text-sm font-medium text-[#34362f]">
-              {tList("lead.highlights").map((text) => (
-                <li
-                  key={text}
-                  className="flex items-start gap-2.5 leading-snug"
-                >
-                  <span className="mt-0.5 flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full bg-imperia-accent/20 text-imperia-primary">
-                    <CheckIcon />
-                  </span>
-                  <span>{text}</span>
-                </li>
-              ))}
-            </ul>
-            <strong className="font-display text-3xl text-imperia-primary">
+            {/* Mobile: quyền lợi thu gọn (accordion) để form hiện ngay dưới tiêu đề. Desktop: danh sách đầy đủ. */}
+            <details className="group mb-2 rounded-xl border border-imperia-primary/15 bg-white/70 lg:hidden">
+              <summary className="flex min-h-12 cursor-pointer list-none items-center justify-between gap-3 px-4 text-sm font-bold text-imperia-primary [&::-webkit-details-marker]:hidden">
+                Bạn sẽ nhận được ({highlights.length} tài liệu)
+                <span aria-hidden="true" className="transition-transform group-open:rotate-180">⌄</span>
+              </summary>
+              <HighlightList items={highlights} className="px-4 pb-4" />
+            </details>
+            <HighlightList items={highlights} className="mb-8 hidden lg:grid" />
+            <a
+              href={site.contact.hotlineHref}
+              className="hidden font-display text-3xl normal-case text-imperia-primary hover:underline lg:inline-block"
+            >
               Hotline: {site.contact.hotline}
-            </strong>
+            </a>
           </div>
+          {/* Form nền đặc (không còn kính mờ trên ảnh bận) + nhãn hiển thị (không chỉ dùng placeholder) */}
           <form
             onSubmit={onSubmit}
             data-form-type="register"
-            className="relative grid gap-3 bg-white/35 p-7 md:p-9 lg:my-5 lg:mr-5 lg:w-[88%] lg:justify-self-end lg:rounded-[24px]"
+            data-hide-floating
+            className="relative grid content-center gap-4 bg-white/95 p-6 md:p-8 lg:my-5 lg:mr-5 lg:w-[90%] lg:justify-self-end lg:rounded-[24px] lg:shadow-soft"
           >
-            {/* Form 3 trường: Họ tên, SĐT, nút gửi */}
-            <label htmlFor="lead-name" className="sr-only">
-              Họ và tên
-            </label>
-            <input
-              id="lead-name"
-              name="name"
-              required
-              autoComplete="name"
-              className="min-h-12 rounded-xl border border-imperia-primary/15 bg-imperia-cream px-4 py-3 text-sm outline-none focus:border-imperia-primary"
-              placeholder="Họ và tên *"
-            />
-            <label htmlFor="lead-phone" className="sr-only">
-              Số điện thoại
-            </label>
-            <input
-              id="lead-phone"
-              name="phone"
-              required
-              type="tel"
-              inputMode="tel"
-              autoComplete="tel"
-              onInput={clearPhoneError}
-              className="min-h-12 rounded-xl border border-imperia-primary/15 bg-imperia-cream px-4 py-3 text-sm outline-none focus:border-imperia-primary"
-              placeholder="Số điện thoại *"
-            />
-
-            <FormExtras />
-            <Button type="submit">{t("lead.submit")}</Button>
-            <div className="mt-0.5 flex flex-col gap-2 rounded-lg border border-imperia-primary/20 bg-white/60 p-3 text-left">
-              <p className="flex min-w-0 items-center gap-2 text-[0.8125rem] text-imperia-black/85">
-                <span className="flex-shrink-0 text-imperia-primary">
-                  <ShieldIcon />
-                </span>
-                {t("lead.privacy")}
-              </p>
-              <p className="flex min-w-0 items-center gap-2 text-[0.8125rem] text-imperia-black/85">
-                <span className="flex-shrink-0 text-imperia-primary">
-                  <HeadsetIcon />
-                </span>
-                {t("lead.support")}
+            <div>
+              <label htmlFor="lead-name" className={labelClass}>
+                Họ và tên <span className="text-red-700">*</span>
+              </label>
+              <input
+                id="lead-name"
+                name="name"
+                required
+                autoComplete="name"
+                className={fieldClass}
+                placeholder="vd. Nguyễn Văn An"
+              />
+            </div>
+            <div>
+              <label htmlFor="lead-phone" className={labelClass}>
+                Số điện thoại <span className="text-red-700">*</span>
+              </label>
+              <input
+                id="lead-phone"
+                name="phone"
+                required
+                type="tel"
+                inputMode="tel"
+                autoComplete="tel"
+                onInput={clearPhoneError}
+                aria-describedby="lead-phone-hint"
+                className={fieldClass}
+                placeholder="vd. 0912 345 678"
+              />
+              <p id="lead-phone-hint" className="mt-1 text-xs text-[#5c5f53]">
+                Số di động Việt Nam 10 số — chuyên viên gọi lại trong giờ hành chính.
               </p>
             </div>
+
+            <FormExtras />
+            <Button type="submit" className="mt-1 w-full">
+              {t("lead.submit")}
+            </Button>
+            <p className="flex items-start gap-2 text-[13px] leading-snug text-[#34362f]">
+              <span className="mt-px flex-shrink-0 text-imperia-primary">
+                <ShieldIcon />
+              </span>
+              <span>
+                {t("lead.privacy")} {t("lead.support")}
+              </span>
+            </p>
           </form>
         </div>
       </div>

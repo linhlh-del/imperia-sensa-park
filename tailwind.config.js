@@ -8,8 +8,10 @@ export default {
           primary: "#4D5538",
           dark: "#353C27",
           light: "#68734B",
-          "background-dark": "#8C915E",
-          "background-light": "#919962",
+          /* Nền olive chứa chữ trắng/kem — đậm hơn bản gốc (#8C915E, 3.3:1) để đạt WCAG AA:
+             trắng 5.7:1, kem 5.1:1. background-light dùng cho hover/active trên nền này. */
+          "background-dark": "#646A44",
+          "background-light": "#6B7148",
           accent: "#A9B578",
           secondary: "#917663",
           "secondary-dark": "#6F594C",
@@ -31,15 +33,18 @@ export default {
         card: "0 18px 60px rgba(45, 51, 34, .14)",
       },
       keyframes: {
+        /* Chỉ xoay — KHÔNG translate: marker đã được căn tâm ở nút cha. Bản cũ có
+           translate(-50%,-50%) nên số bị lệch lên-trái khi lắc và "nhảy" sang phải khi
+           chọn (animation tắt → mất translate). */
         markerShake: {
-          "0%, 80%, 100%": { transform: "translate(-50%, -50%) rotate(0deg)" },
-          "10%": { transform: "translate(-50%, -50%) rotate(-6deg)" },
-          "20%": { transform: "translate(-50%, -50%) rotate(6deg)" },
-          "30%": { transform: "translate(-50%, -50%) rotate(-5deg)" },
-          "40%": { transform: "translate(-50%, -50%) rotate(5deg)" },
-          "50%": { transform: "translate(-50%, -50%) rotate(-3deg)" },
-          "60%": { transform: "translate(-50%, -50%) rotate(3deg)" },
-          "70%": { transform: "translate(-50%, -50%) rotate(-1deg)" },
+          "0%, 80%, 100%": { transform: "rotate(0deg)" },
+          "10%": { transform: "rotate(-6deg)" },
+          "20%": { transform: "rotate(6deg)" },
+          "30%": { transform: "rotate(-5deg)" },
+          "40%": { transform: "rotate(5deg)" },
+          "50%": { transform: "rotate(-3deg)" },
+          "60%": { transform: "rotate(3deg)" },
+          "70%": { transform: "rotate(-1deg)" },
         },
         markerRing1: {
           "0%": { transform: "scale(1)", opacity: "0.6" },

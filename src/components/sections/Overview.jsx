@@ -9,7 +9,7 @@ export default function Overview({ data, variant = "image-right" }) {
     <section
       id="tong-quan"
       data-section="overview"
-      className="section-y bg-imperia-cream pt-[calc(var(--section-y)+76px)]"
+      className="section-y bg-imperia-cream"
     >
       <div className="container-page">
         <SectionHeading title={data.title} semanticTitle={t("overview.seo")} />
@@ -40,11 +40,11 @@ export default function Overview({ data, variant = "image-right" }) {
         </div>
         <div className="mt-16 grid grid-cols-2 md:grid-cols-4">
           {data.facts.map(([n, l]) => (
-            <div key={l} className="border border-imperia-primary/10 px-4 py-7">
-              <strong className="font-display text-3xl text-imperia-primary">
+            <div key={l} className="flex flex-col justify-center border border-imperia-primary/10 px-4 py-6">
+              <strong className="whitespace-nowrap font-display text-[clamp(24px,2.4vw,30px)] leading-tight text-imperia-primary">
                 <CountUp value={n} />
               </strong>
-              <span className="mt-1 block text-xs text-[#777]">{l}</span>
+              <span className="mt-1 block text-[13px] uppercase leading-snug tracking-[.04em] text-[#5c5f53]">{l}</span>
             </div>
           ))}
         </div>

@@ -45,12 +45,37 @@
   --imperia-white: #ffffff;
   --imperia-black: #3f5e0e;
   --container: 1400px;
-  --section-y: clamp(80px, 8vw, 120px);
+  /* Chiều cao header — dùng chung cho header, hero, scroll-padding (anchor) và chiều cao section */
+  --header-h: 64px;
+  /* Padding dọc section theo chiều cao màn hình: màn thấp không bị phí khoảng trắng */
+  --section-y: clamp(48px, 7vh, 88px);
   --transition: 280ms cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+@media (min-width: 1024px) {
+  :root {
+    --header-h: 76px;
+  }
+}
+/* Điện thoại xoay ngang: header gọn lại để còn chỗ cho nội dung */
+@media (max-height: 500px) and (orientation: landscape) {
+  :root {
+    --header-h: 56px;
+  }
 }
 
 html {
   scroll-behavior: smooth;
+  /* Bấm menu / CTA tới #section: tiêu đề không bị header cố định che */
+  scroll-padding-top: var(--header-h);
+}
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+:focus-visible {
+  outline: 2px solid var(--imperia-accent);
+  outline-offset: 3px;
 }
 body {
   margin: 0;
@@ -107,8 +132,9 @@ img {
   }
   .section-title {
     @apply font-display text-imperia-primary font-semibold tracking-[-0.025em];
-    font-size: clamp(32px, 4vw, 58px);
-    line-height: 1.08;
+    font-size: clamp(30px, 4vw, 56px);
+    /* 1.15: dấu tiếng Việt (ẤẦỆ…) của dòng dưới không chạm chân chữ dòng trên */
+    line-height: 1.15;
     text-transform: uppercase;
   }
   [data-cms-item] h3 {
@@ -153,8 +179,8 @@ img {
   }
 }
 
-/* Chừa chỗ cho sticky bar mobile (cao 48px + safe-area) */
-@media (max-width: 767px) {
+/* Chừa chỗ cho sticky bar (< 1024px, cao 56px + safe-area iPhone) để thanh không che cuối trang */
+@media (max-width: 1023px) {
   body {
     padding-bottom: calc(56px + env(safe-area-inset-bottom));
   }
@@ -165,9 +191,37 @@ img {
 
 @media (max-width: 768px) {
   .section-y {
-    padding-block: 72px;
+    padding-block: 56px;
   }
   .container-page {
-    width: min(calc(100% - 28px), var(--container));
+    width: min(calc(100% - 32px), var(--container));
+  }
+}
+
+/* "1 section = 1 khung hình" trên desktop: section tối thiểu cao bằng màn hình (trừ header),
+   nội dung căn giữa theo chiều dọc. Section nhiều nội dung vẫn được cao hơn (min-height, không ép).
+   Không áp cho màn thấp (< 640px cao) và mobile — ở đó nội dung tự nhiên quan trọng hơn. */
+@media (min-width: 1024px) and (min-height: 640px) {
+  main > section.section-y {
+    min-height: calc(100svh - var(--header-h));
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+}
+
+/* Tổ hợp tiện ích (desktop): cột sơ đồ rộng sao cho sơ đồ (tỉ lệ 1307:1203) cao vừa 1 màn hình,
+   nhưng luôn chừa ≥ 320px cho cột tiêu đề + danh sách. */
+@media (min-width: 1024px) {
+  .amenities-grid {
+    grid-template-columns:
+      clamp(440px, calc((100svh - var(--header-h) - 2 * var(--section-y)) * 1307 / 1203), calc(100% - 320px - 2.5rem))
+      minmax(0, 1fr);
+  }
+  /* Mặt bằng (ảnh 2444:1728): cùng nguyên tắc, cột phải (tiêu đề + bộ lọc + panel) ≥ 380px */
+  .floor-grid {
+    grid-template-columns:
+      clamp(520px, calc((100svh - var(--header-h) - 2 * var(--section-y)) * 2444 / 1728), calc(100% - 380px - 2.5rem))
+      minmax(0, 1fr);
   }
 }

@@ -24,11 +24,14 @@ export default function Location({ data, variant = "map-right" }) {
             </p>
             <div className="mb-8 grid divide-y divide-white/10 border-y border-white/10">
               {data.distances.map(([time, label]) => (
-                <div key={label} className="flex items-center gap-6 py-5">
-                  <strong className="min-w-20 font-display text-3xl text-imperia-black">
-                    <CountUp value={time} />
+                <div key={label} className="flex items-center gap-4 py-4 md:gap-6 md:py-5">
+                  <strong className="flex min-w-[64px] items-baseline gap-1 font-display text-3xl text-imperia-cream">
+                    <CountUp value={String(time).replace(/['’]/g, "")} />
+                    <span className="font-body text-xs font-bold uppercase tracking-[.06em] text-imperia-beige">
+                      phút
+                    </span>
                   </strong>
-                  <span className="text-sm text-white/70">{label}</span>
+                  <span className="text-[15px] leading-snug text-white/90">{label}</span>
                 </div>
               ))}
             </div>

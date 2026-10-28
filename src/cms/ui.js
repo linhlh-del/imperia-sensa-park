@@ -29,7 +29,7 @@ const UI = {
 
   // Mặt bằng
   'floor.title': 'Mặt bằng tầng điển hình',
-  'floor.subtitle': '{n} căn hộ mỗi tầng, chia thành 5 loại hình. Di chuột hoặc chạm vào từng căn trên mặt bằng để xem diện tích chi tiết.',
+  'floor.subtitle': '{n} căn hộ mỗi tầng, chia thành 5 loại hình. Chọn từng căn trên mặt bằng để xem diện tích chi tiết.',
   'floor.imageAlt': 'Mặt bằng tầng điển hình',
 
   // Tin tức
@@ -37,7 +37,7 @@ const UI = {
   'news.subtitle': 'Cập nhật những thông báo mới nhất, tiến độ dự án và các sự kiện nổi bật.',
 
   // Ước tính khoản vay
-  'loan.title': 'Ước tính khoản vay mua căn hộ Imperia Sensa Park',
+  'loan.title': 'Ước tính khoản vay',
   'loan.subtitle': 'Nhập giá căn hộ, tỷ lệ vay, lãi suất và thời hạn để ước tính số tiền trả hàng tháng. Kết quả chỉ mang tính tham khảo.',
   'loan.note': 'Kết quả ước tính, chưa gồm phí và ưu đãi hỗ trợ lãi suất của chủ đầu tư. Để lại thông tin để nhận bảng tính dòng tiền chi tiết theo từng căn.',
   'loan.cta': 'Nhận bảng tính chi tiết',
@@ -56,7 +56,7 @@ const UI = {
   'popup.imageAlt': 'Phối cảnh Imperia Sensa Park',
 
   // Header / nút
-  'header.cta': 'Nhận thông tin',
+  'header.cta': 'Nhận bảng giá & ưu đãi',
   'header.ctaMobile': 'Nhận thông tin dự án',
   'sticky.call': 'Gọi hotline',
   'sticky.zalo': 'Chat Zalo',
