@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { sectionForPath } from "../../lib/sections";
 import { site, t } from "../../cms/content";
 
 /* hotline / Zalo sửa trong CMS (Thông tin chung) */
@@ -172,11 +173,11 @@ export default function FloatingButtons({ onLead }) {
   const navigate = useNavigate();
   const { pathname, hash } = useLocation();
 
-  /* Lên đầu trang: cuộn mượt về đầu, bỏ "#section" khỏi URL (về "/" như bấm logo), đưa focus về đầu nội dung
+  /* Lên đầu trang: cuộn mượt về đầu, URL section (/lien-he…) trở về "/" (như bấm logo), đưa focus về đầu nội dung
      cho người dùng bàn phím / trình đọc màn hình */
   const toTop = () => {
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (hash) navigate({ pathname, hash: "" }, { replace: true });
+    if (hash || sectionForPath(pathname)) navigate("/", { replace: true });
     window.scrollTo({ top: 0, behavior: reduce ? "auto" : "smooth" });
     document.getElementById("top")?.focus({ preventScroll: true });
   };

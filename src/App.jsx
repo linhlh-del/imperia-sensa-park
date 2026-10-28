@@ -1,5 +1,5 @@
 import { Fragment, useEffect, useState } from "react";
-import { Routes, Route, useLocation, useNavigate } from "react-router-dom";
+import { Navigate, Routes, Route, useLocation, useNavigate, useParams } from "react-router-dom";
 import Header from "./components/layout/Header";
 import Footer from "./components/layout/Footer";
 import LeadPopup from "./components/ui/LeadPopup";
@@ -22,6 +22,7 @@ import { SUBPAGES } from "./lib/seo";
 import RouteSeo from "./components/seo/RouteSeo";
 import ScrollEffects from "./components/effects/ScrollEffects";
 import useSectionPaging from "./lib/useSectionPaging";
+import { hrefForSection, sectionForPath } from "./lib/sections";
 import { sendLead, validateLeadForm } from "./lib/lead";
 import { cmsTrack } from "./lib/cmsTracker";
 import { cmsLayout, site, t } from "./cms/content";
@@ -73,18 +74,53 @@ function HomePage({ onOpenModal, submitLead }) {
   /* máy tính: mỗi nấc lăn chuột = 1 section (xem src/lib/useSectionPaging.js) */
   useSectionPaging();
 
-  // URL theo section (giống norton-park): bấm menu / CTA tới "#vi-tri" → thanh địa chỉ hiện "/#vi-tri" và trang cuộn
-  // tới section đó. Effect chạy khi hash đổi, khi bấm lại cùng một mục (location.key đổi) và khi mở thẳng link
-  // có #section (chia sẻ link, quảng cáo trỏ tới đúng section, từ trang tin tức quay về).
+  const { section } = useParams();
+  const sectionId = section ? sectionForPath(`/${section}`) : undefined;
+  const navigate = useNavigate();
+
+  // URL theo section, không dấu "#": /tong-quan, /tinh-tra-gop, /lien-he mở trang chủ và cuộn tới section.
+  // Chạy khi đổi section, khi bấm lại cùng một mục (location.key đổi) và khi mở thẳng link (chia sẻ, quảng cáo).
   useEffect(() => {
-    const sectionId = decodeURIComponent(location.hash.slice(1));
     if (!sectionId) return undefined;
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const el = () => document.getElementById(sectionId);
     const frame = requestAnimationFrame(() => {
-      document.getElementById(sectionId)?.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" });
+      el()?.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" });
     });
-    return () => cancelAnimationFrame(frame);
-  }, [location.hash, location.key]);
+    /* Mở thẳng link (vd. /lien-he): phía trên còn nội dung tải sau (tin tức, ảnh) làm trang co / giãn → trong ~2,5s
+       đầu, mỗi lần bố cục đổi thì căn lại section ngay dưới header. Dừng ngay khi người dùng tự cuộn / chạm / gõ phím. */
+    let stop = false;
+    const header = () => document.querySelector("header")?.getBoundingClientRect().height || 0;
+    const realign = () => {
+      const target = el();
+      if (stop || !target) return;
+      if (Math.abs(target.getBoundingClientRect().top - header()) > 2) target.scrollIntoView({ block: "start" });
+    };
+    const ro = new ResizeObserver(() => requestAnimationFrame(realign));
+    const settle = window.setTimeout(() => ro.observe(document.querySelector("main") || document.body), reduce ? 0 : 900);
+    const quit = () => { stop = true; ro.disconnect(); };
+    const timer = window.setTimeout(quit, 2500);
+    ["wheel", "touchstart", "keydown", "pointerdown"].forEach((ev) => window.addEventListener(ev, quit, { passive: true, once: true }));
+    return () => {
+      cancelAnimationFrame(frame);
+      window.clearTimeout(settle);
+      window.clearTimeout(timer);
+      quit();
+      ["wheel", "touchstart", "keydown", "pointerdown"].forEach((ev) => window.removeEventListener(ev, quit));
+    };
+  }, [sectionId, location.key]);
+
+  // Link cũ dạng "/#lien-he" (đã chia sẻ / chạy quảng cáo) → chuyển sang URL mới, thay thế mục lịch sử
+  useEffect(() => {
+    const id = decodeURIComponent(location.hash.slice(1));
+    if (!id) return;
+    const href = hrefForSection(id);
+    if (href) navigate(href, { replace: true });
+    else document.getElementById(id)?.scrollIntoView({ block: "start" });
+  }, [location.hash, navigate]);
+
+  // "/<gì đó>" không phải section → về trang chủ (không hiện trang chủ ở URL lạ)
+  if (section && !sectionId) return <Navigate to="/" replace />;
 
   return (
     <>
@@ -130,9 +166,16 @@ export default function App() {
         window.scrollTo({ top: 0, behavior: "smooth" });
         return;
       }
-      // Đang ở trang chủ: đổi hash qua router (thêm 1 mục lịch sử → nút Back quay lại section trước),
-      // HomePage tự cuộn. Ở trang khác (vd. /tin-tuc/:id): về "/#section".
-      navigate({ pathname: "/", hash: `#${sectionId}` });
+      // Mục có URL riêng: trang SEO cùng chủ đề (/vi-tri…) hoặc đường dẫn section (/lien-he…) — qua router
+      // (thêm 1 mục lịch sử → nút Back quay lại). Section không có URL riêng: cuộn tại chỗ, URL giữ nguyên.
+      const href = hrefForSection(sectionId);
+      if (href) {
+        navigate(href);
+        return;
+      }
+      const el = document.getElementById(sectionId);
+      if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+      else navigate("/");
     };
     document.addEventListener("click", handleAnchorClick);
     return () => document.removeEventListener("click", handleAnchorClick);
@@ -179,8 +222,10 @@ export default function App() {
       <RouteSeo />
       <ScrollEffects />
       <Routes>
+        {/* "/" và "/tong-quan", "/lien-he"… dùng CHUNG một route (tham số tuỳ chọn) → chuyển section không
+            dựng lại trang chủ. Trang SEO /vi-tri…, /tin-tuc khai báo tĩnh nên luôn được ưu tiên. */}
         <Route
-          path="/"
+          path="/:section?"
           element={<HomePage onOpenModal={openLead} submitLead={submitLead} />}
         />
         {SUBPAGES.map(({ path }) => (

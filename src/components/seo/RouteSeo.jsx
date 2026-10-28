@@ -16,6 +16,7 @@ import {
 } from "../../lib/seo";
 import { cmsSeo } from "../../cms/content";
 import { cmsPageView } from "../../lib/cmsTracker";
+import { sectionForPath } from "../../lib/sections";
 
 const toIso = (date) => (date ? `${date}T08:00:00+07:00` : undefined);
 
@@ -52,8 +53,17 @@ export default function RouteSeo() {
       ...(o.ogImage && { image: toAbsoluteUrl(o.ogImage) }),
     };
 
-    if (path === "/") {
-      applySeo({ ...HOME_SEO, ...seoOverride, path: "/", isHome: true });
+    /* /tong-quan, /lien-he… là trang chủ cuộn tới section → SEO + canonical của trang chủ (không trùng lặp) */
+    if (path === "/" || sectionForPath(path)) {
+      const home = cmsSeo("/");
+      applySeo({
+        ...HOME_SEO,
+        ...(home.title && { title: home.title }),
+        ...(home.description && { description: home.description }),
+        ...(home.ogImage && { image: toAbsoluteUrl(home.ogImage) }),
+        path: "/",
+        isHome: true,
+      });
       return;
     }
 

@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import { hrefForSection } from "../../lib/sections";
 import Brand from "./Brand";
 import Button from "../ui/Button";
 import { site, t } from "../../cms/content";
@@ -53,16 +55,16 @@ export default function Header({ onLead }) {
             className="hidden items-center gap-6 text-sm text-white lg:flex xl:gap-7"
           >
             {links.map(([id, label]) => (
-              <a
+              <Link
                 key={id}
-                href={`#${id}`}
+                to={hrefForSection(id) || "/"}
                 aria-current={active === id ? "location" : undefined}
                 className={`relative py-2 transition-colors after:absolute after:inset-x-0 after:-bottom-0.5 after:h-0.5 after:origin-left after:rounded-full after:bg-imperia-accent after:transition-transform after:duration-300 hover:text-imperia-cream ${
                   active === id ? "after:scale-x-100" : "text-white/90 after:scale-x-0"
                 }`}
               >
                 {label}
-              </a>
+              </Link>
             ))}
           </nav>
           <div className="hidden lg:block">
@@ -101,9 +103,9 @@ export default function Header({ onLead }) {
         </div>
         <nav className="mt-5 grid">
           {links.map(([id, label], i) => (
-            <a
+            <Link
               key={id}
-              href={`#${id}`}
+              to={hrefForSection(id) || "/"}
               onClick={close}
               aria-current={active === id ? "location" : undefined}
               className="flex min-h-12 items-center gap-4 border-b border-white/10 py-3 text-white hover:text-imperia-cream"
@@ -112,7 +114,7 @@ export default function Header({ onLead }) {
                 {String(i + 1).padStart(2, "0")}
               </span>
               <span className={`text-base ${active === id ? "font-bold" : ""}`}>{label}</span>
-            </a>
+            </Link>
           ))}
         </nav>
         {/* Liên hệ nhanh trong menu — lấp khoảng trống giữa danh sách và nút CTA */}
