@@ -8,7 +8,7 @@ export default function SectionHeading({
   className = "",
 }) {
   return (
-    <div className={`mb-12 ${center ? "text-center" : ""} ${className}`}>
+    <div className={`mb-[clamp(12px,3svh,48px)] ${center ? "text-center" : ""} ${className}`}>
       {eyebrow && (
         <div
           className={`eyebrow ${light ? "text-imperia-beige" : ""} ${center ? "justify-center" : ""}`}

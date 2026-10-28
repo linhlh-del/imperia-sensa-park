@@ -21,6 +21,7 @@ import LoanCalculator from "./components/sections/LoanCalculator";
 import { SUBPAGES } from "./lib/seo";
 import RouteSeo from "./components/seo/RouteSeo";
 import ScrollEffects from "./components/effects/ScrollEffects";
+import useSectionPaging from "./lib/useSectionPaging";
 import { sendLead, validateLeadForm } from "./lib/lead";
 import { cmsTrack } from "./lib/cmsTracker";
 import { cmsLayout, site, t } from "./cms/content";
@@ -69,6 +70,8 @@ function homeOrder() {
 
 function HomePage({ onOpenModal, submitLead }) {
   const location = useLocation();
+  /* máy tính: mỗi nấc lăn chuột = 1 section (xem src/lib/useSectionPaging.js) */
+  useSectionPaging();
 
   // URL theo section (giống norton-park): bấm menu / CTA tới "#vi-tri" → thanh địa chỉ hiện "/#vi-tri" và trang cuộn
   // tới section đó. Effect chạy khi hash đổi, khi bấm lại cùng một mục (location.key đổi) và khi mở thẳng link

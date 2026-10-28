@@ -260,6 +260,7 @@ export default function FloorPlan({
 }) {
   const mapRef = useRef(null);
   const panelRef = useRef(null);
+  const sheetRef = useRef(null); // bottom-sheet chi tiết (điện thoại)
   const [mapHeight, setMapHeight] = useState(null);
 
   /* Cột phải (desktop) cao ĐÚNG bằng ảnh mặt bằng: panel dài hơn thì tự cuộn bên trong,
@@ -422,7 +423,8 @@ export default function FloorPlan({
     setHoverType(null);
   };
   const handleZoneLeave = () => {
-    if (pinned) return;
+    // bottom-sheet vừa mở che lên căn → trình duyệt bắn mouseleave; không được bỏ chọn căn đang xem
+    if (pinned || sheetRef.current?.open) return;
     setHoverCode(null);
   };
   const handleZoneClick = (item) => (e) => {
@@ -438,12 +440,14 @@ export default function FloorPlan({
     revealPanel();
   };
 
-  /* < 1024px panel nằm DƯỚI mặt bằng: chạm căn xong cuộn nhẹ để thấy panel */
+  /* Hiện chi tiết sau khi chạm căn / loại hình:
+     - điện thoại / máy tính bảng (< 1024px): mở bottom-sheet (mặt bằng giữ nguyên khung, section vừa 1 màn hình)
+     - máy tính: panel ở cột phải, không cần làm gì */
   const revealPanel = () => {
-    if (window.matchMedia("(min-width: 1024px)").matches) return;
-    requestAnimationFrame(() =>
-      panelRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" }),
-    );
+    if (window.matchMedia("(max-width: 1023px)").matches) {
+      if (!sheetRef.current?.open) sheetRef.current?.showModal();
+      return;
+    }
   };
 
   const handleLegendEnter = (key) => () => {
@@ -452,7 +456,7 @@ export default function FloorPlan({
     setHoverCode(null);
   };
   const handleLegendLeave = () => {
-    if (pinned) return;
+    if (pinned || sheetRef.current?.open) return;
     setHoverType(null);
   };
   const handleLegendClick = (key) => (e) => {
@@ -482,6 +486,7 @@ export default function FloorPlan({
       type="button"
       onClick={() => {
         closePanel();
+        sheetRef.current?.close();
         onLead();
       }}
       className="btn-base btn-primary mt-5 w-full"
@@ -666,7 +671,7 @@ export default function FloorPlan({
             {t("floor.title")}
           </h2>
           <p className="section-subtitle !mt-3">
-            {t("floor.subtitle", { n: meta.totalLayouts })}
+            {t("floor.subtitle", { n: meta.totalLayouts, k: typeSummary.length })}
           </p>
         </div>
 
@@ -679,8 +684,10 @@ export default function FloorPlan({
             value={activeTower}
             onChange={handleTowerChange}
           />
-          <div className="flex w-full flex-wrap items-center gap-2">
-            {legend.map((l) => {
+          {/* chỉ các loại hình CÓ trong tháp đang xem (Tháp A không có Studio → không hiện chip Studio);
+              điện thoại: lưới đều cột, mọi chip nhìn thấy hết, không kéo ngang */}
+          <div className={`grid w-full gap-2 ${typeSummary.length > 4 ? "grid-cols-3" : "grid-cols-4"} sm:flex sm:flex-wrap sm:items-center`}>
+            {typeSummary.map((l) => {
               const isActive = activeTypeKey === l.key;
               const isDimmed = isSelectionActive && !isActive;
               return (
@@ -694,7 +701,7 @@ export default function FloorPlan({
                   onClick={handleLegendClick(l.key)}
                   aria-pressed={isActive}
                   className={[
-                    "inline-flex min-h-11 items-center gap-2 rounded-full border px-3.5 py-2 text-xs font-bold uppercase tracking-[.08em] transition-[background-color,color,opacity,box-shadow] duration-300",
+                    "inline-flex min-h-11 items-center justify-center gap-2 whitespace-nowrap rounded-full border px-3.5 py-2 text-xs font-bold uppercase tracking-[.08em] transition-[background-color,color,opacity,box-shadow] duration-300 max-sm:px-2",
                     isActive
                       ? "border-imperia-primary bg-imperia-background-dark text-white shadow-soft"
                       : "border-imperia-primary/20 bg-white text-imperia-black hover:border-imperia-primary/50",
@@ -718,10 +725,28 @@ export default function FloorPlan({
             ref={panelRef}
             data-hide-floating
             onClick={(e) => e.stopPropagation()}
-            className="order-4 scroll-mb-[calc(72px+env(safe-area-inset-bottom))] lg:order-none lg:min-h-0 lg:flex-1 lg:overflow-y-auto lg:overscroll-contain lg:pr-1 [scrollbar-width:thin]"
+            className="order-4 max-lg:hidden lg:order-none lg:min-h-0 lg:flex-1 lg:overflow-y-auto lg:overscroll-contain lg:pr-1 [scrollbar-width:thin]"
           >
             {renderPanel()}
           </aside>
+          {/* điện thoại / máy tính bảng: thanh 1 dòng mở bottom-sheet bảng tổng hợp / chi tiết căn */}
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              sheetRef.current?.showModal();
+            }}
+            aria-haspopup="dialog"
+            className="order-4 flex min-h-14 w-full items-center justify-between gap-3 rounded-2xl border border-imperia-primary/15 bg-white px-4 text-left shadow-soft lg:hidden"
+          >
+            <span className="min-w-0">
+              <span className="block truncate text-sm font-semibold text-imperia-primary">
+                {activeUnit ? `${activeUnit.unit_code} · ${legendByKey[activeUnit.type]?.label || activeUnit.type}` : `${towerData.label} · ${meta.totalLayouts} căn / tầng`}
+              </span>
+              <span className="block truncate text-xs text-[#5c5f53]">Chạm vào căn trên mặt bằng để xem chi tiết</span>
+            </span>
+            <span className="shrink-0 text-xs font-bold uppercase tracking-[.08em] text-imperia-primary">Bảng tổng hợp ↑</span>
+          </button>
         </div>
 
           {/* Mặt bằng thật + overlay polygon.
@@ -731,7 +756,7 @@ export default function FloorPlan({
               Không dùng overflow-hidden: chip label có thể lấn sát mép ảnh. */}
           <div
             ref={mapRef}
-            className="relative order-3 self-start leading-none shadow-soft lg:order-first"
+            className="relative order-3 self-start leading-none shadow-soft max-lg:mx-auto max-lg:w-full max-lg:max-w-[calc(var(--fmap-h)*2444/1728)] [--fmap-h:32svh] md:[--fmap-h:40svh] lg:order-first"
             style={{ aspectRatio: `${VIEWBOX_WIDTH} / ${VIEWBOX_HEIGHT}` }}
           >
             {imageSrc ? (
@@ -890,7 +915,7 @@ export default function FloorPlan({
                     left: it.labelLeft,
                   }}
                   className={[
-                    "absolute inline-flex -translate-x-1/2 -translate-y-1/2 items-center gap-1.5 whitespace-nowrap rounded-full border px-2 py-1 text-xs font-bold uppercase leading-none lg:px-2.5 tracking-[.03em] backdrop-blur-sm transition-[transform,background-color,color,opacity,box-shadow] duration-300 max-sm:hidden",
+                    "absolute inline-flex -translate-x-1/2 -translate-y-1/2 items-center gap-1.5 before:absolute before:-inset-x-1 before:-inset-y-2.5 before:content-[''] whitespace-nowrap rounded-full border px-2 py-1 text-xs font-bold uppercase leading-none lg:px-2.5 tracking-[.03em] backdrop-blur-sm transition-[transform,background-color,color,opacity,box-shadow] duration-300 max-sm:hidden",
                     isActive
                       ? "z-20 scale-110 border-imperia-primary bg-imperia-background-dark text-white shadow-soft"
                       : "z-10 border-imperia-primary/25 bg-white/90 text-imperia-black",
@@ -927,6 +952,29 @@ export default function FloorPlan({
           </div>
         </div>
       </div>
+
+      {/* Bottom-sheet (< 1024px): <dialog> gốc — Esc / chạm nền / nút Đóng để đóng; đóng thì bỏ chọn căn */}
+      <dialog
+        ref={sheetRef}
+        aria-label={`Chi tiết mặt bằng — ${towerData.label}`}
+        onClose={closePanel}
+        onClick={(e) => {
+          e.stopPropagation(); // không để click lan ra document (đang ghim chọn căn)
+          if (e.target === e.currentTarget) e.currentTarget.close();
+        }}
+        className="imp-sheet m-0 mt-auto max-h-[85svh] w-full max-w-none overflow-y-auto rounded-t-[24px] border-0 bg-imperia-cream p-0 pb-[env(safe-area-inset-bottom)] backdrop:bg-imperia-black/50 md:mx-auto md:max-w-[640px] lg:hidden"
+      >
+        <div className="sticky top-0 z-10 flex justify-end bg-imperia-cream px-4 pt-3">
+          <button
+            type="button"
+            onClick={() => sheetRef.current?.close()}
+            className="btn-base btn-outline min-h-11 px-4"
+          >
+            Đóng
+          </button>
+        </div>
+        <div className="px-4 pb-5 pt-2">{renderPanel()}</div>
+      </dialog>
 
       {floorPlanLightbox && imageSrc ? (
         <div

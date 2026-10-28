@@ -29,7 +29,7 @@ const UI = {
 
   // Mặt bằng
   'floor.title': 'Mặt bằng tầng điển hình',
-  'floor.subtitle': '{n} căn hộ mỗi tầng, chia thành 5 loại hình. Chọn từng căn trên mặt bằng để xem diện tích chi tiết.',
+  'floor.subtitle': '{n} căn hộ mỗi tầng, gồm {k} loại hình. Chọn từng căn trên mặt bằng để xem diện tích chi tiết.',
   'floor.imageAlt': 'Mặt bằng tầng điển hình',
 
   // Tin tức

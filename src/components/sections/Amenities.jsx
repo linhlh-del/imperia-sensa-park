@@ -95,7 +95,7 @@ export default function Amenities() {
           {/* MAP */}
           <div
             ref={mapRef}
-            className="relative order-2 overflow-hidden rounded-[28px] border border-imperia-primary/10 bg-imperia-cream shadow-soft lg:order-none"
+            className="relative order-2 overflow-hidden rounded-[28px] border border-imperia-primary/10 bg-imperia-cream shadow-soft max-lg:mx-auto max-lg:w-full max-lg:max-w-[calc(var(--amap-h)*1307/1203)] [--amap-h:38svh] md:[--amap-h:38svh] lg:order-none"
           >
             <img
               src={mapNgoaiKhu}
@@ -251,7 +251,7 @@ export default function Amenities() {
                             onMouseLeave={() => setActiveId(null)}
                             onClick={() => setActiveId(item.id)}
                             aria-pressed={activeId === item.id}
-                            className={`box-border flex min-h-[56px] w-full items-center gap-2.5 border-b border-white/10 bg-transparent p-2 text-left font-body cursor-pointer transition-colors duration-300 ${
+                            className={`box-border flex min-h-12 w-full items-center gap-2.5 border-b border-white/10 bg-transparent px-2 py-1.5 text-left font-body cursor-pointer transition-colors duration-300 ${
                               activeId === item.id
                                 ? "bg-imperia-background-light"
                                 : ""

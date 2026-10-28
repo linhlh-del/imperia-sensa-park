@@ -76,9 +76,10 @@ function Field({ id, label, unit, min, max, step, value, onChange }) {
         value={value}
         onChange={(e) => onChange(Number(e.target.value))}
         aria-valuetext={`${value} ${unit}`}
-        className="h-9 w-full cursor-pointer accent-imperia-primary"
+        className="h-8 w-full cursor-pointer accent-imperia-primary md:h-9"
       />
-      <div className="-mt-1 flex justify-between text-xs text-[#64675c]" aria-hidden="true">
+      {/* thang min/max: chỉ hiện trên màn đủ cao (ít giá trị thông tin, tốn 1 dòng mỗi thanh) */}
+      <div className="-mt-1 flex justify-between text-xs text-[#5c5f53] max-md:hidden [@media(max-height:51.25rem)]:hidden" aria-hidden="true">
         <span>
           {min} {unit}
         </span>
@@ -90,14 +91,15 @@ function Field({ id, label, unit, min, max, step, value, onChange }) {
   );
 }
 
-function ResultRow({ label, hint, value, strong = false, last = false }) {
+/* secondary: dòng phụ — trên điện thoại ẩn cho tới khi bấm "Xem chi tiết" (chỉ 2 con số trả hằng tháng hiện sẵn) */
+function ResultRow({ label, hint, value, strong = false, last = false, secondary = false, open = true }) {
   return (
     <div
-      className={`flex items-baseline justify-between gap-4 ${last ? "" : "border-b border-white/15 pb-3"}`}
+      className={`flex items-baseline justify-between gap-4 ${last ? "" : "border-b border-white/15 pb-[clamp(8px,1.4svh,12px)]"} ${secondary && !open ? "max-md:hidden" : ""}`}
     >
       <dt className="text-white/90">
         {label}
-        {hint ? <span className="block text-xs text-white/75">{hint}</span> : null}
+        {hint ? <span className="block text-xs text-white/90">{hint}</span> : null}
       </dt>
       <dd
         className={`shrink-0 whitespace-nowrap text-right font-bold tabular-nums ${strong ? "text-lg text-imperia-cream" : ""}`}
@@ -113,6 +115,8 @@ export default function LoanCalculator({ onLead }) {
   const set = (key) => (val) =>
     setValues((v) => ({ ...v, [key]: Number.isFinite(val) ? val : 0 }));
   const result = useMemo(() => calcLoan(values), [values]);
+  /* điện thoại: chi tiết khoản vay thu gọn — nhập liệu + 2 con số chính + CTA vừa 1 màn hình */
+  const [detail, setDetail] = useState(false);
 
   return (
     <section
@@ -121,11 +125,12 @@ export default function LoanCalculator({ onLead }) {
       className="section-y bg-white"
     >
       <div className="container-page">
-        <SectionHeading title={t("loan.title")} subtitle={t("loan.subtitle")} />
+        <SectionHeading title={t("loan.title")} subtitle={t("loan.subtitle")} className="max-md:[&_.section-subtitle]:line-clamp-2" />
 
-        <div className="grid gap-8 lg:grid-cols-[1fr_1fr]">
+        {/* 2 cột từ 768px (máy tính bảng không còn xếp chồng 2 khối dài) */}
+        <div className="grid gap-[clamp(12px,2.6svh,32px)] md:grid-cols-2">
           {/* Cột nhập liệu */}
-          <div className="grid gap-4 rounded-[24px] border border-imperia-primary/10 bg-imperia-cream p-6 md:gap-5 md:p-8">
+          <div className="grid gap-[clamp(6px,1.4svh,20px)] rounded-[24px] border border-imperia-primary/10 bg-imperia-cream p-[clamp(16px,2.8svh,32px)]">
             <Field
               id="calc-price"
               label="Giá căn hộ"
@@ -172,12 +177,12 @@ export default function LoanCalculator({ onLead }) {
               ghi chú và CTA neo đáy card để không còn khoảng trống ở nửa dưới. */}
           <div
             data-hide-floating
-            className="flex flex-col rounded-[24px] bg-imperia-background-dark p-6 text-white md:p-8"
+            className="flex flex-col rounded-[24px] bg-imperia-background-dark p-[clamp(16px,2.8svh,32px)] text-white"
             aria-live="polite"
           >
-            <dl className="grid flex-1 content-evenly gap-4 text-sm md:text-[15px]">
-              <ResultRow label="Vốn tự có cần chuẩn bị" value={formatBillion(result.equity)} />
-              <ResultRow label="Số tiền vay" value={formatBillion(result.principal)} />
+            <dl className="grid flex-1 content-evenly gap-[clamp(8px,1.4svh,16px)] text-sm md:text-[15px]">
+              <ResultRow label="Vốn tự có cần chuẩn bị" value={formatBillion(result.equity)} secondary open={detail} />
+              <ResultRow label="Số tiền vay" value={formatBillion(result.principal)} secondary open={detail} />
               <ResultRow
                 label="Trả tháng đầu"
                 hint="Gốc đều, lãi giảm dần"
@@ -195,13 +200,24 @@ export default function LoanCalculator({ onLead }) {
                 hint="Gốc đều / niên kim"
                 value={`${formatBillion(result.decliningInterest)} / ${formatBillion(result.annuityInterest)}`}
                 last
+                secondary
+                open={detail}
               />
             </dl>
-            <div className="mt-auto pt-6">
-              <p className="text-[13px] leading-relaxed text-white/85">
+            <button
+              type="button"
+              onClick={() => setDetail((v) => !v)}
+              aria-expanded={detail}
+              className="mt-2 inline-flex min-h-11 items-center gap-1.5 self-start text-sm font-bold text-imperia-cream underline-offset-4 hover:underline md:hidden"
+            >
+              {detail ? "Thu gọn" : "Xem chi tiết khoản vay"}
+              <span aria-hidden="true" className={`transition-transform ${detail ? "rotate-180" : ""}`}>⌄</span>
+            </button>
+            <div className="mt-auto pt-[clamp(10px,2svh,24px)]">
+              <p className={`text-[13px] leading-relaxed text-white/90 ${detail ? "" : "max-md:hidden"}`}>
                 {t("loan.note")}
               </p>
-              <Button variant="light" onClick={onLead} className="mt-5 w-full">
+              <Button variant="light" onClick={onLead} className="mt-[clamp(10px,2svh,20px)] w-full">
                 {t("loan.cta")}
               </Button>
             </div>

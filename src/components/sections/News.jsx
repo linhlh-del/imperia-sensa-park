@@ -119,7 +119,7 @@ export default function News({
         {displayItems && displayItems.length > 0 && (
           <>
             {/* Controls */}
-            <div className="mt-10 mb-6 flex items-center justify-between">
+            <div className="mb-[clamp(10px,2svh,24px)] flex items-center justify-between">
               <div
                 className="flex gap-2"
                 role="group"
@@ -130,7 +130,7 @@ export default function News({
                   onClick={() => scrollByCard(-1)}
                   disabled={!canPrev}
                   aria-label="Tin trước"
-                  className="flex h-12 w-12 items-center justify-center rounded-full border border-imperia-primary/25 text-imperia-primary transition duration-300 hover:bg-imperia-background-dark hover:text-white disabled:cursor-default disabled:opacity-30 disabled:hover:bg-transparent disabled:hover:text-imperia-primary"
+                  className="flex h-12 w-12 items-center justify-center rounded-full border border-imperia-primary/25 text-imperia-primary transition duration-300 hover:bg-imperia-background-dark hover:text-white disabled:pointer-events-none disabled:invisible"
                 >
                   <ChevronIcon direction="left" />
                 </button>
@@ -139,7 +139,7 @@ export default function News({
                   onClick={() => scrollByCard(1)}
                   disabled={!canNext}
                   aria-label="Tin tiếp theo"
-                  className="flex h-12 w-12 items-center justify-center rounded-full border border-imperia-primary/25 text-imperia-primary transition duration-300 hover:bg-imperia-background-dark hover:text-white disabled:cursor-default disabled:opacity-30 disabled:hover:bg-transparent disabled:hover:text-imperia-primary"
+                  className="flex h-12 w-12 items-center justify-center rounded-full border border-imperia-primary/25 text-imperia-primary transition duration-300 hover:bg-imperia-background-dark hover:text-white disabled:pointer-events-none disabled:invisible"
                 >
                   <ChevronIcon direction="right" />
                 </button>
@@ -156,7 +156,8 @@ export default function News({
             {/* Track */}
             <div
               ref={trackRef}
-              className="flex snap-x snap-mandatory gap-6 overflow-x-auto pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+              /* mép phải mờ dần khi còn tin phía sau → rõ là carousel */
+              className={`flex snap-x snap-mandatory gap-[clamp(12px,1.8vw,24px)] overflow-x-auto pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden ${canNext ? "[mask-image:linear-gradient(to_right,#000_calc(100%-64px),transparent)]" : ""}`}
             >
               {displayItems.map((item) => {
                 const href = getHref(item.id);
@@ -168,7 +169,7 @@ export default function News({
                   >
                     <Link
                       to={href}
-                      className="relative block h-56 overflow-hidden bg-gradient-to-br from-imperia-background-dark/15 to-imperia-beige/60"
+                      className="relative block h-[clamp(120px,22svh,224px)] overflow-hidden bg-gradient-to-br from-imperia-background-dark/15 to-imperia-beige/60"
                     >
                       {item.image_url && (
                         <img
@@ -183,11 +184,11 @@ export default function News({
                       </span>
                     </Link>
 
-                    <div className="flex flex-1 flex-col p-6">
-                      <div className="text-xs font-bold tracking-widest text-imperia-secondary">
+                    <div className="flex flex-1 flex-col p-[clamp(14px,2.2svh,24px)]">
+                      <div className="text-xs font-bold tracking-widest text-imperia-secondary-dark">
                         {formatDate(item.published_at)}
                       </div>
-                      <h3 className="mt-3 font-display text-xl font-semibold text-imperia-primary">
+                      <h3 className="mt-2 line-clamp-3 font-display text-xl font-semibold leading-snug text-imperia-primary">
                         <Link
                           to={href}
                           className="hover:text-imperia-secondary"
@@ -195,12 +196,12 @@ export default function News({
                           {item.title}
                         </Link>
                       </h3>
-                      <p className="mt-3 line-clamp-3 text-sm text-imperia-black/70">
+                      <p className="mt-2 line-clamp-2 text-sm text-imperia-black/80">
                         {item.excerpt}
                       </p>
                       <Link
                         to={href}
-                        className="mt-5 inline-block text-sm font-bold text-imperia-primary hover:text-imperia-secondary"
+                        className="mt-auto inline-flex min-h-11 items-center pt-2 text-sm font-bold text-imperia-primary hover:text-imperia-secondary"
                       >
                         Xem chi tiết →
                       </Link>
@@ -211,7 +212,7 @@ export default function News({
             </div>
 
             {/* Dots */}
-            <div className="mt-4 flex justify-center gap-2">
+            <div className="mt-[clamp(6px,1.4svh,16px)] flex justify-center gap-2">
               {displayItems.map((item, i) => (
                 <span
                   key={item.id}

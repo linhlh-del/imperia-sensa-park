@@ -109,7 +109,7 @@ export default function FeaturedAmenities() {
       id="hinhanh"
       className="section-y bg-imperia-background-dark font-body"
     >
-      <div className="mx-auto w-full max-w-[1400px] px-5">
+      <div className="container-page">
         {/* HEADER */}
         <div className="mb-8 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
           <div className="text-left">

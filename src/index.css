@@ -48,12 +48,30 @@
   /* Chiều cao header — dùng chung cho header, hero, scroll-padding (anchor) và chiều cao section */
   --header-h: 64px;
   /* Padding dọc section theo chiều cao màn hình: màn thấp không bị phí khoảng trắng */
-  --section-y: clamp(48px, 7vh, 88px);
+  --section-y: clamp(20px, 4svh, 64px);
+  /* Lề trái/phải của khung nội dung: 16px điện thoại · 80px máy tính (chừa vùng cụm nút nổi bên phải) */
+  --gutter: 16px;
+  /* Thanh liên hệ dính đáy (< 1024px, 48px + viền 1px) gồm vùng an toàn iPhone */
+  --bar-h: 0px;
+  --bar: calc(var(--bar-h) + env(safe-area-inset-bottom, 0px));
+  /* "Khung hình" thực = màn hình − header cố định − thanh đáy. Mọi section cao tối thiểu bằng giá trị này. */
+  --screen: calc(100svh - var(--header-h) - var(--bar));
   --transition: 280ms cubic-bezier(0.2, 0.7, 0.2, 1);
 }
 @media (min-width: 1024px) {
   :root {
     --header-h: 76px;
+    --gutter: 80px;
+  }
+}
+@media (min-width: 640px) and (max-width: 1023px) {
+  :root {
+    --gutter: 32px;
+  }
+}
+@media (max-width: 1023px) {
+  :root {
+    --bar-h: 49px;
   }
 }
 /* Điện thoại xoay ngang: header gọn lại để còn chỗ cho nội dung */
@@ -65,8 +83,26 @@
 
 html {
   scroll-behavior: smooth;
-  /* Bấm menu / CTA tới #section: tiêu đề không bị header cố định che */
+  /* Bấm menu / CTA tới #section: tiêu đề không bị header cố định che; nội dung cuối không nằm dưới thanh đáy */
   scroll-padding-top: var(--header-h);
+  scroll-padding-bottom: var(--bar);
+  /* Cuộn theo section: cảm ứng / < 1024px dùng proximity (section dài hơn màn hình vẫn đọc trọn) */
+  scroll-snap-type: y proximity;
+}
+/* Máy tính dùng chuột: mỗi nấc lăn dừng đúng đầu section kế (không trượt qua nhiều section) */
+@media (min-width: 1024px) and (pointer: fine) {
+  html {
+    scroll-snap-type: y mandatory;
+  }
+  main > section {
+    scroll-snap-stop: always;
+  }
+}
+main > section {
+  scroll-snap-align: start;
+}
+footer {
+  scroll-snap-align: end;
 }
 @media (prefers-reduced-motion: reduce) {
   html {
@@ -124,7 +160,7 @@ img {
     background-image: url("/assets/lead-bg.optimized.webp");
   }
   .container-page {
-    width: min(calc(100% - 40px), var(--container));
+    width: min(calc(100% - 2 * var(--gutter)), var(--container));
     margin-inline: auto;
   }
   .section-y {
@@ -256,31 +292,22 @@ img {
   }
 }
 
-/* Chừa chỗ cho sticky bar (< 1024px, cao 56px + safe-area iPhone) để thanh không che cuối trang */
+/* Chừa chỗ cho sticky bar (< 1024px) để thanh không che cuối trang */
 @media (max-width: 1023px) {
   body {
-    padding-bottom: calc(56px + env(safe-area-inset-bottom));
+    padding-bottom: var(--bar);
   }
   .mobile-sticky-bar {
     padding-bottom: env(safe-area-inset-bottom);
   }
 }
 
-@media (max-width: 768px) {
-  .section-y {
-    padding-block: 56px;
-  }
-  .container-page {
-    width: min(calc(100% - 32px), var(--container));
-  }
-}
-
-/* "1 section = 1 khung hình" trên desktop: section tối thiểu cao bằng màn hình (trừ header),
-   nội dung căn giữa theo chiều dọc. Section nhiều nội dung vẫn được cao hơn (min-height, không ép).
-   Không áp cho màn thấp (< 640px cao) và mobile — ở đó nội dung tự nhiên quan trọng hơn. */
-@media (min-width: 1024px) and (min-height: 640px) {
+/* "1 section = 1 khung hình" ở mọi thiết bị: section tối thiểu cao đúng 1 khung (--screen), nội dung căn giữa
+   dọc → section ít nội dung không lộ đầu section sau, điểm dừng snap trùng đầu section.
+   Section nhiều nội dung vẫn được cao hơn (min-height, không ép). Bỏ qua điện thoại xoay ngang (màn quá thấp). */
+@media (min-height: 31.25rem) {
   main > section.section-y {
-    min-height: calc(100svh - var(--header-h));
+    min-height: var(--screen);
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -300,5 +327,20 @@ img {
     grid-template-columns:
       clamp(520px, calc((100svh - var(--header-h) - 2 * var(--section-y)) * 2444 / 1728), calc(100% - 380px - 2.5rem))
       minmax(0, 1fr);
+  }
+}
+
+/* bottom-sheet (dialog) trượt lên từ đáy */
+dialog.imp-sheet[open] {
+  animation: imp-sheet-up 0.32s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+@keyframes imp-sheet-up {
+  from {
+    transform: translateY(100%);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  dialog.imp-sheet[open] {
+    animation: none;
   }
 }

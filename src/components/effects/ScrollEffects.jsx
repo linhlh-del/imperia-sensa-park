@@ -12,11 +12,9 @@ import { shouldSkipMotion } from "./motion";
 // Nhóm phần tử được fade-in. `step` = độ trễ (ms) giữa các phần tử anh em (hiệu ứng lần lượt).
 const GROUPS = [
   // Mọi khối cấp 1 trong các section của trang chủ (trừ Hero và khối số liệu có hiệu ứng riêng)
-  { selector: "main section:not(#hero) .container-page > *:not(.mt-16)", step: 0 },
+  { selector: "main section:not(#hero) .container-page > *:not([data-stats])", step: 0 },
   // Ô số liệu ở Overview: hiện lần lượt
-  { selector: "#tong-quan .mt-16 > div", step: 110 },
-  // Thư viện ảnh "Tiện ích nổi bật" (không có .container-page)
-  { selector: "#hinhanh > div:first-child > *", step: 0 },
+  { selector: "#tong-quan [data-stats] > div", step: 110 },
   // Hero: tiêu đề, mô tả, nút hiện lần lượt; thanh số liệu hiện lần lượt
   { selector: "#hero .container-page.z-10 > div > *", step: 130 },
   { selector: "#hero dl > div", step: 110 },

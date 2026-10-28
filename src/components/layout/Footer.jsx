@@ -4,11 +4,11 @@ import { site } from "../../cms/content";
 
 export default function Footer() {
   return (
-    <footer className="bg-imperia-background-dark text-white">
+    <footer data-hide-floating className="bg-imperia-background-dark text-white">
       <div className="container-page grid gap-10 py-14 md:grid-cols-4">
         <div className="md:col-span-2">
           <div className="font-display text-xl tracking-widest">
-            IMPERIA <span className="text-imperia-beige">SENSA PARK</span>
+            IMPERIA <span className="text-imperia-cream">SENSA PARK</span>
           </div>
           {/* Địa chỉ thống nhất với schema (index.html) và popup đăng ký */}
           <address className="mt-4 max-w-md text-sm not-italic leading-6 text-white/90">

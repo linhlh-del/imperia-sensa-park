@@ -26,7 +26,7 @@ export const project = {
     stats: [
       ["~5", "ha", "QUY MÔ DỰ ÁN"],
       ["02", "THÁP", "THE SENSA"],
-      ["922", "CĂN", "TỔNG SỐ CĂN HỘ"],
+      ["922", "CĂN", "CĂN HỘ CAO TẦNG"],
       ["40", "+", "Tiện ích nổi bật"],
     ],
   },
@@ -43,7 +43,7 @@ export const project = {
     facts: [
       ["05", "LOẠI HÌNH CĂN HỘ"],
       ["28%", "MẬT ĐỘ XÂY DỰNG"],
-      ["93 CĂN", "NHÀ PHỐ & BIỆT THỰ"],
+      ["93 CĂN", "THẤP TẦNG · NHÀ PHỐ & BIỆT THỰ"],
       ["QUÝ IV/ 2028", "DỰ KIẾN BÀN GIAO"],
     ],
   },

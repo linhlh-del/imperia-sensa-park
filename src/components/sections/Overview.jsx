@@ -1,6 +1,5 @@
 import Button from "../ui/Button";
 import SectionHeading from "../ui/SectionHeading";
-import CountUp from "../effects/CountUp";
 import { img, t } from "../../cms/content";
 
 /* variant (CMS): "image-right" (mặc định) | "image-left" */
@@ -12,13 +11,13 @@ export default function Overview({ data, variant = "image-right" }) {
       className="section-y bg-imperia-cream"
     >
       <div className="container-page">
-        <SectionHeading title={data.title} semanticTitle={t("overview.seo")} />
+        <SectionHeading title={data.title} semanticTitle={t("overview.seo")} className="[&_.section-title]:max-w-[17ch]" />
         <div
-          className={`grid items-center gap-12 ${variant === "image-left" ? "lg:grid-cols-[1.32fr_0.68fr] [&>img]:lg:order-first" : "lg:grid-cols-[0.68fr_1.32fr]"}`}
+          className={`grid items-center gap-[clamp(16px,4svh,48px)] ${variant === "image-left" ? "lg:grid-cols-[1.32fr_0.68fr] [&>img]:lg:order-first" : "lg:grid-cols-[0.68fr_1.32fr]"}`}
         >
           <div>
-            <p className="section-subtitle !mt-0 mb-7">{data.subtitle}</p>
-            <ul className="mb-8 grid gap-4">
+            <p className="section-subtitle !mt-0 mb-[clamp(12px,2.6svh,28px)]">{data.subtitle}</p>
+            <ul className="mb-[clamp(16px,3svh,32px)] grid gap-[clamp(8px,1.6svh,16px)]">
               {data.bullets.map((x) => (
                 <li key={x} className="flex gap-3 text-sm text-[#64675c]">
                   <span className="grid h-6 w-6 shrink-0 place-items-center rounded-full bg-imperia-accent/30 text-imperia-primary">
@@ -35,14 +34,16 @@ export default function Overview({ data, variant = "image-right" }) {
             alt={t("overview.imageAlt")}
             loading="lazy"
             decoding="async"
-            className="aspect-[1619/972] w-full rounded-[28px] border border-imperia-primary/10 object-contain shadow-soft"
+            /* ảnh bản đồ Metro có chữ: giữ đúng tỉ lệ 1619:972, thu bề RỘNG theo chiều cao màn hình (không cắt chữ) */
+            className="mx-auto aspect-[1619/972] w-full max-w-[calc(var(--overview-img-h)*1619/972)] rounded-[28px] border border-imperia-primary/10 object-contain shadow-soft [--overview-img-h:clamp(130px,20svh,300px)] md:[--overview-img-h:clamp(170px,24svh,380px)] lg:[--overview-img-h:clamp(200px,40svh,468px)]"
           />
         </div>
-        <div className="mt-16 grid grid-cols-2 md:grid-cols-4">
+        <div data-stats className="mt-[clamp(12px,3svh,64px)] grid grid-cols-2 md:grid-cols-4">
           {data.facts.map(([n, l]) => (
-            <div key={l} className="flex flex-col justify-center border border-imperia-primary/10 px-4 py-6">
-              <strong className="whitespace-nowrap font-display text-[clamp(24px,2.4vw,30px)] leading-tight text-imperia-primary">
-                <CountUp value={n} />
+            <div key={l} className="flex flex-col justify-center border border-imperia-primary/10 px-3 py-[clamp(6px,1.4svh,24px)] md:px-4">
+              <strong className="whitespace-nowrap font-display text-[clamp(20px,2.4vw,30px)] leading-tight text-imperia-primary">
+                {/* số đo / mốc thời gian hiện tĩnh, không đếm */}
+                {n}
               </strong>
               <span className="mt-1 block text-[13px] uppercase leading-snug tracking-[.04em] text-[#5c5f53]">{l}</span>
             </div>

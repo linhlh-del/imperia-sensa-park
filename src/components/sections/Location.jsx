@@ -1,6 +1,5 @@
 import Button from "../ui/Button";
 import SectionHeading from "../ui/SectionHeading";
-import CountUp from "../effects/CountUp";
 import { img, t } from "../../cms/content";
 
 /* variant (CMS): "map-right" (mặc định) | "map-left" */
@@ -17,17 +16,18 @@ export default function Location({ data, variant = "map-right" }) {
           title={data.title}
           semanticTitle={t("location.seo")}
         />
-        <div className="grid items-center gap-12 lg:grid-cols-2">
+        <div className="grid items-center gap-[clamp(16px,4svh,48px)] md:grid-cols-2">
           <div>
-            <p className="section-subtitle section-subtitle-light !mt-0 mb-7">
+            <p className="section-subtitle section-subtitle-light !mt-0 mb-[clamp(12px,2.6svh,28px)]">
               {data.subtitle}
             </p>
-            <div className="mb-8 grid divide-y divide-white/10 border-y border-white/10">
+            <div className="mb-[clamp(16px,3svh,32px)] grid divide-y divide-white/10 border-y border-white/10">
               {data.distances.map(([time, label]) => (
-                <div key={label} className="flex items-center gap-4 py-4 md:gap-6 md:py-5">
+                <div key={label} className="flex items-center gap-4 py-[clamp(6px,1.3svh,20px)] md:gap-6">
                   <strong className="flex min-w-[64px] items-baseline gap-1 font-display text-3xl text-imperia-cream">
-                    <CountUp value={String(time).replace(/['’]/g, "")} />
-                    <span className="font-body text-xs font-bold uppercase tracking-[.06em] text-imperia-beige">
+                    {/* thời gian di chuyển: số tĩnh (không đếm) để luôn đúng */}
+                    {String(time).replace(/['’]/g, "")}
+                    <span className="font-body text-xs font-bold uppercase tracking-[.06em] text-imperia-cream">
                       phút
                     </span>
                   </strong>
@@ -40,7 +40,8 @@ export default function Location({ data, variant = "map-right" }) {
             </Button>
           </div>
           <div
-            className={`relative aspect-[1872/1248] overflow-hidden rounded-[28px] border border-white/10 ${variant === "map-left" ? "lg:order-first" : ""}`}
+            /* bản đồ có ghim: giữ đúng tỉ lệ 1872:1248, thu bề RỘNG theo chiều cao màn hình để vừa 1 khung */
+            className={`relative mx-auto aspect-[1872/1248] w-full max-w-[calc(var(--map-h)*1872/1248)] overflow-hidden rounded-[28px] border border-white/10 [--map-h:clamp(150px,22svh,320px)] md:[--map-h:clamp(220px,46svh,620px)] ${variant === "map-left" ? "md:order-first" : ""}`}
           >
             <img
               src={img("location.map", "/assets/map.optimized.webp")}
