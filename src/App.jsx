@@ -70,25 +70,18 @@ function homeOrder() {
 function HomePage({ onOpenModal, submitLead }) {
   const location = useLocation();
 
-  // Khi đến "/" kèm state.scrollTo (được Header điều hướng từ trang khác
-  // gửi qua, xem handleAnchorClick bên dưới), cuộn tới đúng section sau khi
-  // HomePage đã render xong.
+  // URL theo section (giống norton-park): bấm menu / CTA tới "#vi-tri" → thanh địa chỉ hiện "/#vi-tri" và trang cuộn
+  // tới section đó. Effect chạy khi hash đổi, khi bấm lại cùng một mục (location.key đổi) và khi mở thẳng link
+  // có #section (chia sẻ link, quảng cáo trỏ tới đúng section, từ trang tin tức quay về).
   useEffect(() => {
-    const sectionId = location.state?.scrollTo;
-    if (!sectionId) return;
-
-    const scrollToSection = () => {
-      const target = document.getElementById(sectionId);
-      if (target) {
-        target.scrollIntoView({ behavior: "smooth", block: "start" });
-      }
-      // Xóa state khỏi history entry hiện tại để reload/back không bị
-      // cuộn lại lần nữa.
-      window.history.replaceState({}, "");
-    };
-
-    requestAnimationFrame(scrollToSection);
-  }, [location.state]);
+    const sectionId = decodeURIComponent(location.hash.slice(1));
+    if (!sectionId) return undefined;
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const frame = requestAnimationFrame(() => {
+      document.getElementById(sectionId)?.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" });
+    });
+    return () => cancelAnimationFrame(frame);
+  }, [location.hash, location.key]);
 
   return (
     <>
@@ -121,37 +114,26 @@ export default function App() {
 
   useEffect(() => {
     const handleAnchorClick = (event) => {
+      // giữ hành vi mặc định khi mở tab mới / chuột giữa / phím bổ trợ
+      if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
       const anchor = event.target.closest('a[href^="#"]');
       if (!anchor) return;
-      const hash = anchor.getAttribute("href"); // vd: "#lien-he"
-      const sectionId = hash.slice(1);
-      const target = document.querySelector(hash);
-
+      const sectionId = anchor.getAttribute("href").slice(1); // vd: "lien-he"
       event.preventDefault();
 
-      if (target) {
-        // Section có sẵn ngay trên trang hiện tại (đang ở "/") -> cuộn tại chỗ.
-        target.scrollIntoView({ behavior: "smooth", block: "start" });
-        window.history.replaceState(
-          null,
-          "",
-          `${window.location.pathname}${window.location.search}`,
-        );
+      // logo (#top): về đầu trang chủ, URL sạch "/"
+      if (!sectionId || sectionId === "top") {
+        if (location.pathname !== "/" || location.hash) navigate("/");
+        window.scrollTo({ top: 0, behavior: "smooth" });
         return;
       }
-
-      if (location.pathname === "/") {
-        // Đang ở trang chủ nhưng không thấy section (id sai) -> không làm gì.
-        return;
-      }
-
-      // Đang ở trang khác (vd: /tin-tuc/:id) -> điều hướng về trang chủ
-      // kèm state.scrollTo để HomePage tự cuộn tới sau khi render xong.
-      navigate("/", { state: { scrollTo: sectionId } });
+      // Đang ở trang chủ: đổi hash qua router (thêm 1 mục lịch sử → nút Back quay lại section trước),
+      // HomePage tự cuộn. Ở trang khác (vd. /tin-tuc/:id): về "/#section".
+      navigate({ pathname: "/", hash: `#${sectionId}` });
     };
     document.addEventListener("click", handleAnchorClick);
     return () => document.removeEventListener("click", handleAnchorClick);
-  }, [navigate, location.pathname]);
+  }, [navigate, location.pathname, location.hash]);
 
   const openLead = () => setLeadOpen(true);
   // Mọi form đăng ký đều đi qua đây: chặn gửi nếu SĐT không hợp lệ,
