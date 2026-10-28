@@ -95,7 +95,7 @@ function MobileStickyBar({ onLead }) {
       <button
         type="button"
         onClick={onLead}
-        className={`${item} bg-imperia-accent text-imperia-black`}
+        className={`${item} cta-fx relative bg-imperia-accent text-imperia-black`}
       >
         <PdfIcon className="h-5 w-5" aria-hidden="true" />
         {t("sticky.price")}
@@ -189,6 +189,9 @@ export default function FloatingButtons({ onLead }) {
             aria-hidden="true"
             className="pointer-events-none absolute inset-0 rounded-full border-2 border-imperia-accent/60 animate-fb-ring-1 motion-reduce:hidden"
           />
+          {/* vệt sáng lướt định kỳ (cùng hiệu ứng CTA với norton-park) — lớp phủ riêng để không
+              cắt nhãn hover nằm ngoài nút */}
+          <span aria-hidden="true" className="cta-fx pointer-events-none absolute inset-0 rounded-full" />
           <PdfIcon className="relative h-6 w-6" aria-hidden="true" />
           <FbLabel>Nhận bảng giá</FbLabel>
         </button>

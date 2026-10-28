@@ -160,10 +160,87 @@ img {
     background: currentColor;
   }
   .btn-base {
-    @apply inline-flex min-h-12 items-center justify-center gap-2 rounded-full border px-6 text-sm font-bold transition duration-300;
+    @apply relative inline-flex min-h-12 items-center justify-center gap-2 rounded-full border px-6 text-sm font-bold transition duration-300;
   }
   .btn-base:hover {
     transform: translateY(-2px);
+  }
+  .btn-base:active {
+    transform: translateY(1px);
+  }
+
+  /* CTA: vệt sáng lướt qua định kỳ + quầng sáng theo con trỏ — cùng bộ hiệu ứng với norton-park.
+     Áp cho nút đặc (primary / light), nút gửi form và phần tử .cta-fx (nút giá ở thanh sticky,
+     lớp phủ trong nút nổi). --rx / --ry do src/lib/ctaFx.js cập nhật khi rê chuột.
+     --cta-shine / --cta-glow: màu vệt sáng và quầng sáng (nút nền trắng dùng tông olive để thấy được). */
+  .btn-primary,
+  .btn-light,
+  .cta-fx,
+  button[type="submit"].btn-base {
+    --cta-shine: rgb(255 255 255 / 0.5);
+    --cta-glow: rgb(255 255 255 / 0.22);
+    overflow: hidden;
+    isolation: isolate;
+  }
+  .btn-light {
+    --cta-shine: rgb(169 181 120 / 0.45);
+    --cta-glow: rgb(169 181 120 / 0.3);
+  }
+  /* Vệt sáng = lớp phủ rộng bằng nút, chỉ di chuyển bằng transform (GPU xử lý, không tính lại layout) */
+  .btn-primary::after,
+  .btn-light::after,
+  .cta-fx::after,
+  button[type="submit"].btn-base::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(105deg, transparent 38%, var(--cta-shine) 50%, transparent 62%);
+    transform: translate3d(-110%, 0, 0);
+    animation: btnShine 3.8s ease-in-out infinite;
+    will-change: transform;
+    pointer-events: none;
+  }
+  .btn-primary::before,
+  .btn-light::before,
+  .cta-fx::before,
+  button[type="submit"].btn-base::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: radial-gradient(140px circle at var(--rx, 50%) var(--ry, 50%), var(--cta-glow), transparent 65%);
+    opacity: 0;
+    transition: opacity 0.3s;
+    pointer-events: none;
+  }
+  .btn-primary:hover::before,
+  .btn-light:hover::before,
+  .cta-fx:hover::before,
+  button[type="submit"].btn-base:hover::before {
+    opacity: 1;
+  }
+  /* nút đang gửi (disabled): dừng vệt sáng để báo trạng thái chờ */
+  .btn-base:disabled::after {
+    animation: none;
+    opacity: 0;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .btn-primary::after,
+    .btn-light::after,
+    .cta-fx::after,
+    button[type="submit"].btn-base::after {
+      animation: none;
+      display: none;
+    }
+  }
+  @keyframes btnShine {
+    0% {
+      transform: translate3d(-110%, 0, 0);
+    }
+    55%,
+    100% {
+      transform: translate3d(110%, 0, 0);
+    }
   }
   .btn-primary {
     @apply border-imperia-primary bg-imperia-background-dark text-white hover:bg-imperia-background-dark;
