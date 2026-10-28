@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import { site, t } from "../../cms/content";
 
 /* hotline / Zalo sửa trong CMS (Thông tin chung) */
@@ -132,11 +133,54 @@ function useAvoidOverlap() {
   return hidden;
 }
 
+/* Đã cuộn quá ngưỡng (px) chưa — dùng cho nút lên đầu trang (giống norton-park: hiện sau ~2 section) */
+function useScrolledPast(px) {
+  const [past, setPast] = useState(false);
+  useEffect(() => {
+    let frame = 0;
+    const check = () => {
+      frame = 0;
+      setPast(window.scrollY > px);
+    };
+    const onScroll = () => {
+      if (!frame) frame = requestAnimationFrame(check);
+    };
+    check();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      cancelAnimationFrame(frame);
+    };
+  }, [px]);
+  return past;
+}
+
+function ArrowUpIcon(props) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+      <path d="M12 19V5M5 12l7-7 7 7" />
+    </svg>
+  );
+}
+
 const fbBtn =
   "group relative flex h-[52px] w-[52px] items-center justify-center rounded-full shadow-[0_6px_20px_rgba(32,35,27,.28)] transition-transform duration-200 hover:scale-[1.06] focus-visible:outline-offset-4";
 
 export default function FloatingButtons({ onLead }) {
   const hidden = useAvoidOverlap();
+  const showTop = useScrolledPast(typeof window === "undefined" ? 1400 : window.innerHeight * 1.8);
+  const navigate = useNavigate();
+  const { pathname, hash } = useLocation();
+
+  /* Lên đầu trang: cuộn mượt về đầu, bỏ "#section" khỏi URL (về "/" như bấm logo), đưa focus về đầu nội dung
+     cho người dùng bàn phím / trình đọc màn hình */
+  const toTop = () => {
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (hash) navigate({ pathname, hash: "" }, { replace: true });
+    window.scrollTo({ top: 0, behavior: reduce ? "auto" : "smooth" });
+    document.getElementById("top")?.focus({ preventScroll: true });
+  };
+
   return (
     <>
       <MobileStickyBar onLead={onLead} />
@@ -147,6 +191,21 @@ export default function FloatingButtons({ onLead }) {
           hidden ? "pointer-events-none translate-x-4 opacity-0" : "opacity-100"
         }`}
       >
+        {/* ── Lên đầu trang: chỉ hiện sau khi đã cuộn qua ~2 section ── */}
+        <button
+          type="button"
+          onClick={toTop}
+          aria-label="Lên đầu trang"
+          tabIndex={showTop && !hidden ? undefined : -1}
+          aria-hidden={showTop ? undefined : true}
+          className={`${fbBtn} !h-11 !w-11 border border-imperia-primary/20 bg-white/95 text-imperia-primary backdrop-blur transition-[opacity,transform] duration-300 ${
+            showTop ? "opacity-100" : "pointer-events-none translate-y-3 opacity-0"
+          }`}
+        >
+          <ArrowUpIcon className="h-5 w-5" aria-hidden="true" />
+          <FbLabel>Lên đầu trang</FbLabel>
+        </button>
+
         {/* ── Gọi hotline ── */}
         <a
           href={PHONE_HREF}

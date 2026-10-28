@@ -86,7 +86,7 @@ function HomePage({ onOpenModal, submitLead }) {
   return (
     <>
       <Header onLead={onOpenModal} />
-      <main id="top">
+      <main id="top" tabIndex={-1} className="outline-none">
         {/* Thứ tự / ẩn / biến thể section theo CMS (Bố cục section) */}
         {homeOrder().map((id) => {
           const render = SECTIONS[id];
