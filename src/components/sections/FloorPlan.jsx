@@ -594,7 +594,7 @@ export default function FloorPlan({
      3 trạng thái: chi tiết 1 căn · tổng quan 1 loại hình · (mặc định) bảng tóm tắt các loại hình.
      Mặc định không còn ô trống — khách thấy ngay số căn & diện tích từng loại. */
   const cardClass =
-    "rounded-2xl border border-imperia-primary/15 bg-white p-5 shadow-card md:p-6";
+    "rounded-2xl border border-imperia-primary/15 bg-white p-4 shadow-card md:p-5";
   const ctaLabel = activeUnit
     ? `Nhận báo giá căn ${activeUnit.unit_code}`
     : "Nhận bảng giá & chính sách";
@@ -606,7 +606,7 @@ export default function FloorPlan({
         sheetRef.current?.close();
         onLead();
       }}
-      className="btn-base btn-primary mt-5 w-full"
+      className="btn-base btn-primary mt-3 w-full"
     >
       {ctaLabel}
     </button>
@@ -619,7 +619,7 @@ export default function FloorPlan({
         <div key="unit" className={`${cardClass} animate-pop-in`}>
           {/* Bỏ dòng "Tháp Sensa X" (lặp lại TowerSelect) và dòng "Loại hình" (lặp lại TypeSelect)
               phía trên — cả hai dropdown đầu section đã cho biết đang xem tháp/loại hình nào. */}
-          <div className="mb-4 flex items-start justify-between gap-3">
+          <div className="mb-2.5 flex items-start justify-between gap-3">
             <p className="flex flex-wrap items-center gap-2">
               <span className="text-2xl font-semibold leading-tight text-imperia-primary">
                 {activeUnit.unit_code}
@@ -646,18 +646,18 @@ export default function FloorPlan({
               />
             )}
           </div>
-          <dl className="space-y-2.5 text-sm">
+          <dl className="space-y-1.5 text-sm">
             <Row label="Số phòng ngủ" value={activeUnit.bedrooms ?? "—"} />
             <Row label="Diện tích tim tường (GFA)" value={`${activeUnit.gfa_sqm} m²`} />
             <Row label="Diện tích thông thủy (NFA)" value={`${activeUnit.nfa_sqm} m²`} />
           </dl>
           {activeItem?.floor ? (
-            <p className="mt-3 text-xs leading-relaxed text-[#64675c]">
+            <p className="mt-2 text-xs leading-relaxed text-[#64675c]">
               Căn Duplex gồm Tầng 1 và Tầng 2 — diện tích trên là tổng của cả căn.
             </p>
           ) : null}
           {activeLayoutImage ? (
-            <div className="mt-4 overflow-hidden rounded-xl border border-imperia-primary/10 bg-imperia-cream/40">
+            <div className="mt-3 overflow-hidden rounded-xl border border-imperia-primary/10 bg-imperia-cream/40">
               <img
                 key={activeLayoutImage}
                 src={activeLayoutImage}
@@ -698,7 +698,7 @@ export default function FloorPlan({
               : ""}
           </p>
           {activeLayoutImage ? (
-            <div className="mt-4 overflow-hidden rounded-xl border border-imperia-primary/10 bg-imperia-cream/40">
+            <div className="mt-3 overflow-hidden rounded-xl border border-imperia-primary/10 bg-imperia-cream/40">
               <img
                 key={activeLayoutImage}
                 src={activeLayoutImage}
@@ -803,7 +803,11 @@ export default function FloorPlan({
             ref={panelRef}
             data-hide-floating
             onClick={(e) => e.stopPropagation()}
-            className="order-4 max-lg:hidden lg:order-none lg:max-h-[85vh] lg:overflow-y-auto lg:overscroll-contain lg:pr-1 [scrollbar-width:thin]"
+            /* Khoá cứng khung này — bảng tóm tắt / loại hình / 1 căn cụ thể cao khác nhau, nhưng
+               khung luôn giữ nguyên 1 chiều cao (đủ cho trạng thái cao nhất) để đổi qua lại không
+               làm cả khối nhảy theo, chỉ nội dung bên trong đổi. lg:max-h là lưới an toàn cho màn
+               rất thấp (hiếm khi cần cuộn). */
+            className="order-4 max-lg:hidden lg:order-none lg:flex lg:h-[600px] lg:max-h-[85vh] lg:flex-col lg:overflow-y-auto lg:overscroll-contain lg:pr-1 [scrollbar-width:thin]"
           >
             {renderPanel()}
           </aside>
@@ -1085,7 +1089,7 @@ export default function FloorPlan({
 
 function Row({ label, value }) {
   return (
-    <div className="flex items-center justify-between border-b border-black/5 pb-2">
+    <div className="flex items-center justify-between border-b border-black/5 pb-1.5">
       <dt className="text-[#64675c]">{label}</dt>
       <dd className="font-semibold text-imperia-black">{value}</dd>
     </div>
