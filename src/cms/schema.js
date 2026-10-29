@@ -29,7 +29,8 @@ export const HOME_SECTIONS = [
     images: [['amenities.map', 'Sơ đồ tiện ích', '/assets/map-p.optimized.webp', 'amenities.mapAlt', '1307/1203']] },
   { id: 'hinhanh', label: 'Tiện ích nổi bật (thư viện ảnh)', ui: ['featured'] },
   { id: 'mat-bang', label: 'Mặt bằng tầng điển hình', ui: ['floor'],
-    images: [['floor.A', 'Mặt bằng tháp Sensa A', '/assets/layout/sensa-A.optimized.webp', null, '2444/1728'],
+    // tên file viết thường: Vercel (Linux) phân biệt hoa/thường, "sensa-A..." 404 dù macOS (dev) không báo lỗi
+    images: [['floor.A', 'Mặt bằng tháp Sensa A', '/assets/layout/sensa-a.optimized.webp', null, '2444/1728'],
       ['floor.B', 'Mặt bằng tháp Sensa B', '/assets/layout/sensaB.optimized.webp', null, '2444/1728']] },
   { id: 'tin-tuc', label: 'Tin tức', ui: ['news'] },
   { id: 'tinh-tra-gop', label: 'Ước tính khoản vay', ui: ['loan'] },

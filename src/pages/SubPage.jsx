@@ -19,8 +19,9 @@ import { clearPhoneError } from "../lib/lead";
 import FormExtras from "../components/ui/FormExtras";
 import { site, t } from "../cms/content";
 
+// tên file viết thường: Vercel (Linux) phân biệt hoa/thường, "sensa-A..." 404 dù macOS (dev) không báo lỗi
 const FLOOR_PLAN_IMAGES = {
-  A: "/assets/layout/sensa-A.optimized.webp",
+  A: "/assets/layout/sensa-a.optimized.webp",
   B: "/assets/layout/sensaB.optimized.webp",
 };
 
