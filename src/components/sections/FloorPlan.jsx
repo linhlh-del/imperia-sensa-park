@@ -617,22 +617,19 @@ export default function FloorPlan({
       const typeLabel = legendByKey[activeUnit.type]?.label || activeUnit.type;
       return (
         <div key="unit" className={`${cardClass} animate-pop-in`}>
+          {/* Bỏ dòng "Tháp Sensa X" (lặp lại TowerSelect) và dòng "Loại hình" (lặp lại TypeSelect)
+              phía trên — cả hai dropdown đầu section đã cho biết đang xem tháp/loại hình nào. */}
           <div className="mb-4 flex items-start justify-between gap-3">
-            <div>
-              <p className="text-xs font-bold uppercase tracking-[.12em] text-[#64675c]">
-                {towerData.label}
-              </p>
-              <p className="mt-1 flex flex-wrap items-center gap-2">
-                <span className="text-2xl font-semibold leading-tight text-imperia-primary">
-                  {activeUnit.unit_code}
+            <p className="flex flex-wrap items-center gap-2">
+              <span className="text-2xl font-semibold leading-tight text-imperia-primary">
+                {activeUnit.unit_code}
+              </span>
+              {activeItem?.floor ? (
+                <span className="rounded-full bg-imperia-background-dark px-2.5 py-1 text-xs font-bold uppercase tracking-[.06em] text-white">
+                  {floorLabel(activeItem.floor)}
                 </span>
-                {activeItem?.floor ? (
-                  <span className="rounded-full bg-imperia-background-dark px-2.5 py-1 text-xs font-bold uppercase tracking-[.06em] text-white">
-                    {floorLabel(activeItem.floor)}
-                  </span>
-                ) : null}
-              </p>
-            </div>
+              ) : null}
+            </p>
             {pinned ? (
               <button
                 type="button"
@@ -650,7 +647,6 @@ export default function FloorPlan({
             )}
           </div>
           <dl className="space-y-2.5 text-sm">
-            <Row label="Loại hình" value={typeLabel} />
             <Row label="Số phòng ngủ" value={activeUnit.bedrooms ?? "—"} />
             <Row label="Diện tích tim tường (GFA)" value={`${activeUnit.gfa_sqm} m²`} />
             <Row label="Diện tích thông thủy (NFA)" value={`${activeUnit.nfa_sqm} m²`} />
