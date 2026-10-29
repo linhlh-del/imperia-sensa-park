@@ -40,8 +40,9 @@ export default function Location({ data, variant = "map-right" }) {
             </Button>
           </div>
           <div
-            /* bản đồ có ghim: giữ đúng tỉ lệ 1872:1248, thu bề RỘNG theo chiều cao màn hình để vừa 1 khung */
-            className={`relative mx-auto aspect-[1872/1248] w-full max-w-[calc(var(--map-h)*1872/1248)] overflow-hidden rounded-[28px] border border-white/10 [--map-h:clamp(150px,22svh,320px)] md:[--map-h:clamp(220px,46svh,620px)] ${variant === "map-left" ? "md:order-first" : ""}`}
+            /* bản đồ có ghim, tỉ lệ 1872:1248. Điện thoại (1 cột, không paging JS) → ưu tiên hiện TRỌN bề rộng màn
+               hình; từ md trở lên (2 cột cạnh text, có thể cần vừa 1 khung hình) mới thu bề rộng theo chiều cao. */
+            className={`relative mx-auto aspect-[1872/1248] w-full overflow-hidden rounded-[28px] border border-white/10 md:max-w-[calc(var(--map-h)*1872/1248)] md:[--map-h:clamp(220px,46svh,620px)] ${variant === "map-left" ? "md:order-first" : ""}`}
           >
             <img
               src={img("location.map", "/assets/map.optimized.webp")}

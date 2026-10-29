@@ -675,6 +675,10 @@ export const PROJECT_META_B = {
  *  GỘP DỮ LIỆU NHIỀU THÁP — dùng bởi <FloorPlan /> để hiển thị dropdown
  *  chọn tháp và render đúng units/zones/label theo tháp đang chọn.
  * ========================================================================== */
+/* Tỉ lệ ẢNH THẬT của từng tháp (public/assets/layout/*.webp) — có thể khác tỉ lệ toạ độ zone dùng chung
+   (VIEWBOX_WIDTH×VIEWBOX_HEIGHT, khớp ảnh Sensa A). Khung hiển thị PHẢI theo tỉ lệ ảnh thật của đúng tháp
+   đang xem, nếu không ảnh sẽ bị letterbox (object-contain co lại) trong khi lớp zone (preserveAspectRatio
+   ="none") vẫn kéo giãn hết khung → zone lệch khỏi toà nhà trong ảnh (lệch nhiều nhất ở mép trên/dưới). */
 export const TOWERS = {
   A: {
     key: "A",
@@ -682,6 +686,8 @@ export const TOWERS = {
     units: UNITS_A,
     zones: ZONES_A,
     meta: PROJECT_META_A,
+    imageWidth: 1491,
+    imageHeight: 1055,
   },
   B: {
     key: "B",
@@ -689,6 +695,8 @@ export const TOWERS = {
     units: UNITS_B,
     zones: ZONES_B,
     meta: PROJECT_META_B,
+    imageWidth: 1536,
+    imageHeight: 1024,
   },
 };
 

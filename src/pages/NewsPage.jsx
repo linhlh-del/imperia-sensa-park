@@ -17,7 +17,7 @@ import { useEffect, useState } from "react";
 
 function StateShell({ children, onLead }) {
   return (
-    <div className="min-h-screen bg-imperia-cream pt-[76px]">
+    <div className="min-h-screen bg-imperia-cream pt-[var(--header-h)]">
       <Header onLead={onLead} />
       <main className="container-page section-y">{children}</main>
       <Footer />
@@ -74,7 +74,7 @@ export default function NewsPage({ onLead }) {
   const grid = articles.filter((item) => item.id !== featured.id);
 
   return (
-    <div className="min-h-screen bg-imperia-cream pt-[76px]">
+    <div className="min-h-screen bg-imperia-cream pt-[var(--header-h)]">
       <Header onLead={onLead} />
 
       <main>

@@ -86,8 +86,10 @@ html {
   /* Bấm menu / CTA tới #section: tiêu đề không bị header cố định che; nội dung cuối không nằm dưới thanh đáy */
   scroll-padding-top: var(--header-h);
   scroll-padding-bottom: var(--bar);
-  /* Cuộn theo section: cảm ứng / < 1024px dùng proximity (section dài hơn màn hình vẫn đọc trọn) */
-  scroll-snap-type: y proximity;
+  /* Cảm ứng / < 1024px: KHÔNG bật scroll-snap. useSectionPaging.js (hoàn tất việc "nhảy" hẳn sang section kế)
+     chỉ chạy ở pointer:fine — proximity một mình trên cảm ứng chỉ kéo giật trang giữa chừng khi vuốt rồi bỏ dở
+     (trình duyệt phải tính lại điểm dừng mỗi khung hình), thành giật/lag mà vẫn không auto-lướt được; cuộn tự
+     nhiên theo quán tính hệ điều hành mượt hơn hẳn. */
 }
 /* Máy tính dùng chuột: mỗi nấc lăn dừng đúng đầu section kế (không trượt qua nhiều section) */
 @media (min-width: 1024px) and (pointer: fine) {

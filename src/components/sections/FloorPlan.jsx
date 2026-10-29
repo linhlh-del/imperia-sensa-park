@@ -7,12 +7,15 @@ import {
   VIEWBOX_HEIGHT,
 } from "../../data/sensaAFloorData";
 
+/* Ảnh đại diện mỗi LOẠI HÌNH (hiện khi hover/bấm chip loại hình, chưa chọn căn cụ thể) — trước trỏ tới
+   studio.png/1pn.png/2pn.png/3pn.png, các file này không tồn tại trong public/assets/aparments (ảnh vỡ).
+   Lấy lại từ ảnh căn cụ thể đã có sẵn (UNIT_LAYOUT_IMAGES bên dưới), chọn 1 căn tiêu biểu mỗi loại hình. */
 const LAYOUT_IMAGES = {
-  STUDIO: "/assets/aparments/studio.png",
-  "1PN+": "/assets/aparments/1pn.png",
-  "2PN": "/assets/aparments/2pn.png",
-  "3PN": "/assets/aparments/3pn.png",
-  // DUPLEX: chưa có ảnh — bổ sung khi có, ví dụ: "/assets/aparments/duplex.png"
+  STUDIO: "/assets/aparments/B01.optimized.webp", // B.01 — căn Studio
+  "1PN+": "/assets/aparments/A03.optimized.webp", // A.03 — căn 1PN+
+  "2PN": "/assets/aparments/2PN-70-4m2.optimized.webp", // tiêu biểu 2PN
+  "3PN": "/assets/aparments/A08.optimized.webp", // A.08 — căn 3PN
+  DUPLEX: "/assets/aparments/B-DUPLEX.optimized.webp",
 };
 
 const UNIT_LAYOUT_IMAGES = {
@@ -286,6 +289,10 @@ export default function FloorPlan({
   const meta = towerData.meta;
   /* ảnh mặt bằng thay được trong CMS: images["floor.A"], images["floor.B"] */
   const imageSrc = img(`floor.${activeTower}`, images[activeTower]);
+  /* khung hiển thị theo tỉ lệ ẢNH THẬT của tháp đang xem (xem ghi chú ở TOWERS trong sensaAFloorData.js) —
+     không phải tỉ lệ toạ độ zone dùng chung, để ảnh luôn lấp đầy khung (không letterbox) và zone không lệch. */
+  const imgW = towerData.imageWidth || VIEWBOX_WIDTH;
+  const imgH = towerData.imageHeight || VIEWBOX_HEIGHT;
   const breathOrder = activeTower === "B" ? BREATH_ORDER_B : BREATH_ORDER_A;
 
   useEffect(() => {
@@ -750,21 +757,24 @@ export default function FloorPlan({
         </div>
 
           {/* Mặt bằng thật + overlay polygon.
-              KHUNG CỐ ĐỊNH: aspect-ratio đúng bằng ảnh (2444:1728) + self-start → không bao giờ
-              bị hàng grid kéo giãn. Lớp SVG (preserveAspectRatio="none") và chip label (% top/left)
-              vì vậy luôn khớp với ảnh, hover/chọn căn nào cũng không làm zone trôi.
+              KHUNG CỐ ĐỊNH: aspect-ratio đúng bằng ẢNH THẬT của tháp đang xem (imgW/imgH, có thể khác nhau
+              giữa Sensa A và B) + self-start → không bao giờ bị hàng grid kéo giãn, ảnh luôn lấp đầy khung
+              (không letterbox). SVG viewBox vẫn theo hệ toạ độ zone dùng chung (VIEWBOX_WIDTH×HEIGHT) —
+              preserveAspectRatio="none" kéo giãn đều để khớp đúng khung ảnh thật này.
               Không dùng overflow-hidden: chip label có thể lấn sát mép ảnh. */}
           <div
             ref={mapRef}
-            className="relative order-3 self-start leading-none shadow-soft max-lg:mx-auto max-lg:w-full max-lg:max-w-[calc(var(--fmap-h)*2444/1728)] [--fmap-h:32svh] md:[--fmap-h:40svh] lg:order-first"
-            style={{ aspectRatio: `${VIEWBOX_WIDTH} / ${VIEWBOX_HEIGHT}` }}
+            /* Tailwind biên dịch class tĩnh lúc build → không thể nhúng imgW/imgH (biến runtime) thẳng vào
+               arbitrary value. Truyền qua 2 custom property (--fmap-ratio-w/h) rồi dùng trong calc() tĩnh. */
+            className="relative order-3 self-start leading-none shadow-soft max-lg:mx-auto max-lg:w-full max-lg:max-w-[calc(var(--fmap-h)*var(--fmap-ratio-w)/var(--fmap-ratio-h))] [--fmap-h:32svh] md:[--fmap-h:40svh] lg:order-first"
+            style={{ aspectRatio: `${imgW} / ${imgH}`, '--fmap-ratio-w': imgW, '--fmap-ratio-h': imgH }}
           >
             {imageSrc ? (
               <img
                 src={imageSrc}
                 alt={`${imageAlt} — ${towerData.label}`}
-                width={VIEWBOX_WIDTH}
-                height={VIEWBOX_HEIGHT}
+                width={imgW}
+                height={imgH}
                 loading="lazy"
                 decoding="async"
                 role="button"
@@ -782,13 +792,13 @@ export default function FloorPlan({
             ) : (
               <div
                 className="flex items-center justify-center rounded-2xl bg-imperia-beige/40 text-sm text-imperia-black/60"
-                style={{ aspectRatio: `${VIEWBOX_WIDTH} / ${VIEWBOX_HEIGHT}` }}
+                style={{ aspectRatio: `${imgW} / ${imgH}` }}
               >
                 Thiếu ảnh mặt bằng cho{" "}
                 <strong className="mx-1">{towerData.label}</strong>— truyền qua
                 prop{" "}
                 <code className="mx-1 font-mono">images.{activeTower}</code>
-                (tỉ lệ {VIEWBOX_WIDTH}×{VIEWBOX_HEIGHT})
+                (tỉ lệ {imgW}×{imgH})
               </div>
             )}
 

@@ -18,7 +18,7 @@ import {
 
 function Shell({ children, onLead }) {
   return (
-    <div className="min-h-screen bg-imperia-cream pt-[76px]">
+    <div className="min-h-screen bg-imperia-cream pt-[var(--header-h)]">
       <Header onLead={onLead} />
       <main className="container-page section-y">{children}</main>
       <Footer />
@@ -113,7 +113,7 @@ export default function NewsDetailPage({ onLead }) {
   const related = getRelated(articles, article.id, 3);
 
   return (
-    <div className="min-h-screen bg-imperia-cream pt-[76px]">
+    <div className="min-h-screen bg-imperia-cream pt-[var(--header-h)]">
       <Header onLead={onLead} />
 
       <main>

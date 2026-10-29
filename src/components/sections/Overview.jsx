@@ -34,8 +34,10 @@ export default function Overview({ data, variant = "image-right" }) {
             alt={t("overview.imageAlt")}
             loading="lazy"
             decoding="async"
-            /* ảnh bản đồ Metro có chữ: giữ đúng tỉ lệ 1619:972, thu bề RỘNG theo chiều cao màn hình (không cắt chữ) */
-            className="mx-auto aspect-[1619/972] w-full max-w-[calc(var(--overview-img-h)*1619/972)] rounded-[28px] border border-imperia-primary/10 object-contain shadow-soft [--overview-img-h:clamp(130px,20svh,300px)] md:[--overview-img-h:clamp(170px,24svh,380px)] lg:[--overview-img-h:clamp(200px,40svh,468px)]"
+            /* ảnh bản đồ Metro có chữ: điện thoại/tablet (không có paging JS, không cần vừa đúng 1 màn hình) → ưu
+               tiên hiện TRỌN bề rộng màn hình, cao theo tỉ lệ 1619:972. Desktop (≥1024px, có paging 1 section/màn
+               hình) mới thu bề rộng theo chiều cao màn hình để không tràn khỏi khung nhìn. */
+            className="mx-auto aspect-[1619/972] w-full rounded-[28px] border border-imperia-primary/10 object-contain shadow-soft lg:max-w-[calc(var(--overview-img-h)*1619/972)] lg:[--overview-img-h:clamp(200px,40svh,468px)]"
           />
         </div>
         <div data-stats className="mt-[clamp(12px,3svh,64px)] grid grid-cols-2 md:grid-cols-4">
