@@ -22,7 +22,7 @@ const UNIT_LAYOUT_IMAGES = {
   "A.01": "/assets/aparments/2PN-70-4m2.optimized.webp",
   "A.02": "/assets/aparments/2PN-70-4m2.optimized.webp",
   "A.03": "/assets/aparments/A03.optimized.webp",
-  "A.03A": "/assets/aparments/", //CHƯA CÓ ẢNH
+  "A.03A": "/assets/aparments/2PN -70m2.optimized.webp", //CHƯA CÓ ẢNH
   "A.05": "/assets/aparments/2PN-70-4m2.optimized.webp",
   "A.06": "/assets/aparments/2PN-70-4m2.optimized.webp",
   "A.07": "/assets/aparments/2PN-94-9m2.optimized.webp",
@@ -299,7 +299,9 @@ function TypeSelect({ types, value, onChange }) {
               style={{ backgroundColor: current.swatch }}
             />
           ) : null}
-          <span className="truncate">{current?.label || "Tất cả loại hình"}</span>
+          <span className="truncate">
+            {current?.label || "Tất cả loại hình"}
+          </span>
         </span>
         <svg
           width="10"
@@ -646,18 +648,27 @@ export default function FloorPlan({
             ) : (
               <span
                 className="mt-1 h-4 w-4 shrink-0 rounded-full ring-1 ring-black/10"
-                style={{ backgroundColor: activeItem?.color || activeUnit.color }}
+                style={{
+                  backgroundColor: activeItem?.color || activeUnit.color,
+                }}
               />
             )}
           </div>
           <dl className="space-y-1.5 text-sm">
             <Row label="Số phòng ngủ" value={activeUnit.bedrooms ?? "—"} />
-            <Row label="Diện tích tim tường (GFA)" value={`${activeUnit.gfa_sqm} m²`} />
-            <Row label="Diện tích thông thủy (NFA)" value={`${activeUnit.nfa_sqm} m²`} />
+            <Row
+              label="Diện tích tim tường (GFA)"
+              value={`${activeUnit.gfa_sqm} m²`}
+            />
+            <Row
+              label="Diện tích thông thủy (NFA)"
+              value={`${activeUnit.nfa_sqm} m²`}
+            />
           </dl>
           {activeItem?.floor ? (
             <p className="mt-2 text-xs leading-relaxed text-[#64675c]">
-              Căn Duplex gồm Tầng 1 và Tầng 2 — diện tích trên là tổng của cả căn.
+              Căn Duplex gồm Tầng 1 và Tầng 2 — diện tích trên là tổng của cả
+              căn.
             </p>
           ) : null}
           {activeLayoutImage ? (
@@ -732,7 +743,10 @@ export default function FloorPlan({
           </thead>
           <tbody>
             {typeSummary.map((row) => (
-              <tr key={row.key} className="border-b border-black/5 last:border-0">
+              <tr
+                key={row.key}
+                className="border-b border-black/5 last:border-0"
+              >
                 <td className="py-2.5">
                   <button
                     type="button"
@@ -761,8 +775,12 @@ export default function FloorPlan({
           </tbody>
         </table>
         <p className="mt-3 text-xs leading-relaxed text-[#64675c]">
-          <span className="lg:hidden">Chạm vào một căn trên mặt bằng để xem chi tiết.</span>
-          <span className="hidden lg:inline">Di chuột hoặc bấm vào một căn trên mặt bằng để xem chi tiết.</span>
+          <span className="lg:hidden">
+            Chạm vào một căn trên mặt bằng để xem chi tiết.
+          </span>
+          <span className="hidden lg:inline">
+            Di chuột hoặc bấm vào một căn trên mặt bằng để xem chi tiết.
+          </span>
         </p>
         {cta}
       </div>
@@ -781,59 +799,69 @@ export default function FloorPlan({
             trái (self-start, không giãn theo hàng grid) còn dư rất nhiều khoảng trắng.
             Cột phải dùng `contents` dưới 1024px để các khối con tự xếp theo `order`. */}
         <div className="floor-grid grid grid-cols-1 gap-6 lg:items-start lg:gap-10">
-        <div className="contents lg:flex lg:flex-col lg:gap-5">
-        {/* Heading — bỏ subtitle (đã dư thừa khi loại hình chuyển qua dropdown bên dưới) để panel
+          <div className="contents lg:flex lg:flex-col lg:gap-5">
+            {/* Heading — bỏ subtitle (đã dư thừa khi loại hình chuyển qua dropdown bên dưới) để panel
             chi tiết được đẩy lên sát ngay dưới, đỡ phí chỗ so với ảnh mặt bằng bên trái. */}
-        <div className="order-1 lg:order-none">
-          <h2 className="section-title lg:!text-[clamp(30px,2.6vw,44px)]">
-            {t("floor.title")}
-          </h2>
-        </div>
+            <div className="order-1 lg:order-none">
+              <h2 className="section-title lg:!text-[clamp(30px,2.6vw,44px)]">
+                {t("floor.title")}
+              </h2>
+            </div>
 
-        {/* Dropdown chọn tháp + dropdown chọn loại hình — NGANG HÀNG, cùng kiểu với nhau (trước là
+            {/* Dropdown chọn tháp + dropdown chọn loại hình — NGANG HÀNG, cùng kiểu với nhau (trước là
             dải chip loại hình chiếm nguyên 1-2 hàng riêng, nay gộp vào 1 dropdown cho gọn). */}
-        <div className="order-2 flex flex-wrap items-center gap-3 lg:order-none">
-          <TowerSelect
-            towers={towers}
-            value={activeTower}
-            onChange={handleTowerChange}
-          />
-          <TypeSelect types={typeSummary} value={activeTypeKey} onChange={handleTypeSelect} />
-        </div>
+            <div className="order-2 flex flex-wrap items-center gap-3 lg:order-none">
+              <TowerSelect
+                towers={towers}
+                value={activeTower}
+                onChange={handleTowerChange}
+              />
+              <TypeSelect
+                types={typeSummary}
+                value={activeTypeKey}
+                onChange={handleTypeSelect}
+              />
+            </div>
 
-          {/* Panel chi tiết — desktop: chiếm phần còn lại của cột phải, cuộn bên trong.
+            {/* Panel chi tiết — desktop: chiếm phần còn lại của cột phải, cuộn bên trong.
               Bấm trong panel không đóng panel (chặn click lan ra document). */}
-          <aside
-            ref={panelRef}
-            data-hide-floating
-            onClick={(e) => e.stopPropagation()}
-            /* Khoá cứng khung này — bảng tóm tắt / loại hình / 1 căn cụ thể cao khác nhau, nhưng
+            <aside
+              ref={panelRef}
+              data-hide-floating
+              onClick={(e) => e.stopPropagation()}
+              /* Khoá cứng khung này — bảng tóm tắt / loại hình / 1 căn cụ thể cao khác nhau, nhưng
                khung luôn giữ nguyên 1 chiều cao (đủ cho trạng thái cao nhất) để đổi qua lại không
                làm cả khối nhảy theo, chỉ nội dung bên trong đổi. lg:max-h là lưới an toàn cho màn
                rất thấp (hiếm khi cần cuộn). */
-            className="order-4 max-lg:hidden lg:order-none lg:flex lg:h-[600px] lg:max-h-[85vh] lg:flex-col lg:overflow-y-auto lg:overscroll-contain lg:pr-1 [scrollbar-width:thin]"
-          >
-            {renderPanel()}
-          </aside>
-          {/* điện thoại / máy tính bảng: thanh 1 dòng mở bottom-sheet bảng tổng hợp / chi tiết căn */}
-          <button
-            type="button"
-            onClick={(e) => {
-              e.stopPropagation();
-              sheetRef.current?.showModal();
-            }}
-            aria-haspopup="dialog"
-            className="order-4 flex min-h-14 w-full items-center justify-between gap-3 rounded-2xl border border-imperia-primary/15 bg-white px-4 text-left shadow-soft lg:hidden"
-          >
-            <span className="min-w-0">
-              <span className="block truncate text-sm font-semibold text-imperia-primary">
-                {activeUnit ? `${activeUnit.unit_code} · ${legendByKey[activeUnit.type]?.label || activeUnit.type}` : `${towerData.label} · ${meta.totalLayouts} căn / tầng`}
+              className="order-4 max-lg:hidden lg:order-none lg:flex lg:h-[600px] lg:max-h-[85vh] lg:flex-col lg:overflow-y-auto lg:overscroll-contain lg:pr-1 [scrollbar-width:thin]"
+            >
+              {renderPanel()}
+            </aside>
+            {/* điện thoại / máy tính bảng: thanh 1 dòng mở bottom-sheet bảng tổng hợp / chi tiết căn */}
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                sheetRef.current?.showModal();
+              }}
+              aria-haspopup="dialog"
+              className="order-4 flex min-h-14 w-full items-center justify-between gap-3 rounded-2xl border border-imperia-primary/15 bg-white px-4 text-left shadow-soft lg:hidden"
+            >
+              <span className="min-w-0">
+                <span className="block truncate text-sm font-semibold text-imperia-primary">
+                  {activeUnit
+                    ? `${activeUnit.unit_code} · ${legendByKey[activeUnit.type]?.label || activeUnit.type}`
+                    : `${towerData.label} · ${meta.totalLayouts} căn / tầng`}
+                </span>
+                <span className="block truncate text-xs text-[#5c5f53]">
+                  Chạm vào căn trên mặt bằng để xem chi tiết
+                </span>
               </span>
-              <span className="block truncate text-xs text-[#5c5f53]">Chạm vào căn trên mặt bằng để xem chi tiết</span>
-            </span>
-            <span className="shrink-0 text-xs font-bold uppercase tracking-[.08em] text-imperia-primary">Bảng tổng hợp ↑</span>
-          </button>
-        </div>
+              <span className="shrink-0 text-xs font-bold uppercase tracking-[.08em] text-imperia-primary">
+                Bảng tổng hợp ↑
+              </span>
+            </button>
+          </div>
 
           {/* Mặt bằng thật + overlay polygon.
               KHUNG CỐ ĐỊNH: aspect-ratio đúng bằng ẢNH THẬT của tháp đang xem (imgW/imgH, có thể khác nhau
@@ -846,7 +874,11 @@ export default function FloorPlan({
             /* Tailwind biên dịch class tĩnh lúc build → không thể nhúng imgW/imgH (biến runtime) thẳng vào
                arbitrary value. Truyền qua 2 custom property (--fmap-ratio-w/h) rồi dùng trong calc() tĩnh. */
             className="relative order-3 self-start leading-none shadow-soft max-lg:mx-auto max-lg:w-full max-lg:max-w-[calc(var(--fmap-h)*var(--fmap-ratio-w)/var(--fmap-ratio-h))] [--fmap-h:32svh] md:[--fmap-h:40svh] lg:order-first"
-            style={{ aspectRatio: `${imgW} / ${imgH}`, '--fmap-ratio-w': imgW, '--fmap-ratio-h': imgH }}
+            style={{
+              aspectRatio: `${imgW} / ${imgH}`,
+              "--fmap-ratio-w": imgW,
+              "--fmap-ratio-h": imgH,
+            }}
           >
             {imageSrc ? (
               <img
@@ -1032,8 +1064,20 @@ export default function FloorPlan({
                 aria-label={`Phóng to mặt bằng ${towerData.label}`}
                 className="absolute right-3 top-3 z-30 inline-flex min-h-11 items-center gap-2 rounded-full bg-imperia-black/70 px-3.5 text-xs font-bold uppercase tracking-[.06em] text-white backdrop-blur-sm transition-colors hover:bg-imperia-black/85"
               >
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                  <path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  aria-hidden="true"
+                >
+                  <path
+                    d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
                 </svg>
                 Phóng to
               </button>
