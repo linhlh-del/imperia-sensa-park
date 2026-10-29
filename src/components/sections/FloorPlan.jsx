@@ -288,15 +288,19 @@ function TypeSelect({ types, value, onChange }) {
         }}
         aria-haspopup="listbox"
         aria-expanded={open}
-        className="inline-flex min-h-12 items-center gap-2 rounded-full border border-imperia-primary/25 bg-white px-4 py-2 text-xs font-bold uppercase tracking-[.08em] text-imperia-black shadow-soft transition-colors duration-300 hover:border-imperia-primary/50"
+        /* Khoá cứng bề rộng (đủ cho nhãn dài nhất "Tất cả loại hình") — nếu để tự co theo nội
+           dung, đổi từ "Studio" sang "2PN" làm nút co giãn, kéo theo cả hàng dropdown nhảy ngang. */
+        className="inline-flex h-12 w-[210px] shrink-0 items-center justify-between gap-2 rounded-full border border-imperia-primary/25 bg-white px-4 py-2 text-xs font-bold uppercase tracking-[.08em] text-imperia-black shadow-soft transition-colors duration-300 hover:border-imperia-primary/50"
       >
-        {current ? (
-          <span
-            className="h-2.5 w-2.5 shrink-0 rounded-full ring-1 ring-black/10"
-            style={{ backgroundColor: current.swatch }}
-          />
-        ) : null}
-        {current?.label || "Tất cả loại hình"}
+        <span className="flex min-w-0 items-center gap-2 truncate">
+          {current ? (
+            <span
+              className="h-2.5 w-2.5 shrink-0 rounded-full ring-1 ring-black/10"
+              style={{ backgroundColor: current.swatch }}
+            />
+          ) : null}
+          <span className="truncate">{current?.label || "Tất cả loại hình"}</span>
+        </span>
         <svg
           width="10"
           height="6"
