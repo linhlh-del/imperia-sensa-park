@@ -252,6 +252,124 @@ function TowerSelect({ towers, value, onChange }) {
   );
 }
 
+// --- Dropdown chọn loại hình (thay cho dải chip trước đây) — cùng hàng với TowerSelect,
+// gộp lại để nhường chỗ cho panel chi tiết ở ngay bên dưới. ---
+function TypeSelect({ types, value, onChange }) {
+  const [open, setOpen] = useState(false);
+  const wrapRef = useRef(null);
+
+  useEffect(() => {
+    if (!open) return;
+    const onDocClick = (e) => {
+      if (wrapRef.current && !wrapRef.current.contains(e.target)) {
+        setOpen(false);
+      }
+    };
+    const onKeyDown = (e) => {
+      if (e.key === "Escape") setOpen(false);
+    };
+    document.addEventListener("click", onDocClick);
+    document.addEventListener("keydown", onKeyDown);
+    return () => {
+      document.removeEventListener("click", onDocClick);
+      document.removeEventListener("keydown", onKeyDown);
+    };
+  }, [open]);
+
+  const current = types.find((l) => l.key === value);
+
+  return (
+    <div ref={wrapRef} className="relative">
+      <button
+        type="button"
+        onClick={(e) => {
+          e.stopPropagation();
+          setOpen((o) => !o);
+        }}
+        aria-haspopup="listbox"
+        aria-expanded={open}
+        className="inline-flex min-h-12 items-center gap-2 rounded-full border border-imperia-primary/25 bg-white px-4 py-2 text-xs font-bold uppercase tracking-[.08em] text-imperia-black shadow-soft transition-colors duration-300 hover:border-imperia-primary/50"
+      >
+        {current ? (
+          <span
+            className="h-2.5 w-2.5 shrink-0 rounded-full ring-1 ring-black/10"
+            style={{ backgroundColor: current.swatch }}
+          />
+        ) : null}
+        {current?.label || "Tất cả loại hình"}
+        <svg
+          width="10"
+          height="6"
+          viewBox="0 0 10 6"
+          fill="none"
+          className={`shrink-0 transition-transform duration-200 ${open ? "rotate-180" : ""}`}
+        >
+          <path
+            d="M1 1L5 5L9 1"
+            stroke="currentColor"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </svg>
+      </button>
+
+      {open && (
+        <ul
+          role="listbox"
+          className="absolute left-0 top-full z-20 mt-2 min-w-[220px] overflow-hidden rounded-2xl border border-imperia-primary/15 bg-white py-1.5 shadow-card"
+        >
+          <li role="option" aria-selected={!value}>
+            <button
+              type="button"
+              onClick={() => {
+                onChange(null);
+                setOpen(false);
+              }}
+              className={[
+                "flex min-h-12 w-full items-center px-4 py-2.5 text-left text-xs font-bold uppercase tracking-[.06em] transition-colors duration-200",
+                !value
+                  ? "bg-imperia-background-dark text-white"
+                  : "text-imperia-black hover:bg-imperia-cream",
+              ].join(" ")}
+            >
+              Tất cả loại hình
+            </button>
+          </li>
+          {types.map((l) => (
+            <li key={l.key} role="option" aria-selected={l.key === value}>
+              <button
+                type="button"
+                onClick={() => {
+                  onChange(l.key);
+                  setOpen(false);
+                }}
+                className={[
+                  "flex min-h-12 w-full items-center justify-between gap-2 px-4 py-2.5 text-left text-xs font-bold uppercase tracking-[.06em] transition-colors duration-200",
+                  l.key === value
+                    ? "bg-imperia-background-dark text-white"
+                    : "text-imperia-black hover:bg-imperia-cream",
+                ].join(" ")}
+              >
+                <span className="flex items-center gap-2">
+                  <span
+                    className="h-2.5 w-2.5 shrink-0 rounded-full ring-1 ring-black/10"
+                    style={{ backgroundColor: l.swatch }}
+                  />
+                  {l.label}
+                </span>
+                <span className="whitespace-nowrap font-normal normal-case tracking-normal text-current/70">
+                  {l.count} căn
+                </span>
+              </button>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+}
+
 export default function FloorPlan({
   images = {}, // BẮT BUỘC — { A: "url-anh-sensa-a.jpg", B: "url-anh-sensa-b.jpg" }, tỉ lệ đúng 2444:1728
   imageAlt = t("floor.imageAlt"),
@@ -264,18 +382,6 @@ export default function FloorPlan({
   const mapRef = useRef(null);
   const panelRef = useRef(null);
   const sheetRef = useRef(null); // bottom-sheet chi tiết (điện thoại)
-  const [mapHeight, setMapHeight] = useState(null);
-
-  /* Cột phải (desktop) cao ĐÚNG bằng ảnh mặt bằng: panel dài hơn thì tự cuộn bên trong,
-     không bao giờ làm giãn hàng grid → khung ảnh + lớp zone luôn khớp nhau. */
-  useEffect(() => {
-    if (!mapRef.current) return undefined;
-    const ro = new ResizeObserver(([entry]) => {
-      setMapHeight(Math.round(entry.target.getBoundingClientRect().height));
-    });
-    ro.observe(mapRef.current);
-    return () => ro.disconnect();
-  }, []);
   const [activeTower, setActiveTower] = useState(defaultTower);
   const [hoverCode, setHoverCode] = useState(null);
   const [hoverType, setHoverType] = useState(null);
@@ -457,18 +563,22 @@ export default function FloorPlan({
     }
   };
 
-  const handleLegendEnter = (key) => () => {
-    if (pinned) return;
-    setHoverType(key);
-    setHoverCode(null);
-  };
-  const handleLegendLeave = () => {
-    if (pinned || sheetRef.current?.open) return;
-    setHoverType(null);
-  };
   const handleLegendClick = (key) => (e) => {
     e.stopPropagation();
     if (pinned && hoverType === key) {
+      closePanel();
+      return;
+    }
+    setHoverType(key);
+    setHoverCode(null);
+    setPinned(true);
+    revealPanel();
+  };
+  /* Dropdown loại hình ở đầu section (TypeSelect) — key=null ("Tất cả loại hình") đóng panel về
+     bảng tóm tắt; khác handleLegendClick (dùng cho dòng trong bảng tóm tắt) ở chỗ không toggle-off
+     khi bấm lại cùng loại, vì dropdown đã tự đóng và hiện rõ lựa chọn đang chọn. */
+  const handleTypeSelect = (key) => {
+    if (key == null) {
       closePanel();
       return;
     }
@@ -556,7 +666,7 @@ export default function FloorPlan({
                 key={activeLayoutImage}
                 src={activeLayoutImage}
                 alt={`Phối cảnh layout căn ${activeUnit.unit_code} (${typeLabel})${activeItem?.floor ? ` — ${floorLabel(activeItem.floor)}` : ""}`}
-                className="mx-auto block aspect-[4/3] max-h-[240px] w-full object-contain"
+                className="mx-auto block aspect-[4/3] max-h-[420px] w-full object-contain"
                 loading="lazy"
               />
             </div>
@@ -597,7 +707,7 @@ export default function FloorPlan({
                 key={activeLayoutImage}
                 src={activeLayoutImage}
                 alt={`Phối cảnh layout ${legendByKey[hoverType]?.label || hoverType}`}
-                className="mx-auto block aspect-[4/3] max-h-[240px] w-full object-contain"
+                className="mx-auto block aspect-[4/3] max-h-[420px] w-full object-contain"
                 loading="lazy"
               />
             </div>
@@ -664,66 +774,31 @@ export default function FloorPlan({
       <div className="container-page">
         {/* BỐ CỤC
             < 1024px: tiêu đề → bộ lọc → mặt bằng → panel (xếp dọc).
-            ≥ 1024px: mặt bằng bên trái (khung CỐ ĐỊNH theo tỉ lệ ảnh), cột phải cao đúng bằng
-            mặt bằng gồm tiêu đề, bộ lọc và panel (cuộn bên trong nếu dài).
+            ≥ 1024px: mặt bằng bên trái (khung CỐ ĐỊNH theo tỉ lệ ảnh), cột phải TỰ CAO theo đúng
+            nội dung (tiêu đề, bộ lọc, panel) — không ép bằng chiều cao ảnh nữa: khi chọn 1 căn, panel
+            có thêm ảnh layout nên cần nhiều chỗ hơn hẳn bảng tóm tắt mặc định; ép bằng chiều cao ảnh
+            từng làm ảnh layout + thông số bị cắt, phải cuộn mới thấy hết trong khi ảnh mặt bằng bên
+            trái (self-start, không giãn theo hàng grid) còn dư rất nhiều khoảng trắng.
             Cột phải dùng `contents` dưới 1024px để các khối con tự xếp theo `order`. */}
         <div className="floor-grid grid grid-cols-1 gap-6 lg:items-start lg:gap-10">
-        <div
-          className="contents lg:flex lg:h-[var(--map-h)] lg:min-h-0 lg:flex-col lg:gap-5"
-          style={mapHeight ? { "--map-h": `${mapHeight}px` } : undefined}
-        >
-        {/* Heading */}
+        <div className="contents lg:flex lg:flex-col lg:gap-5">
+        {/* Heading — bỏ subtitle (đã dư thừa khi loại hình chuyển qua dropdown bên dưới) để panel
+            chi tiết được đẩy lên sát ngay dưới, đỡ phí chỗ so với ảnh mặt bằng bên trái. */}
         <div className="order-1 lg:order-none">
           <h2 className="section-title lg:!text-[clamp(30px,2.6vw,44px)]">
             {t("floor.title")}
           </h2>
-          <p className="section-subtitle !mt-3">
-            {t("floor.subtitle", { n: meta.totalLayouts, k: typeSummary.length })}
-          </p>
         </div>
 
-        {/* Dropdown chọn tháp + Legend theo loại hình — lọc/soi sáng cả nhóm
-            zone cùng loại. Legend dùng chung cho mọi tháp nên không đổi khi
-            chuyển tháp. */}
-        <div className="order-2 flex flex-col items-start gap-3 lg:order-none">
+        {/* Dropdown chọn tháp + dropdown chọn loại hình — NGANG HÀNG, cùng kiểu với nhau (trước là
+            dải chip loại hình chiếm nguyên 1-2 hàng riêng, nay gộp vào 1 dropdown cho gọn). */}
+        <div className="order-2 flex flex-wrap items-center gap-3 lg:order-none">
           <TowerSelect
             towers={towers}
             value={activeTower}
             onChange={handleTowerChange}
           />
-          {/* chỉ các loại hình CÓ trong tháp đang xem (Tháp A không có Studio → không hiện chip Studio);
-              điện thoại: lưới đều cột, mọi chip nhìn thấy hết, không kéo ngang */}
-          <div className={`grid w-full gap-2 ${typeSummary.length > 4 ? "grid-cols-3" : "grid-cols-4"} sm:flex sm:flex-wrap sm:items-center`}>
-            {typeSummary.map((l) => {
-              const isActive = activeTypeKey === l.key;
-              const isDimmed = isSelectionActive && !isActive;
-              return (
-                <button
-                  key={l.key}
-                  type="button"
-                  onMouseEnter={handleLegendEnter(l.key)}
-                  onMouseLeave={handleLegendLeave}
-                  onFocus={handleLegendEnter(l.key)}
-                  onBlur={handleLegendLeave}
-                  onClick={handleLegendClick(l.key)}
-                  aria-pressed={isActive}
-                  className={[
-                    "inline-flex min-h-11 items-center justify-center gap-2 whitespace-nowrap rounded-full border px-3.5 py-2 text-xs font-bold uppercase tracking-[.08em] transition-[background-color,color,opacity,box-shadow] duration-300 max-sm:px-2",
-                    isActive
-                      ? "border-imperia-primary bg-imperia-background-dark text-white shadow-soft"
-                      : "border-imperia-primary/20 bg-white text-imperia-black hover:border-imperia-primary/50",
-                    isDimmed ? "opacity-45" : "opacity-100",
-                  ].join(" ")}
-                >
-                  <span
-                    className="h-2.5 w-2.5 rounded-full ring-1 ring-black/10"
-                    style={{ backgroundColor: l.swatch }}
-                  />
-                  {l.label}
-                </button>
-              );
-            })}
-          </div>
+          <TypeSelect types={typeSummary} value={activeTypeKey} onChange={handleTypeSelect} />
         </div>
 
           {/* Panel chi tiết — desktop: chiếm phần còn lại của cột phải, cuộn bên trong.
@@ -732,7 +807,7 @@ export default function FloorPlan({
             ref={panelRef}
             data-hide-floating
             onClick={(e) => e.stopPropagation()}
-            className="order-4 max-lg:hidden lg:order-none lg:min-h-0 lg:flex-1 lg:overflow-y-auto lg:overscroll-contain lg:pr-1 [scrollbar-width:thin]"
+            className="order-4 max-lg:hidden lg:order-none lg:max-h-[85vh] lg:overflow-y-auto lg:overscroll-contain lg:pr-1 [scrollbar-width:thin]"
           >
             {renderPanel()}
           </aside>
