@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { hrefForSection } from "../../lib/sections";
 import Brand from "./Brand";
 import Button from "../ui/Button";
@@ -30,6 +30,7 @@ function useScrollSpy(ids) {
 
 export default function Header({ onLead }) {
   const [open, setOpen] = useState(false);
+  const navigate = useNavigate();
   const links = [
     ["tong-quan", "Tổng quan"],
     ["vi-tri", "Vị trí"],
@@ -44,7 +45,10 @@ export default function Header({ onLead }) {
     document.body.classList.toggle("menu-open", open);
     return () => document.body.classList.remove("menu-open");
   }, [open]);
-  const close = () => setOpen(false);
+  const close = () => {
+    document.body.classList.remove("menu-open");
+    setOpen(false);
+  };
   return (
     <>
       <header className="fixed inset-x-0 top-0 z-[1000] h-[var(--header-h)] border-b border-white/10 bg-imperia-background-dark/95 text-white backdrop-blur-xl">
@@ -106,7 +110,12 @@ export default function Header({ onLead }) {
             <Link
               key={id}
               to={hrefForSection(id) || "/"}
-              onClick={close}
+              onClick={(event) => {
+                close();
+                if (!window.matchMedia("(max-width: 1023px)").matches) return;
+                event.preventDefault();
+                navigate(`/#${id}`);
+              }}
               aria-current={active === id ? "location" : undefined}
               className="flex min-h-12 items-center gap-4 border-b border-white/10 py-3 text-white hover:text-imperia-cream"
             >

@@ -26,7 +26,7 @@ export default function Hero({ data, variant = "left" }) {
           height="863"
           fetchPriority="high"
           decoding="async"
-          className="h-full w-full object-cover object-[60%_center]"
+          className="h-full w-full object-cover object-[60%_center] md:origin-bottom md:scale-[1.1]"
         />
         {/* Desktop: gradient trái giữ chữ đọc rõ. Mobile: chân ảnh hoà dần vào nền chữ. */}
         <div className="hero-overlay absolute inset-0 hidden md:block" />

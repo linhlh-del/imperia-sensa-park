@@ -64,6 +64,18 @@
     --gutter: 80px;
   }
 }
+@media (min-width: 1600px) {
+  :root {
+    --container: 1600px;
+    --gutter: clamp(80px, 5vw, 144px);
+  }
+}
+@media (min-width: 2200px) {
+  :root {
+    --container: 1800px;
+    --gutter: clamp(96px, 5vw, 176px);
+  }
+}
 @media (min-width: 640px) and (max-width: 1023px) {
   :root {
     --gutter: 32px;
@@ -170,7 +182,7 @@ img {
   }
   .section-title {
     @apply font-display text-imperia-primary font-semibold tracking-[-0.025em];
-    font-size: clamp(30px, 4vw, 56px);
+    font-size: clamp(30px, 3.2vw, 68px);
     /* 1.15: dấu tiếng Việt (ẤẦỆ…) của dòng dưới không chạm chân chữ dòng trên */
     line-height: 1.15;
     text-transform: uppercase;

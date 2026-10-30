@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, useEffect, useLayoutEffect, useState } from "react";
 import { Navigate, Routes, Route, useLocation, useNavigate, useParams } from "react-router-dom";
 import Header from "./components/layout/Header";
 import Footer from "./components/layout/Footer";
@@ -114,6 +114,14 @@ function HomePage({ onOpenModal, submitLead }) {
   useEffect(() => {
     const id = decodeURIComponent(location.hash.slice(1));
     if (!id) return;
+    if (window.matchMedia("(max-width: 1023px)").matches) {
+      const target = document.getElementById(id);
+      if (target) {
+        const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+        target.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" });
+        return;
+      }
+    }
     const href = hrefForSection(id);
     if (href) navigate(href, { replace: true });
     else document.getElementById(id)?.scrollIntoView({ block: "start" });
@@ -151,6 +159,10 @@ export default function App() {
   const navigate = useNavigate();
   const location = useLocation();
 
+  useLayoutEffect(() => {
+    window.scrollTo(0, 0);
+  }, [location.pathname]);
+
   useEffect(() => {
     const handleAnchorClick = (event) => {
       // giữ hành vi mặc định khi mở tab mới / chuột giữa / phím bổ trợ
@@ -164,6 +176,16 @@ export default function App() {
       if (!sectionId || sectionId === "top") {
         if (location.pathname !== "/" || location.hash) navigate("/");
         window.scrollTo({ top: 0, behavior: "smooth" });
+        return;
+      }
+      if (window.matchMedia("(max-width: 1023px)").matches) {
+        const target = document.getElementById(sectionId);
+        if (location.pathname === "/" && target) {
+          const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+          target.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" });
+        } else {
+          navigate(`/#${sectionId}`);
+        }
         return;
       }
       // Mục có URL riêng: trang SEO cùng chủ đề (/vi-tri…) hoặc đường dẫn section (/lien-he…) — qua router

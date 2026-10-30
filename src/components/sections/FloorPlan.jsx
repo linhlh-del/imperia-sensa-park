@@ -394,6 +394,7 @@ export default function FloorPlan({
   const [pinned, setPinned] = useState(false);
   const [breathIndex, setBreathIndex] = useState(0);
   const [floorPlanLightbox, setFloorPlanLightbox] = useState(false);
+  const [lightboxScale, setLightboxScale] = useState(1);
 
   const towerData = towers[activeTower] || Object.values(towers)[0];
   const units = towerData.units;
@@ -563,7 +564,7 @@ export default function FloorPlan({
      - điện thoại / máy tính bảng (< 1024px): mở bottom-sheet (mặt bằng giữ nguyên khung, section vừa 1 màn hình)
      - máy tính: panel ở cột phải, không cần làm gì */
   const revealPanel = () => {
-    if (window.matchMedia("(max-width: 1023px)").matches) {
+    if (floorPlanLightbox || window.matchMedia("(max-width: 1023px)").matches) {
       if (!sheetRef.current?.open) sheetRef.current?.showModal();
       return;
     }
@@ -873,13 +874,37 @@ export default function FloorPlan({
             ref={mapRef}
             /* Tailwind biên dịch class tĩnh lúc build → không thể nhúng imgW/imgH (biến runtime) thẳng vào
                arbitrary value. Truyền qua 2 custom property (--fmap-ratio-w/h) rồi dùng trong calc() tĩnh. */
-            className="relative order-3 self-start leading-none shadow-soft max-lg:mx-auto max-lg:w-full max-lg:max-w-[calc(var(--fmap-h)*var(--fmap-ratio-w)/var(--fmap-ratio-h))] [--fmap-h:32svh] md:[--fmap-h:40svh] lg:order-first"
+            onClick={(event) => {
+              if (floorPlanLightbox && event.target === event.currentTarget) {
+                setFloorPlanLightbox(false);
+              }
+            }}
+            role={floorPlanLightbox ? "dialog" : undefined}
+            aria-modal={floorPlanLightbox ? "true" : undefined}
+            aria-label={floorPlanLightbox ? `Mặt bằng phóng to — ${towerData.label}` : undefined}
+            className={`${
+              floorPlanLightbox
+                ? "fixed inset-0 z-[10000] flex h-dvh w-screen justify-center overflow-auto bg-imperia-black/90 p-3 backdrop-blur-sm lg:p-6"
+                : "relative order-3 self-start leading-none shadow-soft max-lg:mx-auto max-lg:w-[calc(100vw-16px)] max-lg:max-w-[calc(var(--fmap-h)*var(--fmap-ratio-w)/var(--fmap-ratio-h))] [--fmap-h:48svh] md:[--fmap-h:52svh] lg:order-first"
+            }`}
             style={{
-              aspectRatio: `${imgW} / ${imgH}`,
               "--fmap-ratio-w": imgW,
               "--fmap-ratio-h": imgH,
             }}
           >
+            <div
+              className={`relative ${
+                floorPlanLightbox
+                  ? "mx-auto my-auto shrink-0"
+                  : "w-full"
+              }`}
+              style={{
+                aspectRatio: `${imgW} / ${imgH}`,
+                width: floorPlanLightbox
+                  ? `${Math.min(window.innerWidth - 32, window.innerHeight * 0.92 * imgW / imgH) * lightboxScale}px`
+                  : "100%",
+              }}
+            >
             {imageSrc ? (
               <img
                 src={imageSrc}
@@ -1034,9 +1059,12 @@ export default function FloorPlan({
                   style={{
                     top: it.labelTop,
                     left: it.labelLeft,
+                    fontSize: floorPlanLightbox
+                      ? `${Math.max(8, 12 * lightboxScale)}px`
+                      : undefined,
                   }}
                   className={[
-                    "absolute inline-flex -translate-x-1/2 -translate-y-1/2 items-center gap-1.5 before:absolute before:-inset-x-1 before:-inset-y-2.5 before:content-[''] whitespace-nowrap rounded-full border px-2 py-1 text-xs font-bold uppercase leading-none lg:px-2.5 tracking-[.03em] backdrop-blur-sm transition-[transform,background-color,color,opacity,box-shadow] duration-300 max-sm:hidden",
+                    "absolute inline-flex -translate-x-1/2 -translate-y-1/2 items-center gap-1 before:absolute before:-inset-x-1 before:-inset-y-1 before:content-[''] whitespace-nowrap rounded-full border px-1 py-0.5 text-[clamp(5px,1.7vw,12px)] font-bold uppercase leading-none tracking-[.02em] backdrop-blur-sm transition-[transform,background-color,color,opacity,box-shadow] duration-300 sm:gap-1.5 sm:px-2 sm:py-1 sm:text-xs lg:px-2.5",
                     isActive
                       ? "z-20 scale-110 border-imperia-primary bg-imperia-background-dark text-white shadow-soft"
                       : "z-10 border-imperia-primary/25 bg-white/90 text-imperia-black",
@@ -1053,8 +1081,8 @@ export default function FloorPlan({
               );
             })}
 
-            {/* Phóng to — luôn có (mobile không còn nhãn, desktop muốn xem rõ chi tiết) */}
-            {imageSrc ? (
+            {/* Nhãn căn luôn hiện trên mobile; chế độ phóng to hỗ trợ tăng kích thước để đọc rõ mã căn. */}
+            {!floorPlanLightbox && imageSrc ? (
               <button
                 type="button"
                 onClick={(e) => {
@@ -1082,6 +1110,41 @@ export default function FloorPlan({
                 Phóng to
               </button>
             ) : null}
+            </div>
+            {floorPlanLightbox && (
+              <>
+                <button
+                  type="button"
+                  onClick={() => setFloorPlanLightbox(false)}
+                  aria-label="Đóng ảnh mặt bằng"
+                  className="fixed right-4 top-4 z-[10010] grid h-12 w-12 place-items-center rounded-full bg-white/15 text-2xl text-white backdrop-blur-sm hover:bg-white/25"
+                >
+                  ×
+                </button>
+                <div className="fixed bottom-4 left-1/2 z-[10010] flex -translate-x-1/2 items-center gap-3 rounded-full border border-white/20 bg-imperia-background-dark/90 px-3 py-2 text-white shadow-card backdrop-blur">
+                  <button
+                    type="button"
+                    onClick={() => setLightboxScale((scale) => Math.max(1, +(scale - 0.25).toFixed(2)))}
+                    disabled={lightboxScale <= 1}
+                    aria-label="Thu nhỏ mặt bằng"
+                    className="grid h-9 w-9 place-items-center rounded-full bg-white/10 text-xl disabled:opacity-40"
+                  >
+                    −
+                  </button>
+                  <span className="min-w-12 text-center text-xs tabular-nums">{Math.round(lightboxScale * 100)}%</span>
+                  <button
+                    type="button"
+                    onClick={() => setLightboxScale((scale) => Math.min(2.5, +(scale + 0.25).toFixed(2)))}
+                    disabled={lightboxScale >= 2.5}
+                    aria-label="Phóng to mặt bằng"
+                    className="grid h-9 w-9 place-items-center rounded-full bg-white/10 text-xl disabled:opacity-40"
+                  >
+                    +
+                  </button>
+                  <span className="hidden border-l border-white/20 pl-3 text-xs sm:inline">Chạm căn để xem chi tiết</span>
+                </div>
+              </>
+            )}
           </div>
         </div>
       </div>
@@ -1095,7 +1158,7 @@ export default function FloorPlan({
           e.stopPropagation(); // không để click lan ra document (đang ghim chọn căn)
           if (e.target === e.currentTarget) e.currentTarget.close();
         }}
-        className="imp-sheet m-0 mt-auto max-h-[85svh] w-full max-w-none overflow-y-auto rounded-t-[24px] border-0 bg-imperia-cream p-0 pb-[env(safe-area-inset-bottom)] backdrop:bg-imperia-black/50 md:mx-auto md:max-w-[640px] lg:hidden"
+        className={`imp-sheet m-0 mt-auto max-h-[85svh] w-full max-w-none overflow-y-auto rounded-t-[24px] border-0 bg-imperia-cream p-0 pb-[env(safe-area-inset-bottom)] backdrop:bg-imperia-black/50 md:mx-auto md:max-w-[640px] ${floorPlanLightbox ? "" : "lg:hidden"}`}
       >
         <div className="sticky top-0 z-10 flex justify-end bg-imperia-cream px-4 pt-3">
           <button
