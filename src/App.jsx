@@ -110,22 +110,16 @@ function HomePage({ onOpenModal, submitLead }) {
     };
   }, [sectionId, location.key]);
 
-  // Link cũ dạng "/#lien-he" (đã chia sẻ / chạy quảng cáo) → chuyển sang URL mới, thay thế mục lịch sử
+  // Liên kết header dạng "/#section": cuộn tới section trên trang chủ ở mọi kích thước màn hình.
   useEffect(() => {
     const id = decodeURIComponent(location.hash.slice(1));
     if (!id) return;
-    if (window.matchMedia("(max-width: 1023px)").matches) {
-      const target = document.getElementById(id);
-      if (target) {
-        const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-        target.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" });
-        return;
-      }
-    }
-    const href = hrefForSection(id);
-    if (href) navigate(href, { replace: true });
-    else document.getElementById(id)?.scrollIntoView({ block: "start" });
-  }, [location.hash, navigate]);
+    const frame = requestAnimationFrame(() => {
+      const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      document.getElementById(id)?.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" });
+    });
+    return () => cancelAnimationFrame(frame);
+  }, [location.hash, location.key]);
 
   // "/<gì đó>" không phải section → về trang chủ (không hiện trang chủ ở URL lạ)
   if (section && !sectionId) return <Navigate to="/" replace />;

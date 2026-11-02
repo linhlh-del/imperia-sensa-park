@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { hrefForSection } from "../../lib/sections";
+import { Link } from "react-router-dom";
 import Brand from "./Brand";
 import Button from "../ui/Button";
 import { site, t } from "../../cms/content";
@@ -30,7 +29,6 @@ function useScrollSpy(ids) {
 
 export default function Header({ onLead }) {
   const [open, setOpen] = useState(false);
-  const navigate = useNavigate();
   const links = [
     ["tong-quan", "Tổng quan"],
     ["vi-tri", "Vị trí"],
@@ -61,7 +59,7 @@ export default function Header({ onLead }) {
             {links.map(([id, label]) => (
               <Link
                 key={id}
-                to={hrefForSection(id) || "/"}
+                to={`/#${id}`}
                 aria-current={active === id ? "location" : undefined}
                 className={`relative py-2 transition-colors after:absolute after:inset-x-0 after:-bottom-0.5 after:h-0.5 after:origin-left after:rounded-full after:bg-imperia-accent after:transition-transform after:duration-300 hover:text-imperia-cream ${
                   active === id ? "after:scale-x-100" : "text-white/90 after:scale-x-0"
@@ -109,13 +107,8 @@ export default function Header({ onLead }) {
           {links.map(([id, label], i) => (
             <Link
               key={id}
-              to={hrefForSection(id) || "/"}
-              onClick={(event) => {
-                close();
-                if (!window.matchMedia("(max-width: 1023px)").matches) return;
-                event.preventDefault();
-                navigate(`/#${id}`);
-              }}
+              to={`/#${id}`}
+              onClick={close}
               aria-current={active === id ? "location" : undefined}
               className="flex min-h-12 items-center gap-4 border-b border-white/10 py-3 text-white hover:text-imperia-cream"
             >
