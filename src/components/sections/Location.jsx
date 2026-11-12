@@ -23,7 +23,10 @@ export default function Location({ data, variant = "map-right" }) {
             </p>
             <div className="mb-[clamp(16px,3svh,32px)] grid divide-y divide-white/10 border-y border-white/10">
               {data.distances.map(([time, label]) => (
-                <div key={label} className="flex items-center gap-4 py-[clamp(6px,1.3svh,20px)] md:gap-6">
+                <div
+                  key={label}
+                  className="flex items-center gap-4 py-[clamp(6px,1.3svh,20px)] md:gap-6"
+                >
                   <strong className="flex min-w-[64px] items-baseline gap-1 font-display text-3xl text-imperia-cream">
                     {/* thời gian di chuyển: số tĩnh (không đếm) để luôn đúng */}
                     {String(time).replace(/['’]/g, "")}
@@ -31,7 +34,9 @@ export default function Location({ data, variant = "map-right" }) {
                       phút
                     </span>
                   </strong>
-                  <span className="text-[15px] leading-snug text-white/90">{label}</span>
+                  <span className="text-[15px] leading-snug text-white/90">
+                    {label}
+                  </span>
                 </div>
               ))}
             </div>
