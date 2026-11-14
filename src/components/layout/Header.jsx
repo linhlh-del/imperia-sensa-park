@@ -1,4 +1,6 @@
-import { useEffect, useState } from "react";
+import Image from "../ui/Image";
+import useModalFocus from "../../lib/useModalFocus";
+import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import Brand from "./Brand";
 import Button from "../ui/Button";
@@ -29,12 +31,14 @@ function useScrollSpy(ids) {
 
 export default function Header({ onLead }) {
   const [open, setOpen] = useState(false);
+  const menuRef = useRef(null);
+  useModalFocus(open, menuRef, () => setOpen(false));
   const links = [
     ["tong-quan", "Tổng quan"],
     ["vi-tri", "Vị trí"],
     ["tien-ich", "Tiện ích"],
     ["mat-bang", "Mặt bằng"],
-    ["tinh-tra-gop", "Tính trả góp"],
+    ["chinh-sach-ban-hang", "CSBH"],
     ["tin-tuc", "Tin tức"],
     ["lien-he", "Liên hệ"],
   ];
@@ -49,7 +53,7 @@ export default function Header({ onLead }) {
   };
   return (
     <>
-      <header className="fixed inset-x-0 top-0 z-[1000] h-[var(--header-h)] border-b border-white/10 bg-imperia-background-dark/95 text-white backdrop-blur-xl">
+      <header className="fixed inset-x-0 top-0 z-[1000] h-[var(--header-h)] border-b border-white/10 bg-[linear-gradient(105deg,#4d5538_0%,#607049_58%,#687850_100%)] text-white backdrop-blur-xl">
         <div className="container-page flex h-full items-center justify-between gap-8">
           <Brand />
           <nav
@@ -91,7 +95,12 @@ export default function Header({ onLead }) {
         onClick={close}
       />
       <aside
-        className={`fixed right-0 top-0 z-[1100] flex h-dvh w-[min(88vw,390px)] flex-col bg-gradient-to-br from-imperia-background-dark to-imperia-background-light p-6 text-white shadow-2xl transition-transform duration-300 ${open ? "translate-x-0" : "translate-x-full"}`}
+        ref={menuRef}
+        role="dialog"
+        aria-modal={open ? true : undefined}
+        aria-label="Menu điều hướng"
+        inert={!open ? true : undefined}
+        className={`fixed right-0 top-0 z-[1100] flex h-dvh w-[min(88vw,390px)] flex-col overflow-y-auto bg-gradient-to-br from-imperia-background-dark to-imperia-background-light p-6 text-white shadow-2xl transition-transform duration-300 ${open ? "translate-x-0" : "translate-x-full"}`}
       >
         <div className="flex items-center justify-between border-b border-white/10 pb-6">
           <Brand />
@@ -133,7 +142,7 @@ export default function Header({ onLead }) {
             rel="noopener noreferrer"
             className="flex min-h-12 items-center justify-center gap-2 rounded-full border border-white/25 text-sm font-bold"
           >
-            <img src="/assets/logo-zalo.webp" alt="" width="20" height="20" className="h-5 w-5 object-contain" />
+            <Image src="/assets/logo-zalo.webp" alt="" width="20" height="20" className="h-5 w-5 object-contain" />
             Chat Zalo
           </a>
         </div>

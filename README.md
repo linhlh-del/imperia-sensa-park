@@ -148,3 +148,15 @@ npm run preview
 - Tài nguyên hình ảnh nên được đặt trong `public/assets` để truy cập dễ dàng bằng đường dẫn `/assets/...`
 - Dự án hiện đang có phần chức năng tin tức và lead form đã được tích hợp cơ bản
 - Có thể tiếp tục mở rộng bằng CMS/API nếu muốn tách content ra khỏi code
+
+
+## Audit Sensa — 12/11/2026
+
+- [Checklist áp dụng từ Qtopia](docs/SENSA-AUDIT-CHECKLIST.md)
+- [Knowledge base](docs/KNOWLEDGE-BASE.md)
+- [PageSpeed local](docs/PAGESPEED-AUDIT.md)
+- [Metadata từng URL](docs/SEO-METADATA.md)
+- [CTA map](docs/CTA-MAP.md)
+- [Mục còn cần xác minh](docs/TODO-CHECKLIST.md)
+
+`npm run build` chạy fetch CMS, Vite, prerender và SEO gate. `npm run seo:check` kiểm lại HTML dist. `npm run preview:static` phục vụ dist với HTTP404 thật ở local; `npm run audit:ui` kiểm14 route ×4 viewport (đặt AUDIT_URL nếu dùng cổng4174). Chưa có lint script. Chi tiết lệnh và giới hạn trong knowledge base.

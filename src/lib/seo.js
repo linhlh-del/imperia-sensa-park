@@ -2,7 +2,8 @@
 // Tiện ích cập nhật <head> theo từng route (SPA). Không chứa JSX, không phụ thuộc
 // DOM lúc import -> có thể import từ Node (scripts/prerender.mjs) để dùng chung hằng số.
 
-export const SITE_URL = "https://imperia-sensa-park.vercel.app";
+const configuredSiteUrl = import.meta.env?.VITE_SITE_URL || (typeof process !== "undefined" && process.env.VITE_SITE_URL) || "https://imperia-sensa-park.vercel.app";
+export const SITE_URL = new URL(configuredSiteUrl).origin;
 export const SITE_NAME = "Imperia Sensa Park";
 export const DEFAULT_IMAGE = `${SITE_URL}/assets/thumbnail.jpg`;
 export const LOGO_URL = `${SITE_URL}/assets/logo.png`;
@@ -16,6 +17,8 @@ export const HOME_SEO = {
 // Trang con theo nhóm từ khóa ngách. Dùng chung cho RouteSeo (client),
 // prerender + sitemap (Node). Title ≤ 60, description 150–160 ký tự (đã đếm).
 export const SUBPAGES = [
+  { path: "/tong-quan", name: "Tổng quan", title: "Tổng quan Imperia Sensa Park | Căn hộ tại Phước Long", description: "Tìm hiểu Imperia Sensa Park tại phường Phước Long, TP.HCM: thông tin tổng quan, loại căn hộ, tiện ích và hướng dẫn xem mặt bằng, vị trí, tài liệu dự án.", h1: "Tổng quan dự án Imperia Sensa Park" },
+  { path: "/faq", name: "Câu hỏi thường gặp", title: "Hỏi đáp Imperia Sensa Park | Vị trí, mặt bằng, bảng giá", description: "Giải đáp câu hỏi về Imperia Sensa Park: vị trí, loại căn hộ, cách xem mặt bằng, tiện ích và thông tin cần chuẩn bị khi nhận bảng giá, phương án thanh toán.", h1: "Câu hỏi thường gặp về Imperia Sensa Park" },
   {
     path: "/vi-tri",
     name: "Vị trí",
@@ -88,9 +91,7 @@ export function truncateTitle(text = "", max = 60) {
 }
 
 export function toAbsoluteUrl(path = "/") {
-  const normalized =
-    path.length > 1 ? path.replace(/\/+$/, "") : path;
-  return `${SITE_URL}${normalized === "/" ? "/" : normalized}`;
+  return new URL(path || "/", `${SITE_URL}/`).href;
 }
 
 function upsertMeta(attr, key, content) {

@@ -8,3 +8,8 @@ dist/
 src/generated/cms-content.json
 public/assets/cms/
 public/cms-status.json
+dist-local/
+
+# build + kết quả audit thiết bị (scripts/audit-devices.mjs)
+dist-audit/
+tmp/

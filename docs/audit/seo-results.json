@@ -1,0 +1,118 @@
+{
+  "errors": 0,
+  "warnings": 5,
+  "pages": [
+    {
+      "route": "/",
+      "title": "Imperia Sensa Park | Căn hộ MIK Group, Phước Long, TP.HCM",
+      "description": "Imperia Sensa Park của MIK Group tại phường Phước Long, TP.HCM: quy mô khoảng 5 ha, 2 tháp, 922 căn hộ và hơn 40 tiện ích. Đăng ký nhận thông tin dự án ngay!",
+      "h1": "IMPERIA SENSA PARK — căn hộ MIK Group tại phường Phước Long, TP. Hồ Chí Minh (khu vực Phước Long B cũ, trước đây thuộc TP. Thủ Đức), mặt tiền đường Võ Chí Công",
+      "canonical": "https://imperia-sensa-park.vercel.app/",
+      "image": "https://imperia-sensa-park.vercel.app/assets/thumbnail.jpg"
+    },
+    {
+      "route": "/tong-quan",
+      "title": "Tổng quan Imperia Sensa Park | Căn hộ tại Phước Long",
+      "description": "Tìm hiểu Imperia Sensa Park tại phường Phước Long, TP.HCM: thông tin tổng quan, loại căn hộ, tiện ích và hướng dẫn xem mặt bằng, vị trí, tài liệu dự án.",
+      "h1": "Tổng quan dự án Imperia Sensa Park",
+      "canonical": "https://imperia-sensa-park.vercel.app/tong-quan",
+      "image": "https://imperia-sensa-park.vercel.app/assets/thumbnail.jpg"
+    },
+    {
+      "route": "/faq",
+      "title": "Hỏi đáp Imperia Sensa Park | Vị trí, mặt bằng, bảng giá",
+      "description": "Giải đáp câu hỏi về Imperia Sensa Park: vị trí, loại căn hộ, cách xem mặt bằng, tiện ích và thông tin cần chuẩn bị khi nhận bảng giá, phương án thanh toán.",
+      "h1": "Câu hỏi thường gặp về Imperia Sensa Park",
+      "canonical": "https://imperia-sensa-park.vercel.app/faq",
+      "image": "https://imperia-sensa-park.vercel.app/assets/thumbnail.jpg"
+    },
+    {
+      "route": "/vi-tri",
+      "title": "Vị trí Imperia Sensa Park | Võ Chí Công, Phước Long, TP.HCM",
+      "description": "Vị trí Imperia Sensa Park mặt tiền Võ Chí Công, phường Phước Long, TP.HCM: 5 phút đến Khu Công nghệ cao, 15 phút đến Thủ Thiêm. Nhận bản đồ vị trí ngay!",
+      "h1": "Vị trí căn hộ Imperia Sensa Park – mặt tiền Võ Chí Công, phường Phước Long, TP.HCM",
+      "canonical": "https://imperia-sensa-park.vercel.app/vi-tri",
+      "image": "https://imperia-sensa-park.vercel.app/assets/thumbnail.jpg"
+    },
+    {
+      "route": "/tien-ich",
+      "title": "Tiện ích Imperia Sensa Park | 40+ tiện ích nội khu MIK Group",
+      "description": "Khám phá hơn 40 tiện ích nội khu Imperia Sensa Park: hồ bơi Aura Flow, gym, Himalaya Salt Room, Creative Studio, đường dạo ven hồ. Đăng ký tham quan ngay!",
+      "h1": "Hệ thống tiện ích nội khu Imperia Sensa Park",
+      "canonical": "https://imperia-sensa-park.vercel.app/tien-ich",
+      "image": "https://imperia-sensa-park.vercel.app/assets/thumbnail.jpg"
+    },
+    {
+      "route": "/mat-bang",
+      "title": "Mặt bằng Imperia Sensa Park | Studio, 2PN, 3PN, Duplex",
+      "description": "Mặt bằng tầng điển hình tháp Sensa A, Sensa B của Imperia Sensa Park: căn Studio, 1PN+, 2PN, 3PN, Duplex với diện tích GFA, NFA chi tiết. Nhận mặt bằng ngay!",
+      "h1": "Mặt bằng chi tiết căn hộ Imperia Sensa Park – tháp Sensa A và Sensa B",
+      "canonical": "https://imperia-sensa-park.vercel.app/mat-bang",
+      "image": "https://imperia-sensa-park.vercel.app/assets/thumbnail.jpg"
+    },
+    {
+      "route": "/bang-gia",
+      "title": "Bảng giá Imperia Sensa Park | Tính trả góp căn hộ Phước Long",
+      "description": "Nhận bảng giá Imperia Sensa Park mới nhất và ước tính khoản vay, số tiền trả góp hàng tháng cho căn hộ Studio đến 3PN tại phường Phước Long, TP.HCM ngay.",
+      "h1": "Bảng giá và công cụ tính trả góp căn hộ Imperia Sensa Park",
+      "canonical": "https://imperia-sensa-park.vercel.app/bang-gia",
+      "image": "https://imperia-sensa-park.vercel.app/assets/thumbnail.jpg"
+    },
+    {
+      "route": "/tin-tuc",
+      "title": "Tin tức & sự kiện Imperia Sensa Park | MIK Group",
+      "description": "Theo dõi các thông báo mới nhất, tiến độ xây dựng và sự kiện nổi bật của dự án Imperia Sensa Park do MIK Group phát… Tìm hiểu thêm về Imperia Sensa Park.",
+      "h1": "Tin tức & sự kiện",
+      "canonical": "https://imperia-sensa-park.vercel.app/tin-tuc",
+      "image": "https://imperia-sensa-park.vercel.app/assets/thumbnail.jpg"
+    },
+    {
+      "route": "/tin-tuc/mik-group-khai-truong-house-of-mik-mien-nam",
+      "title": "MIK Group khai trương House of MIK,… | Imperia Sensa Park",
+      "description": "MIK Group ra mắt House of MIK, không gian thương hiệu kết hợp Sales Gallery tại trung tâm TP.HCM, đánh dấu bước tiến mới trong chiến lược mở rộng hiện diện…",
+      "h1": "MIK Group khai trương House of MIK, đánh dấu bước phát triển mới tại miền Nam",
+      "canonical": "https://imperia-sensa-park.vercel.app/tin-tuc/mik-group-khai-truong-house-of-mik-mien-nam",
+      "image": "https://media.sachicloud.io.vn/store/1080/uploads/2026/10/1a0HFBeFpbciOQO.webp"
+    },
+    {
+      "route": "/tin-tuc/chuoi-hon-40-tien-ich-imperia-sensa-park",
+      "title": "Chuỗi hơn 40 tiện ích trong dự án MIK… | Imperia Sensa Park",
+      "description": "Imperia Sensa Park do MIK Group phát triển, quy mô 5 ha với hơn 40 tiện ích chia làm ba nhóm, phục vụ nhu cầu làm việc, vận động, thư giãn, gặp gỡ cho cư…",
+      "h1": "Chuỗi hơn 40 tiện ích trong dự án MIK Group ở khu Đông TP HCM",
+      "canonical": "https://imperia-sensa-park.vercel.app/tin-tuc/chuoi-hon-40-tien-ich-imperia-sensa-park",
+      "image": "https://media.sachicloud.io.vn/store/1080/uploads/2026/10/cB6Gn6v9oDFy77q.webp"
+    },
+    {
+      "route": "/tin-tuc/imperia-sensa-park-discovery-residences",
+      "title": "Imperia Sensa Park mở ra trải nghiệm… | Imperia Sensa Park",
+      "description": "Khởi công vào đầu tháng 8 năm 2026, Imperia Sensa Park - dự án mới nhất thuộc dòng sản phẩm I Series (Imperia) - đánh dấu một chương phát triển mới của MIK…",
+      "h1": "Imperia Sensa Park mở ra trải nghiệm Discovery Residences tiên phong tại TP.HCM",
+      "canonical": "https://imperia-sensa-park.vercel.app/tin-tuc/imperia-sensa-park-discovery-residences",
+      "image": "https://media.sachicloud.io.vn/store/1080/uploads/2026/10/G2F5u5oNzcWFoTw.webp"
+    },
+    {
+      "route": "/tin-tuc/imperia-sensa-park-thiet-ke-can-ho-theo-tinh-than-kham-pha",
+      "title": "Imperia Sensa Park thiết kế căn hộ… | Imperia Sensa Park",
+      "description": "MIK Group cung cấp hơn 900 căn hộ tại Imperia Sensa Park với không gian sống linh hoạt, nhiều trải nghiệm, hướng đến cư dân trẻ, theo tinh thần &quot;Discovery…",
+      "h1": "Imperia Sensa Park thiết kế căn hộ theo tinh thần khám phá",
+      "canonical": "https://imperia-sensa-park.vercel.app/tin-tuc/imperia-sensa-park-thiet-ke-can-ho-theo-tinh-than-kham-pha",
+      "image": "https://media.sachicloud.io.vn/store/1080/uploads/2026/10/ES6bMqpXWgDJ44u.webp"
+    },
+    {
+      "route": "/tin-tuc/chien-luoc-mo-rong-mik-group-tai-phia-nam",
+      "title": "Chiến lược mở rộng của MIK Group tại… | Imperia Sensa Park",
+      "description": "MIK Group ra mắt Imperia Sensa Park quy mô 1.000 sản phẩm, đánh dấu bước mở rộng tại thị trường miền Nam sau hơn 10… Tìm hiểu thêm về Imperia Sensa Park.",
+      "h1": "Chiến lược mở rộng của MIK Group tại phía Nam",
+      "canonical": "https://imperia-sensa-park.vercel.app/tin-tuc/chien-luoc-mo-rong-mik-group-tai-phia-nam",
+      "image": "https://media.sachicloud.io.vn/store/1080/uploads/2026/10/Tux3yyfH9YoxwEg.webp"
+    },
+    {
+      "route": "/tin-tuc/mik-group-khoi-cong-du-an-imperia-sensa-park",
+      "title": "MIK Group khởi công dự án Imperia… | Imperia Sensa Park",
+      "description": "MIK Group khởi công dự án Imperia Sensa Park quy mô 5 ha, gần 1.000 căn hộ cùng sản phẩm thấp tầng, nằm trên trục Võ Chí Công, kết nối trực tiếp với đường…",
+      "h1": "MIK Group khởi công dự án Imperia Sensa Park",
+      "canonical": "https://imperia-sensa-park.vercel.app/tin-tuc/mik-group-khoi-cong-du-an-imperia-sensa-park",
+      "image": "https://media.sachicloud.io.vn/store/1080/uploads/2026/10/DpXOpVTwNjHzRnW.webp"
+    }
+  ]
+}

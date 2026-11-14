@@ -33,6 +33,7 @@ export default function useSectionPaging() {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return undefined;
 
     const root = document.documentElement;
+    root.classList.add("home-paging");
     let frame = 0;
     let animating = false;
     let cooling = false; // vừa chuyển section xong, còn sự kiện quán tính của cùng cú vuốt
@@ -116,6 +117,9 @@ export default function useSectionPaging() {
 
     window.addEventListener("wheel", onWheel, { passive: false });
     return () => {
+      root.classList.remove("home-paging");
+      root.style.scrollSnapType = "";
+      root.style.scrollBehavior = "";
       window.removeEventListener("wheel", onWheel);
       if (frame) cancelAnimationFrame(frame);
     };

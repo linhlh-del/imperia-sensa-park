@@ -1,3 +1,4 @@
+import Image from "../ui/Image";
 import React from "react";
 
 /**
@@ -70,7 +71,7 @@ function ServiceBlock({ service, aspect = "aspect-[4/5]" }) {
   return (
     <div className="flex flex-col">
       <div className={`w-full overflow-hidden bg-imperia-beige/40 ${aspect}`}>
-        <img
+        <Image
           src={service.image}
           alt={service.title}
           className="h-full w-full object-cover"

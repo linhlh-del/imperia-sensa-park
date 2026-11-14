@@ -1,0 +1,134 @@
+{
+  "rows": [
+    {
+      "width": 320,
+      "overflow": false,
+      "locationHeight": 787,
+      "sections": [
+        "hero",
+        "tong-quan",
+        "vi-tri",
+        "tien-ich",
+        "hinhanh",
+        "mat-bang",
+        "chinh-sach-ban-hang",
+        "faq",
+        "tin-tuc",
+        "tinh-tra-gop",
+        "lien-he"
+      ],
+      "hero": "http://127.0.0.1:5178/assets/responsive/hero-overview-800.webp"
+    },
+    {
+      "width": 375,
+      "overflow": false,
+      "locationHeight": 787,
+      "sections": [
+        "hero",
+        "tong-quan",
+        "vi-tri",
+        "tien-ich",
+        "hinhanh",
+        "mat-bang",
+        "chinh-sach-ban-hang",
+        "faq",
+        "tin-tuc",
+        "tinh-tra-gop",
+        "lien-he"
+      ],
+      "hero": "http://127.0.0.1:5178/assets/responsive/hero-overview-800.webp"
+    },
+    {
+      "width": 768,
+      "overflow": false,
+      "locationHeight": 787,
+      "sections": [
+        "hero",
+        "tong-quan",
+        "vi-tri",
+        "tien-ich",
+        "hinhanh",
+        "mat-bang",
+        "chinh-sach-ban-hang",
+        "faq",
+        "tin-tuc",
+        "tinh-tra-gop",
+        "lien-he"
+      ],
+      "hero": "http://127.0.0.1:5178/assets/responsive/hero-overview-800.webp"
+    },
+    {
+      "width": 1024,
+      "overflow": false,
+      "locationHeight": 824,
+      "sections": [
+        "hero",
+        "tong-quan",
+        "vi-tri",
+        "tien-ich",
+        "hinhanh",
+        "mat-bang",
+        "chinh-sach-ban-hang",
+        "faq",
+        "tin-tuc",
+        "tinh-tra-gop",
+        "lien-he"
+      ],
+      "hero": "http://127.0.0.1:5178/assets/responsive/hero-overview-1600.webp"
+    },
+    {
+      "width": 1440,
+      "overflow": false,
+      "locationHeight": 824,
+      "sections": [
+        "hero",
+        "tong-quan",
+        "vi-tri",
+        "tien-ich",
+        "hinhanh",
+        "mat-bang",
+        "chinh-sach-ban-hang",
+        "faq",
+        "tin-tuc",
+        "tinh-tra-gop",
+        "lien-he"
+      ],
+      "hero": "http://127.0.0.1:5178/assets/responsive/hero-overview-1600.webp"
+    },
+    {
+      "width": 1920,
+      "overflow": false,
+      "locationHeight": 824,
+      "sections": [
+        "hero",
+        "tong-quan",
+        "vi-tri",
+        "tien-ich",
+        "hinhanh",
+        "mat-bang",
+        "chinh-sach-ban-hang",
+        "faq",
+        "tin-tuc",
+        "tinh-tra-gop",
+        "lien-he"
+      ],
+      "hero": "http://127.0.0.1:5178/assets/responsive/hero-overview-2400.webp"
+    },
+    {
+      "anchor": true
+    },
+    {
+      "policyTab": true
+    },
+    {
+      "lead": true
+    },
+    {
+      "faq": true
+    },
+    {
+      "detailRoute": true
+    }
+  ],
+  "errors": []
+}

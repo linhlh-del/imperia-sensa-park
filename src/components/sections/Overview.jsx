@@ -1,3 +1,5 @@
+import TopicLink from "../ui/TopicLink";
+import Image from "../ui/Image";
 import Button from "../ui/Button";
 import SectionHeading from "../ui/SectionHeading";
 import { img, t } from "../../cms/content";
@@ -11,7 +13,7 @@ export default function Overview({ data, variant = "image-right" }) {
       className="section-y bg-imperia-cream"
     >
       <div className="container-page">
-        <SectionHeading title={data.title} semanticTitle={t("overview.seo")} className="[&_.section-title]:max-w-[17ch]" />
+        <SectionHeading title={data.title} semanticTitle={t("overview.seo")} />
         <div
           className={`grid items-center gap-[clamp(16px,4svh,48px)] ${variant === "image-left" ? "lg:grid-cols-[1.32fr_0.68fr] [&>img]:lg:order-first" : "lg:grid-cols-[0.68fr_1.32fr]"}`}
         >
@@ -27,17 +29,20 @@ export default function Overview({ data, variant = "image-right" }) {
                 </li>
               ))}
             </ul>
-            <Button href="#tien-ich">{t("overview.cta")}</Button>
+            <div className="section-actions"><TopicLink to="/tong-quan">Chi tiết tổng quan</TopicLink><Button href="#tien-ich" variant="outline">Hệ tiện ích</Button></div>
           </div>
-          <img
+          <Image
             src={img("overview.image", "/assets/overview.optimized.webp")}
+            srcSet={img("overview.image", "/assets/overview.optimized.webp") === "/assets/overview.optimized.webp" ? "/assets/responsive/overview.optimized-480.webp 480w, /assets/responsive/overview.optimized-800.webp 800w, /assets/responsive/overview.optimized-1200.webp 1200w, /assets/overview.optimized.webp 1619w" : undefined}
+            sizes="(min-width: 1024px) 65vw, 100vw"
             alt={t("overview.imageAlt")}
+            width="1619" height="972"
             loading="lazy"
             decoding="async"
             /* ảnh bản đồ Metro có chữ: điện thoại/tablet (không có paging JS, không cần vừa đúng 1 màn hình) → ưu
                tiên hiện TRỌN bề rộng màn hình, cao theo tỉ lệ 1619:972. Desktop (≥1024px, có paging 1 section/màn
                hình) mới thu bề rộng theo chiều cao màn hình để không tràn khỏi khung nhìn. */
-            className="mx-auto aspect-[1619/972] w-full rounded-[28px] border border-imperia-primary/10 object-contain shadow-soft lg:max-w-[calc(var(--overview-img-h)*1619/972)] lg:[--overview-img-h:clamp(200px,40svh,468px)]"
+            className="max-lg:-order-1 mx-auto aspect-[1619/972] w-full rounded-[28px] border border-imperia-primary/10 object-contain shadow-soft"
           />
         </div>
         <div data-stats className="mt-[clamp(12px,3svh,64px)] grid grid-cols-2 md:grid-cols-4">

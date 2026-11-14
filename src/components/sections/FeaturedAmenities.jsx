@@ -1,5 +1,9 @@
+import TopicLink from "../ui/TopicLink";
+import Image from "../ui/Image";
 // FeaturedAmenities.jsx
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { createPortal } from "react-dom";
+import useModalFocus from "../../lib/useModalFocus";
 import { FILTERS, GALLERY_ITEMS } from "../../data/dataAmenities";
 import { t } from "../../cms/content";
 
@@ -73,6 +77,8 @@ export default function FeaturedAmenities() {
 
   const openLightbox = (index) => setLightbox({ index });
   const closeLightbox = () => setLightbox(null);
+  const lightboxRef = useRef(null);
+  useModalFocus(lightbox !== null, lightboxRef, closeLightbox);
 
   const showPrev = useCallback(() => {
     setLightbox((prev) =>
@@ -163,7 +169,7 @@ export default function FeaturedAmenities() {
                   }}
                 />
               )}
-              <img
+              <Image
                 src={item.src}
                 alt={item.alt}
                 loading="lazy"
@@ -192,10 +198,15 @@ export default function FeaturedAmenities() {
         </div>
       </div>
 
+      <div className="container-page section-actions"><TopicLink to="/tien-ich">Khám phá hệ tiện ích</TopicLink><a className="btn-base btn-outline-light mt-4" href="#mat-bang">Chọn mặt bằng căn hộ</a></div>
       {/* LIGHTBOX */}
-      {activeLightboxItem ? (
+      {activeLightboxItem ? createPortal(
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-imperia-black/90 p-4 backdrop-blur-sm animate-[fadeInUp_0.25s_ease]"
+          ref={lightboxRef}
+          role="dialog"
+          aria-modal="true"
+          aria-label="Thư viện hình ảnh tiện ích"
+          className="fixed inset-0 z-[1300] flex items-center justify-center bg-imperia-black/90 p-4 backdrop-blur-sm animate-[fadeInUp_0.25s_ease]"
           onClick={closeLightbox}
         >
           <button
@@ -224,7 +235,7 @@ export default function FeaturedAmenities() {
             onClick={(e) => e.stopPropagation()}
             className="relative max-h-[85vh] w-full max-w-[1100px] animate-scale-in overflow-hidden rounded-2xl shadow-card"
           >
-            <img
+            <Image
               src={activeLightboxItem.src}
               alt={activeLightboxItem.alt}
               className="max-h-[85vh] w-full object-contain bg-imperia-black"
@@ -247,7 +258,7 @@ export default function FeaturedAmenities() {
           >
             <ChevronIcon direction="right" />
           </button>
-        </div>
+        </div>, document.body
       ) : null}
     </section>
   );

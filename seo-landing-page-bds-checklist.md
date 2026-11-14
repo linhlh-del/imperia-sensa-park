@@ -1,3 +1,5 @@
+> Trạng thái audit hiện hành (12/11/2026): xem [SENSA-AUDIT-CHECKLIST](docs/SENSA-AUDIT-CHECKLIST.md). Các tick trong tài liệu cũ bên dưới không thay thế bằng chứng kiểm tra hiện tại.
+
 ---
 name: seo-landing-page-bds
 description: Checklist và quy tắc khi tạo/kiểm tra landing page bất động sản (HTML/CSS/JS thuần) chuẩn SEO, tốc độ và chuyển đổi. Dùng khi dựng trang mới hoặc audit trang dự án.

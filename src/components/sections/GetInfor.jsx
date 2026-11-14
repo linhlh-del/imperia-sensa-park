@@ -89,7 +89,7 @@ export default function GetInfor({
       className={
         embedded
           ? "bg-transparent"
-          : "border-t border-imperia-primary/20 bg-imperia-background-dark bg-[url('../../assets/images/bg-web.jpg')] bg-cover bg-center"
+          : "border-t border-imperia-primary/20 bg-imperia-background-dark bg-cover bg-center"
       }
     >
       <div

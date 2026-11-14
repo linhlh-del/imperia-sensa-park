@@ -2,6 +2,7 @@
 // Cập nhật <title>, meta, canonical, Open Graph, JSON-LD theo route hiện tại.
 // Không render gì ra giao diện -> KHÔNG thay đổi nội dung hiển thị của website.
 
+import { faqsFor, CONTENT_UPDATED } from "../../data/topicContent";
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import NEWS_DATA from "../../data/newsData.js";
@@ -78,8 +79,10 @@ export default function RouteSeo() {
         jsonLd: {
           "@context": "https://schema.org",
           "@graph": [
+            ...(faqsFor(path).length ? [{ "@type": "FAQPage", mainEntity: faqsFor(path).map(([name, text]) => ({ "@type": "Question", name, acceptedAnswer: { "@type": "Answer", text } })) }] : []),
             {
               "@type": "WebPage",
+              dateModified: CONTENT_UPDATED,
               "@id": `${url}#page`,
               url,
               name: subpage.title,
@@ -141,6 +144,10 @@ export default function RouteSeo() {
       return;
     }
 
+    if (path === "/cam-on") {
+      applySeo({ title: `Cảm ơn | ${SITE_NAME}`, description: "Cảm ơn bạn đã gửi nhu cầu tư vấn Imperia Sensa Park.", path, noindex: true });
+      return;
+    }
     const match = path.match(/^\/tin-tuc\/([^/]+)$/);
     if (match) {
       const article = NEWS_DATA.find((a) => a.id === match[1]);
@@ -163,7 +170,7 @@ export default function RouteSeo() {
         title: `${article.title} | ${SITE_NAME}`,
         description: article.excerpt,
         path,
-        image: article.image_url,
+        image: article.image_url ? toAbsoluteUrl(article.image_url) : undefined,
         type: "article",
         publishedTime: toIso(article.published_at),
         jsonLd: {
@@ -192,7 +199,9 @@ export default function RouteSeo() {
           ],
         },
       });
+      return;
     }
+    applySeo({ title: `Không tìm thấy trang | ${SITE_NAME}`, description: "Trang bạn tìm không tồn tại. Xem thông tin Imperia Sensa Park hoặc trở về trang chủ.", path, noindex: true });
   }, [pathname]);
 
   return null;

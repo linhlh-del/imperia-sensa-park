@@ -1,5 +1,8 @@
+import { ParkOverview, ParkAmenities, ParkGallery, ParkResidences } from "./components/sections/ParkTemplate";
+import { trackEvent } from "./lib/analytics";
+import MotionVisibility from "./components/effects/MotionVisibility";
 import { Fragment, useEffect, useLayoutEffect, useState } from "react";
-import { Navigate, Routes, Route, useLocation, useNavigate, useParams } from "react-router-dom";
+import { Routes, Route, useLocation, useNavigate, useParams } from "react-router-dom";
 import Header from "./components/layout/Header";
 import Footer from "./components/layout/Footer";
 import LeadPopup from "./components/ui/LeadPopup";
@@ -17,40 +20,42 @@ import FloatingButtons from "./components/ui/FloatingButton";
 import NewsPage from "./pages/NewsPage";
 import NewsDetailPage from "./pages/NewsDetailPage";
 import SubPage from "./pages/SubPage";
+import SitePolicyPage from "./pages/SitePolicyPage";
+import NotFoundPage from "./pages/NotFoundPage";
 import LoanCalculator from "./components/sections/LoanCalculator";
 import { SUBPAGES } from "./lib/seo";
 import RouteSeo from "./components/seo/RouteSeo";
 import ScrollEffects from "./components/effects/ScrollEffects";
-import useSectionPaging from "./lib/useSectionPaging";
+import { SalesPolicy, HomeFaq } from "./components/sections/DecisionSections";
 import { hrefForSection, sectionForPath } from "./lib/sections";
 import { sendLead, validateLeadForm } from "./lib/lead";
 import { cmsTrack } from "./lib/cmsTracker";
 import { cmsLayout, site, t } from "./cms/content";
 import { HOME_SECTIONS } from "./cms/schema";
+import useSectionPaging from "./lib/useSectionPaging";
+import { fitSections } from "./lib/fitSections";
 
 /* id section (khớp HOME_SECTIONS trong src/cms/schema.js) → nội dung.
    News tự lấy dữ liệu (newsService) — không truyền project.news (dữ liệu cũ, sai shape). */
 const SECTIONS = {
   hero: ({ variant }) => <Hero data={site.hero} variant={variant} />,
   "tong-quan": ({ variant }) => (
-    <Overview data={site.overview} variant={variant} />
+    <ParkOverview data={site.overview} />
   ),
   "vi-tri": ({ variant }) => (
     <Location data={site.location} variant={variant} />
   ),
-  "tien-ich": () => <Amenities items={site.amenities} />,
-  hinhanh: () => <FeaturedAmenities />,
-  "mat-bang": ({ onOpenModal }) => (
-    <FloorPlan
-      images={{
-        A: "/assets/layout/sensa-a.optimized.webp", // tên file viết thường (Vercel phân biệt hoa/thường)
-        B: "/assets/layout/sensaB.optimized.webp",
-      }}
-      onLead={onOpenModal}
-    />
+  "tien-ich": () => (
+    <>
+      <ParkAmenities />
+      <Amenities id="tong-hop-tien-ich" />
+    </>
   ),
+  hinhanh: () => <ParkGallery />,
+  "mat-bang": () => <ParkResidences />,
+  "chinh-sach-ban-hang": ({ onOpenModal }) => <SalesPolicy onLead={onOpenModal} />,
+  faq: () => <HomeFaq />,
   "tin-tuc": () => <News />,
-  "tinh-tra-gop": ({ onOpenModal }) => <LoanCalculator onLead={onOpenModal} />,
   "lien-he": ({ submitLead }) => <LeadSection onSubmit={submitLead} />,
 };
 
@@ -71,14 +76,15 @@ function homeOrder() {
 
 function HomePage({ onOpenModal, submitLead }) {
   const location = useLocation();
-  /* máy tính: mỗi nấc lăn chuột = 1 section (xem src/lib/useSectionPaging.js) */
+  /* bố cục norton-park: máy tính lăn chuột mỗi nấc = 1 section (src/lib/useSectionPaging.js);
+     section nào cao hơn 1 khung hình thì thu nhỏ đều nội dung cho vừa (src/lib/fitSections.js, như qtopia-landing) */
   useSectionPaging();
-
+  useEffect(() => fitSections(), []);
   const { section } = useParams();
   const sectionId = section ? sectionForPath(`/${section}`) : undefined;
   const navigate = useNavigate();
 
-  // URL theo section, không dấu "#": /tong-quan, /tinh-tra-gop, /lien-he mở trang chủ và cuộn tới section.
+  // URL theo section, không dấu "#": /chinh-sach-ban-hang, /lien-he mở trang chủ và cuộn tới section.
   // Chạy khi đổi section, khi bấm lại cùng một mục (location.key đổi) và khi mở thẳng link (chia sẻ, quảng cáo).
   useEffect(() => {
     if (!sectionId) return undefined;
@@ -122,12 +128,12 @@ function HomePage({ onOpenModal, submitLead }) {
   }, [location.hash, location.key]);
 
   // "/<gì đó>" không phải section → về trang chủ (không hiện trang chủ ở URL lạ)
-  if (section && !sectionId) return <Navigate to="/" replace />;
+  if (section && !sectionId) return <NotFoundPage onLead={onOpenModal} />;
 
   return (
     <>
       <Header onLead={onOpenModal} />
-      <main id="top" tabIndex={-1} className="outline-none">
+      <main id="main-content" tabIndex={-1} className="park-home outline-none">
         {/* Thứ tự / ẩn / biến thể section theo CMS (Bố cục section) */}
         {homeOrder().map((id) => {
           const render = SECTIONS[id];
@@ -149,7 +155,6 @@ function HomePage({ onOpenModal, submitLead }) {
 
 export default function App() {
   const [leadOpen, setLeadOpen] = useState(false);
-  const [submitted, setSubmitted] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -164,6 +169,11 @@ export default function App() {
       const anchor = event.target.closest('a[href^="#"]');
       if (!anchor) return;
       const sectionId = anchor.getAttribute("href").slice(1); // vd: "lien-he"
+      const localTarget = document.getElementById(sectionId);
+      if (localTarget && !hrefForSection(sectionId)) {
+        if (sectionId === "main-content") localTarget.focus();
+        return;
+      }
       event.preventDefault();
 
       // logo (#top): về đầu trang chủ, URL sạch "/"
@@ -172,26 +182,11 @@ export default function App() {
         window.scrollTo({ top: 0, behavior: "smooth" });
         return;
       }
-      if (window.matchMedia("(max-width: 1023px)").matches) {
-        const target = document.getElementById(sectionId);
-        if (location.pathname === "/" && target) {
-          const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-          target.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" });
-        } else {
-          navigate(`/#${sectionId}`);
-        }
-        return;
+      if (localTarget) {
+        localTarget.scrollIntoView({ behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "start" });
+      } else {
+        navigate(`/#${sectionId}`);
       }
-      // Mục có URL riêng: trang SEO cùng chủ đề (/vi-tri…) hoặc đường dẫn section (/lien-he…) — qua router
-      // (thêm 1 mục lịch sử → nút Back quay lại). Section không có URL riêng: cuộn tại chỗ, URL giữ nguyên.
-      const href = hrefForSection(sectionId);
-      if (href) {
-        navigate(href);
-        return;
-      }
-      const el = document.getElementById(sectionId);
-      if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
-      else navigate("/");
     };
     document.addEventListener("click", handleAnchorClick);
     return () => document.removeEventListener("click", handleAnchorClick);
@@ -206,6 +201,7 @@ export default function App() {
     if (!validateLeadForm(form)) return;
     const button = form.querySelector('[type="submit"]');
     const errorBox = form.querySelector("[data-lead-error]");
+    if (errorBox) { errorBox.hidden = true; errorBox.textContent = ""; }
     const label = button?.textContent;
     if (button) {
       button.disabled = true;
@@ -225,19 +221,23 @@ export default function App() {
       return;
     }
     cmsTrack("lead", form.dataset.formType);
+    trackEvent("generate_lead", { form_location: form.dataset.formType || "unknown" });
     setLeadOpen(false);
-    setSubmitted(true);
+    navigate("/cam-on");
   };
-
-  if (submitted) {
-    return <ThankYouPage onBack={() => setSubmitted(false)} />;
-  }
 
   return (
     <>
+      <a className="skip-link" href="#main-content">Bỏ qua menu, đến nội dung chính</a>
       <RouteSeo />
       <ScrollEffects />
+      <MotionVisibility />
       <Routes>
+        <Route path="/chinh-sach-bao-mat" element={<SitePolicyPage type="privacy" onLead={openLead} />} />
+        <Route path="/dieu-khoan" element={<SitePolicyPage type="terms" onLead={openLead} />} />
+        <Route path="/cam-on" element={<ThankYouPage onBack={() => navigate("/")} />} />
+        <Route path="/404" element={<NotFoundPage onLead={openLead} />} />
+        <Route path="*" element={<NotFoundPage onLead={openLead} />} />
         {/* "/" và "/tong-quan", "/lien-he"… dùng CHUNG một route (tham số tuỳ chọn) → chuyển section không
             dựng lại trang chủ. Trang SEO /vi-tri…, /tin-tuc khai báo tĩnh nên luôn được ưu tiên. */}
         <Route

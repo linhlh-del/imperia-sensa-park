@@ -1,66 +1,39 @@
-import Button from "../ui/Button";
-import SectionHeading from "../ui/SectionHeading";
-import { img, t } from "../../cms/content";
+import TopicLink from "../ui/TopicLink";
+import { lazy, Suspense, useEffect, useRef, useState } from "react";
+import { t } from "../../cms/content";
+import { QHeading } from "./ParkTemplate";
 
-/* variant (CMS): "map-right" (mặc định) | "map-left" */
+const LocationMap = lazy(() => import("./LocationMap"));
+
+/* Bố cục gọn theo qtopia-landing: cột chữ (nhãn + câu dẫn + danh sách phút di chuyển + ghi chú + 2 nút) ·
+   cột bản đồ tương tác. variant (CMS): "map-right" (mặc định) | "map-left" */
 export default function Location({ data, variant = "map-right" }) {
-  return (
-    <section
-      id="vi-tri"
-      data-section="location"
-      className="section-y bg-imperia-background-dark text-white"
-    >
-      <div className="container-page">
-        <SectionHeading
-          light
-          title={data.title}
-          semanticTitle={t("location.seo")}
-        />
-        <div className="grid items-center gap-[clamp(16px,4svh,48px)] md:grid-cols-2">
-          <div>
-            <p className="section-subtitle section-subtitle-light !mt-0 mb-[clamp(12px,2.6svh,28px)]">
-              {data.subtitle}
-            </p>
-            <div className="mb-[clamp(16px,3svh,32px)] grid divide-y divide-white/10 border-y border-white/10">
-              {data.distances.map(([time, label]) => (
-                <div
-                  key={label}
-                  className="flex items-center gap-4 py-[clamp(6px,1.3svh,20px)] md:gap-6"
-                >
-                  <strong className="flex min-w-[64px] items-baseline gap-1 font-display text-3xl text-imperia-cream">
-                    {/* thời gian di chuyển: số tĩnh (không đếm) để luôn đúng */}
-                    {String(time).replace(/['’]/g, "")}
-                    <span className="font-body text-xs font-bold uppercase tracking-[.06em] text-imperia-cream">
-                      phút
-                    </span>
-                  </strong>
-                  <span className="text-[15px] leading-snug text-white/90">
-                    {label}
-                  </span>
-                </div>
-              ))}
-            </div>
-            <Button href="#lien-he" variant="light">
-              {t("location.cta")}
-            </Button>
-          </div>
-          <div
-            /* bản đồ có ghim, tỉ lệ 1872:1248. Điện thoại (1 cột, không paging JS) → ưu tiên hiện TRỌN bề rộng màn
-               hình; từ md trở lên (2 cột cạnh text, có thể cần vừa 1 khung hình) mới thu bề rộng theo chiều cao. */
-            className={`relative mx-auto aspect-[1872/1248] w-full overflow-hidden rounded-[28px] border border-white/10 md:max-w-[calc(var(--map-h)*1872/1248)] md:[--map-h:clamp(220px,46svh,620px)] ${variant === "map-left" ? "md:order-first" : ""}`}
-          >
-            <img
-              src={img("location.map", "/assets/map.optimized.webp")}
-              alt={t("location.imageAlt")}
-              width="1872"
-              height="1248"
-              loading="lazy"
-              decoding="async"
-              className="absolute inset-0 h-full w-full object-contain"
-            />
-          </div>
-        </div>
+  const mapRef = useRef(null);
+  const [mapReady, setMapReady] = useState(false);
+  useEffect(() => {
+    if (window.__PRERENDER__) return;
+    if (!("IntersectionObserver" in window)) { setMapReady(true); return; }
+    const observer = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting) { setMapReady(true); observer.disconnect(); }
+    }, { rootMargin: "250px" });
+    if (mapRef.current) observer.observe(mapRef.current);
+    return () => observer.disconnect();
+  }, []);
+  return <section id="vi-tri" data-section="location" className={`park-section q-location ${variant === "map-left" ? "is-map-left" : ""}`}>
+    <div className="container-page q-location-grid">
+      <div className="q-location-copy">
+        <QHeading light label="Vị trí Imperia Sensa Park" title={data.title} lead={data.subtitle}>
+          <span className="sr-only">{t("location.seo")}</span>
+        </QHeading>
+        <ul className="q-distances">{data.distances.map(([time, label]) => (
+          <li key={label}><strong>{String(time).replace(/['’]/g, "")}<small>phút</small></strong><span>{label}</span></li>
+        ))}</ul>
+        <p className="q-note">Thời gian di chuyển tham khảo, tùy giao thông. Sơ đồ không xác nhận trạng thái khai thác hạ tầng.</p>
+        <div className="q-actions"><a href="#lien-he" className="btn-base btn-light">Nhận tư vấn vị trí</a><TopicLink to="/vi-tri" light>Xem chi tiết</TopicLink></div>
       </div>
-    </section>
-  );
+      <div ref={mapRef} className="location-map-shell q-location-map">
+        {mapReady ? <Suspense fallback={<p className="p-6" role="status">Đang tải bản đồ vị trí…</p>}><LocationMap title={t("location.imageAlt")} /></Suspense> : <div className="flex h-full items-center justify-center p-4"><button type="button" className="btn-base btn-outline-light" onClick={() => setMapReady(true)}>Mở bản đồ liên kết vùng</button></div>}
+      </div>
+    </div>
+  </section>;
 }

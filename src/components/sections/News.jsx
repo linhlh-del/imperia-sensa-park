@@ -1,3 +1,4 @@
+import Image from "../ui/Image";
 // src/components/sections/News.jsx
 //
 // Section "Tin tức & sự kiện" hiển thị trên trang chủ.
@@ -172,7 +173,7 @@ export default function News({
                       className="relative block h-[clamp(120px,22svh,224px)] overflow-hidden bg-gradient-to-br from-imperia-background-dark/15 to-imperia-beige/60"
                     >
                       {item.image_url && (
-                        <img
+                        <Image
                           src={item.image_url}
                           alt={item.title}
                           loading="lazy"

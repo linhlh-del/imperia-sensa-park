@@ -6,10 +6,13 @@
   "scripts": {
     "dev": "vite",
     "prebuild": "node scripts/fetch-cms.mjs",
-    "build": "vite build && node scripts/prerender.mjs",
+    "build": "vite build && node scripts/prerender.mjs && node scripts/seo-check.mjs",
     "cms:fetch": "node scripts/fetch-cms.mjs",
     "build:spa": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "seo:check": "node scripts/seo-check.mjs",
+    "audit:ui": "node scripts/audit-ui.mjs",
+    "preview:static": "node scripts/serve-dist.mjs"
   },
   "dependencies": {
     "@vitejs/plugin-react": "latest",

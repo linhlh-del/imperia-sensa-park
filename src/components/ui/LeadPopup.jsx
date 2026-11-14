@@ -1,4 +1,6 @@
-import { useEffect, useRef } from "react";
+import Image from "./Image";
+import useModalFocus from "../../lib/useModalFocus";
+import { useRef } from "react";
 import Button from "./Button";
 import { clearPhoneError } from "../../lib/lead";
 import FormExtras from "./FormExtras";
@@ -113,9 +115,8 @@ export default function LeadPopup({
 }) {
   const ref = useRef(null);
 
-  useEffect(() => {
-    if (open) setTimeout(() => ref.current?.focus(), 50);
-  }, [open]);
+  const dialogRef = useRef(null);
+  useModalFocus(open, dialogRef, onClose);
 
   if (!open) return null;
 
@@ -131,10 +132,11 @@ export default function LeadPopup({
       />
 
       <div
+        ref={dialogRef}
         role="dialog"
         aria-modal="true"
         aria-labelledby="lead-title"
-        className="relative z-10 grid max-h-[calc(100dvh-2rem)] w-full max-w-[1120px] grid-cols-1 items-start overflow-y-auto rounded-3xl bg-imperia-cream shadow-2xl md:max-h-[90vh] md:overflow-hidden md:grid-cols-[60%_40%]"
+        className="relative z-10 grid max-h-[calc(100dvh-2rem)] w-full max-w-[1120px] grid-cols-1 items-start overflow-y-auto rounded-3xl bg-imperia-cream shadow-2xl md:max-h-[90vh] md:grid-cols-[60%_40%]"
       >
         <button
           onClick={onClose}
@@ -147,7 +149,7 @@ export default function LeadPopup({
         {/* Cột trái: ảnh dự án — tỉ lệ đúng ảnh gốc 1536x1043 trên mobile,
             phủ full chiều cao cột (object-cover) trên desktop */}
         <div className="relative aspect-square min-h-0 w-full overflow-hidden bg-[rgb(145,118,99)]">
-          <img
+          <Image
             src={img("popup.image", "/assets/popup.optimized.webp")}
             alt={t("popup.imageAlt")}
             width="1536"

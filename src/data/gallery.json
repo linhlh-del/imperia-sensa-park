@@ -1,0 +1,409 @@
+{
+ "ngoai-canh": {
+  "title": "Ngoại cảnh",
+  "items": [
+   {
+    "src": "/assets/gallery/ngoai-canh/phoi-canh-ven-song-1600.webp",
+    "srcSet": "/assets/gallery/ngoai-canh/phoi-canh-ven-song-800.webp 800w, /assets/gallery/ngoai-canh/phoi-canh-ven-song-1600.webp 1600w",
+    "w": 1600,
+    "h": 900,
+    "label": "Phối cảnh dự án bên sông Rạch Chiếc"
+   },
+   {
+    "src": "/assets/gallery/ngoai-canh/phoi-canh-tong-the-1600.webp",
+    "srcSet": "/assets/gallery/ngoai-canh/phoi-canh-tong-the-800.webp 800w, /assets/gallery/ngoai-canh/phoi-canh-tong-the-1600.webp 1600w",
+    "w": 1600,
+    "h": 900,
+    "label": "Hai tòa tháp Sensa A và Sensa B"
+   },
+   {
+    "src": "/assets/gallery/ngoai-canh/mat-dung-thap-1600.webp",
+    "srcSet": "/assets/gallery/ngoai-canh/mat-dung-thap-800.webp 800w, /assets/gallery/ngoai-canh/mat-dung-thap-1600.webp 1600w",
+    "w": 1600,
+    "h": 900,
+    "label": "Mặt đứng tòa tháp"
+   },
+   {
+    "src": "/assets/gallery/ngoai-canh/phoi-canh-tren-cao-1600.webp",
+    "srcSet": "/assets/gallery/ngoai-canh/phoi-canh-tren-cao-800.webp 800w, /assets/gallery/ngoai-canh/phoi-canh-tren-cao-1600.webp 1600w",
+    "w": 1600,
+    "h": 900,
+    "label": "Phối cảnh trên cao"
+   },
+   {
+    "src": "/assets/gallery/ngoai-canh/goc-top-view-1600.webp",
+    "srcSet": "/assets/gallery/ngoai-canh/goc-top-view-800.webp 800w, /assets/gallery/ngoai-canh/goc-top-view-1600.webp 1600w",
+    "w": 1600,
+    "h": 1000,
+    "label": "Góc nhìn toàn khu"
+   },
+   {
+    "src": "/assets/gallery/ngoai-canh/loi-vao-du-an-1600.webp",
+    "srcSet": "/assets/gallery/ngoai-canh/loi-vao-du-an-800.webp 800w, /assets/gallery/ngoai-canh/loi-vao-du-an-1600.webp 1600w",
+    "w": 1600,
+    "h": 900,
+    "label": "Lối vào dự án"
+   },
+   {
+    "src": "/assets/gallery/ngoai-canh/san-don-tieu-canh-1600.webp",
+    "srcSet": "/assets/gallery/ngoai-canh/san-don-tieu-canh-800.webp 800w, /assets/gallery/ngoai-canh/san-don-tieu-canh-1600.webp 1600w",
+    "w": 1600,
+    "h": 889,
+    "label": "Sân đón và tiểu cảnh"
+   },
+   {
+    "src": "/assets/gallery/ngoai-canh/khoi-de-thuong-mai-1-1600.webp",
+    "srcSet": "/assets/gallery/ngoai-canh/khoi-de-thuong-mai-1-800.webp 800w, /assets/gallery/ngoai-canh/khoi-de-thuong-mai-1-1600.webp 1600w",
+    "w": 1600,
+    "h": 900,
+    "label": "Khối đế thương mại"
+   },
+   {
+    "src": "/assets/gallery/ngoai-canh/khoi-de-thuong-mai-2-1600.webp",
+    "srcSet": "/assets/gallery/ngoai-canh/khoi-de-thuong-mai-2-800.webp 800w, /assets/gallery/ngoai-canh/khoi-de-thuong-mai-2-1600.webp 1600w",
+    "w": 1600,
+    "h": 900,
+    "label": "Khối đế thương mại góc đường"
+   },
+   {
+    "src": "/assets/gallery/ngoai-canh/pho-thuong-mai-1600.webp",
+    "srcSet": "/assets/gallery/ngoai-canh/pho-thuong-mai-800.webp 800w, /assets/gallery/ngoai-canh/pho-thuong-mai-1600.webp 1600w",
+    "w": 1600,
+    "h": 900,
+    "label": "Dãy nhà phố thương mại"
+   },
+   {
+    "src": "/assets/gallery/ngoai-canh/nha-pho-ho-boi-1600.webp",
+    "srcSet": "/assets/gallery/ngoai-canh/nha-pho-ho-boi-800.webp 800w, /assets/gallery/ngoai-canh/nha-pho-ho-boi-1600.webp 1600w",
+    "w": 1600,
+    "h": 900,
+    "label": "Nhà phố bên hồ bơi"
+   },
+   {
+    "src": "/assets/gallery/ngoai-canh/nha-pho-ven-song-1600.webp",
+    "srcSet": "/assets/gallery/ngoai-canh/nha-pho-ven-song-800.webp 800w, /assets/gallery/ngoai-canh/nha-pho-ven-song-1600.webp 1600w",
+    "w": 1600,
+    "h": 900,
+    "label": "Nhà phố ven sông"
+   },
+   {
+    "src": "/assets/gallery/ngoai-canh/duong-dao-bo-song-1600.webp",
+    "srcSet": "/assets/gallery/ngoai-canh/duong-dao-bo-song-800.webp 800w, /assets/gallery/ngoai-canh/duong-dao-bo-song-1600.webp 1600w",
+    "w": 1600,
+    "h": 900,
+    "label": "Đường dạo bờ sông"
+   }
+  ]
+ },
+ "tien-ich": {
+  "title": "Tiện ích",
+  "items": [
+   {
+    "src": "/assets/gallery/tien-ich/ho-boi-1-1600.webp",
+    "srcSet": "/assets/gallery/tien-ich/ho-boi-1-800.webp 800w, /assets/gallery/tien-ich/ho-boi-1-1600.webp 1600w",
+    "w": 1600,
+    "h": 900,
+    "label": "Hồ bơi nội khu"
+   },
+   {
+    "src": "/assets/gallery/tien-ich/ho-boi-2-1600.webp",
+    "srcSet": "/assets/gallery/tien-ich/ho-boi-2-800.webp 800w, /assets/gallery/tien-ich/ho-boi-2-1600.webp 1600w",
+    "w": 1600,
+    "h": 900,
+    "label": "Hồ bơi giữa hai tòa tháp"
+   },
+   {
+    "src": "/assets/gallery/tien-ich/jacuzzi-1600.webp",
+    "srcSet": "/assets/gallery/tien-ich/jacuzzi-800.webp 800w, /assets/gallery/tien-ich/jacuzzi-1600.webp 1600w",
+    "w": 1600,
+    "h": 900,
+    "label": "Bể sục Jacuzzi"
+   },
+   {
+    "src": "/assets/gallery/tien-ich/pool-lounge-1600.webp",
+    "srcSet": "/assets/gallery/tien-ich/pool-lounge-800.webp 800w, /assets/gallery/tien-ich/pool-lounge-1600.webp 1600w",
+    "w": 1600,
+    "h": 776,
+    "label": "Pool Lounge"
+   },
+   {
+    "src": "/assets/gallery/tien-ich/ho-boi-thap-tang-1600.webp",
+    "srcSet": "/assets/gallery/tien-ich/ho-boi-thap-tang-800.webp 800w, /assets/gallery/tien-ich/ho-boi-thap-tang-1600.webp 1600w",
+    "w": 1600,
+    "h": 800,
+    "label": "Hồ bơi khu thấp tầng"
+   },
+   {
+    "src": "/assets/gallery/tien-ich/ho-boi-tre-em-1600.webp",
+    "srcSet": "/assets/gallery/tien-ich/ho-boi-tre-em-800.webp 800w, /assets/gallery/tien-ich/ho-boi-tre-em-1600.webp 1600w",
+    "w": 1600,
+    "h": 703,
+    "label": "Hồ bơi trẻ em"
+   },
+   {
+    "src": "/assets/gallery/tien-ich/san-choi-tre-em-1-1600.webp",
+    "srcSet": "/assets/gallery/tien-ich/san-choi-tre-em-1-800.webp 800w, /assets/gallery/tien-ich/san-choi-tre-em-1-1600.webp 1600w",
+    "w": 1600,
+    "h": 900,
+    "label": "Sân chơi trẻ em"
+   },
+   {
+    "src": "/assets/gallery/tien-ich/san-choi-tre-em-2-1600.webp",
+    "srcSet": "/assets/gallery/tien-ich/san-choi-tre-em-2-800.webp 800w, /assets/gallery/tien-ich/san-choi-tre-em-2-1600.webp 1600w",
+    "w": 1600,
+    "h": 900,
+    "label": "Sân chơi ngoài trời"
+   },
+   {
+    "src": "/assets/gallery/tien-ich/sanh-cu-dan-1600.webp",
+    "srcSet": "/assets/gallery/tien-ich/sanh-cu-dan-800.webp 800w, /assets/gallery/tien-ich/sanh-cu-dan-1600.webp 1600w",
+    "w": 1600,
+    "h": 1067,
+    "label": "Sảnh cư dân"
+   },
+   {
+    "src": "/assets/gallery/tien-ich/sanh-don-the-sensa-1600.webp",
+    "srcSet": "/assets/gallery/tien-ich/sanh-don-the-sensa-800.webp 800w, /assets/gallery/tien-ich/sanh-don-the-sensa-1600.webp 1600w",
+    "w": 1600,
+    "h": 900,
+    "label": "Sảnh đón The Sensa"
+   },
+   {
+    "src": "/assets/gallery/tien-ich/lobby-1600.webp",
+    "srcSet": "/assets/gallery/tien-ich/lobby-800.webp 800w, /assets/gallery/tien-ich/lobby-1600.webp 1600w",
+    "w": 1600,
+    "h": 1281,
+    "label": "Hành lang sảnh thang máy"
+   },
+   {
+    "src": "/assets/gallery/tien-ich/business-lounge-1600.webp",
+    "srcSet": "/assets/gallery/tien-ich/business-lounge-800.webp 800w, /assets/gallery/tien-ich/business-lounge-1600.webp 1600w",
+    "w": 1600,
+    "h": 1068,
+    "label": "Business Lounge"
+   },
+   {
+    "src": "/assets/gallery/tien-ich/creative-studio-1-1600.webp",
+    "srcSet": "/assets/gallery/tien-ich/creative-studio-1-800.webp 800w, /assets/gallery/tien-ich/creative-studio-1-1600.webp 1600w",
+    "w": 1600,
+    "h": 1882,
+    "label": "Creative Studio"
+   },
+   {
+    "src": "/assets/gallery/tien-ich/creative-studio-2-1600.webp",
+    "srcSet": "/assets/gallery/tien-ich/creative-studio-2-800.webp 800w, /assets/gallery/tien-ich/creative-studio-2-1600.webp 1600w",
+    "w": 1600,
+    "h": 1882,
+    "label": "Creative Studio — góc đọc"
+   },
+   {
+    "src": "/assets/gallery/tien-ich/entertainment-room-1600.webp",
+    "srcSet": "/assets/gallery/tien-ich/entertainment-room-800.webp 800w, /assets/gallery/tien-ich/entertainment-room-1600.webp 1600w",
+    "w": 1600,
+    "h": 1068,
+    "label": "Phòng giải trí"
+   },
+   {
+    "src": "/assets/gallery/tien-ich/kids-room-1-1600.webp",
+    "srcSet": "/assets/gallery/tien-ich/kids-room-1-800.webp 800w, /assets/gallery/tien-ich/kids-room-1-1600.webp 1600w",
+    "w": 1600,
+    "h": 1067,
+    "label": "Kids Room"
+   },
+   {
+    "src": "/assets/gallery/tien-ich/kids-room-2-1600.webp",
+    "srcSet": "/assets/gallery/tien-ich/kids-room-2-800.webp 800w, /assets/gallery/tien-ich/kids-room-2-1600.webp 1600w",
+    "w": 1600,
+    "h": 900,
+    "label": "Kids Room — thư viện"
+   },
+   {
+    "src": "/assets/gallery/tien-ich/gym-yoga-1600.webp",
+    "srcSet": "/assets/gallery/tien-ich/gym-yoga-800.webp 800w, /assets/gallery/tien-ich/gym-yoga-1600.webp 1600w",
+    "w": 1600,
+    "h": 648,
+    "label": "Gym & Yoga"
+   },
+   {
+    "src": "/assets/gallery/tien-ich/himalaya-salt-room-1600.webp",
+    "srcSet": "/assets/gallery/tien-ich/himalaya-salt-room-800.webp 800w, /assets/gallery/tien-ich/himalaya-salt-room-1600.webp 1600w",
+    "w": 1600,
+    "h": 1043,
+    "label": "Phòng muối Himalaya"
+   }
+  ]
+ },
+ "can-ho": {
+  "title": "Căn hộ mẫu",
+  "items": [
+   {
+    "src": "/assets/gallery/can-ho/1pn-phong-khach-1600.webp",
+    "srcSet": "/assets/gallery/can-ho/1pn-phong-khach-800.webp 800w, /assets/gallery/can-ho/1pn-phong-khach-1600.webp 1600w",
+    "w": 1600,
+    "h": 900,
+    "label": "1PN — Phòng khách"
+   },
+   {
+    "src": "/assets/gallery/can-ho/1pn-phong-ngu-1600.webp",
+    "srcSet": "/assets/gallery/can-ho/1pn-phong-ngu-800.webp 800w, /assets/gallery/can-ho/1pn-phong-ngu-1600.webp 1600w",
+    "w": 1600,
+    "h": 900,
+    "label": "1PN — Phòng ngủ"
+   },
+   {
+    "src": "/assets/gallery/can-ho/1pn-ban-cong-1600.webp",
+    "srcSet": "/assets/gallery/can-ho/1pn-ban-cong-800.webp 800w, /assets/gallery/can-ho/1pn-ban-cong-1600.webp 1600w",
+    "w": 1600,
+    "h": 1067,
+    "label": "1PN — Ban công hướng Landmark"
+   },
+   {
+    "src": "/assets/gallery/can-ho/2pn-khong-gian-chung-1600.webp",
+    "srcSet": "/assets/gallery/can-ho/2pn-khong-gian-chung-800.webp 800w, /assets/gallery/can-ho/2pn-khong-gian-chung-1600.webp 1600w",
+    "w": 1600,
+    "h": 533,
+    "label": "2PN — Không gian chung"
+   },
+   {
+    "src": "/assets/gallery/can-ho/2pn-phong-khach-1600.webp",
+    "srcSet": "/assets/gallery/can-ho/2pn-phong-khach-800.webp 800w, /assets/gallery/can-ho/2pn-phong-khach-1600.webp 1600w",
+    "w": 1600,
+    "h": 900,
+    "label": "2PN — Phòng khách"
+   },
+   {
+    "src": "/assets/gallery/can-ho/2pn-phong-ngu-master-1600.webp",
+    "srcSet": "/assets/gallery/can-ho/2pn-phong-ngu-master-800.webp 800w, /assets/gallery/can-ho/2pn-phong-ngu-master-1600.webp 1600w",
+    "w": 1600,
+    "h": 900,
+    "label": "2PN — Phòng ngủ master"
+   },
+   {
+    "src": "/assets/gallery/can-ho/2pn-phong-ngu-2-1600.webp",
+    "srcSet": "/assets/gallery/can-ho/2pn-phong-ngu-2-800.webp 800w, /assets/gallery/can-ho/2pn-phong-ngu-2-1600.webp 1600w",
+    "w": 1600,
+    "h": 900,
+    "label": "2PN — Phòng ngủ 2"
+   },
+   {
+    "src": "/assets/gallery/can-ho/2pn-ban-cong-1600.webp",
+    "srcSet": "/assets/gallery/can-ho/2pn-ban-cong-800.webp 800w, /assets/gallery/can-ho/2pn-ban-cong-1600.webp 1600w",
+    "w": 1600,
+    "h": 900,
+    "label": "2PN — Ban công"
+   },
+   {
+    "src": "/assets/gallery/can-ho/3pn-phong-khach-1600.webp",
+    "srcSet": "/assets/gallery/can-ho/3pn-phong-khach-800.webp 800w, /assets/gallery/can-ho/3pn-phong-khach-1600.webp 1600w",
+    "w": 1600,
+    "h": 900,
+    "label": "3PN — Phòng khách"
+   },
+   {
+    "src": "/assets/gallery/can-ho/3pn-phong-ngu-master-1600.webp",
+    "srcSet": "/assets/gallery/can-ho/3pn-phong-ngu-master-800.webp 800w, /assets/gallery/can-ho/3pn-phong-ngu-master-1600.webp 1600w",
+    "w": 1600,
+    "h": 900,
+    "label": "3PN — Phòng ngủ master"
+   },
+   {
+    "src": "/assets/gallery/can-ho/3pn-phong-tre-em-1600.webp",
+    "srcSet": "/assets/gallery/can-ho/3pn-phong-tre-em-800.webp 800w, /assets/gallery/can-ho/3pn-phong-tre-em-1600.webp 1600w",
+    "w": 1600,
+    "h": 900,
+    "label": "3PN — Phòng trẻ em"
+   },
+   {
+    "src": "/assets/gallery/can-ho/3pn-phong-lam-viec-1600.webp",
+    "srcSet": "/assets/gallery/can-ho/3pn-phong-lam-viec-800.webp 800w, /assets/gallery/can-ho/3pn-phong-lam-viec-1600.webp 1600w",
+    "w": 1600,
+    "h": 900,
+    "label": "3PN — Phòng làm việc"
+   },
+   {
+    "src": "/assets/gallery/can-ho/duplex-thong-tang-1600.webp",
+    "srcSet": "/assets/gallery/can-ho/duplex-thong-tang-800.webp 800w, /assets/gallery/can-ho/duplex-thong-tang-1600.webp 1600w",
+    "w": 1600,
+    "h": 2133,
+    "label": "Duplex — Phòng khách thông tầng"
+   },
+   {
+    "src": "/assets/gallery/can-ho/duplex-phong-khach-1600.webp",
+    "srcSet": "/assets/gallery/can-ho/duplex-phong-khach-800.webp 800w, /assets/gallery/can-ho/duplex-phong-khach-1600.webp 1600w",
+    "w": 1600,
+    "h": 900,
+    "label": "Duplex — Phòng khách"
+   },
+   {
+    "src": "/assets/gallery/can-ho/duplex-phong-ngu-1600.webp",
+    "srcSet": "/assets/gallery/can-ho/duplex-phong-ngu-800.webp 800w, /assets/gallery/can-ho/duplex-phong-ngu-1600.webp 1600w",
+    "w": 1600,
+    "h": 900,
+    "label": "Duplex — Phòng ngủ"
+   },
+   {
+    "src": "/assets/gallery/can-ho/duplex-ban-cong-1600.webp",
+    "srcSet": "/assets/gallery/can-ho/duplex-ban-cong-800.webp 800w, /assets/gallery/can-ho/duplex-ban-cong-1600.webp 1600w",
+    "w": 1600,
+    "h": 761,
+    "label": "Duplex — Ban công"
+   },
+   {
+    "src": "/assets/gallery/can-ho/can-goc-phong-khach-1600.webp",
+    "srcSet": "/assets/gallery/can-ho/can-goc-phong-khach-800.webp 800w, /assets/gallery/can-ho/can-goc-phong-khach-1600.webp 1600w",
+    "w": 1600,
+    "h": 900,
+    "label": "Căn góc — Phòng khách"
+   },
+   {
+    "src": "/assets/gallery/can-ho/can-goc-phong-ngu-1600.webp",
+    "srcSet": "/assets/gallery/can-ho/can-goc-phong-ngu-800.webp 800w, /assets/gallery/can-ho/can-goc-phong-ngu-1600.webp 1600w",
+    "w": 1600,
+    "h": 900,
+    "label": "Căn góc — Phòng ngủ"
+   },
+   {
+    "src": "/assets/gallery/can-ho/phong-tam-1600.webp",
+    "srcSet": "/assets/gallery/can-ho/phong-tam-800.webp 800w, /assets/gallery/can-ho/phong-tam-1600.webp 1600w",
+    "w": 1600,
+    "h": 800,
+    "label": "Phòng tắm"
+   },
+   {
+    "src": "/assets/gallery/can-ho/studio-phong-khach-1600.webp",
+    "srcSet": "/assets/gallery/can-ho/studio-phong-khach-800.webp 800w, /assets/gallery/can-ho/studio-phong-khach-1600.webp 1600w",
+    "w": 1600,
+    "h": 900,
+    "label": "Phòng khách phong cách ấm"
+   },
+   {
+    "src": "/assets/gallery/can-ho/bep-an-1600.webp",
+    "srcSet": "/assets/gallery/can-ho/bep-an-800.webp 800w, /assets/gallery/can-ho/bep-an-1600.webp 1600w",
+    "w": 1600,
+    "h": 900,
+    "label": "Bếp và bàn ăn"
+   },
+   {
+    "src": "/assets/gallery/can-ho/phong-ngu-xanh-1600.webp",
+    "srcSet": "/assets/gallery/can-ho/phong-ngu-xanh-800.webp 800w, /assets/gallery/can-ho/phong-ngu-xanh-1600.webp 1600w",
+    "w": 1600,
+    "h": 900,
+    "label": "Phòng ngủ tông xanh"
+   },
+   {
+    "src": "/assets/gallery/can-ho/phong-khach-view-pho-1600.webp",
+    "srcSet": "/assets/gallery/can-ho/phong-khach-view-pho-800.webp 800w, /assets/gallery/can-ho/phong-khach-view-pho-1600.webp 1600w",
+    "w": 1600,
+    "h": 900,
+    "label": "Phòng khách hướng phố"
+   },
+   {
+    "src": "/assets/gallery/can-ho/phong-ngu-view-pho-1600.webp",
+    "srcSet": "/assets/gallery/can-ho/phong-ngu-view-pho-800.webp 800w, /assets/gallery/can-ho/phong-ngu-view-pho-1600.webp 1600w",
+    "w": 1600,
+    "h": 900,
+    "label": "Phòng ngủ hướng phố"
+   }
+  ]
+ }
+}

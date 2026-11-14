@@ -1,3 +1,5 @@
+import TopicLink from "../ui/TopicLink";
+import Image from "../ui/Image";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { img, t } from "../../cms/content";
 import {
@@ -7,65 +9,7 @@ import {
   VIEWBOX_HEIGHT,
 } from "../../data/sensaAFloorData";
 
-/* Ảnh đại diện mỗi LOẠI HÌNH (hiện khi hover/bấm chip loại hình, chưa chọn căn cụ thể) — trước trỏ tới
-   studio.png/1pn.png/2pn.png/3pn.png, các file này không tồn tại trong public/assets/aparments (ảnh vỡ).
-   Lấy lại từ ảnh căn cụ thể đã có sẵn (UNIT_LAYOUT_IMAGES bên dưới), chọn 1 căn tiêu biểu mỗi loại hình. */
-const LAYOUT_IMAGES = {
-  STUDIO: "/assets/aparments/B01.optimized.webp", // B.01 — căn Studio
-  "1PN+": "/assets/aparments/A03.optimized.webp", // A.03 — căn 1PN+
-  "2PN": "/assets/aparments/2PN-70-4m2.optimized.webp", // tiêu biểu 2PN
-  "3PN": "/assets/aparments/A08.optimized.webp", // A.08 — căn 3PN
-  DUPLEX: "/assets/aparments/B-DUPLEX.optimized.webp",
-};
-
-const UNIT_LAYOUT_IMAGES = {
-  "A.01": "/assets/aparments/2PN-70-4m2.optimized.webp",
-  "A.02": "/assets/aparments/2PN-70-4m2.optimized.webp",
-  "A.03": "/assets/aparments/A03.optimized.webp",
-  "A.03A": "/assets/aparments/2PN -70m2.optimized.webp", //CHƯA CÓ ẢNH
-  "A.05": "/assets/aparments/2PN-70-4m2.optimized.webp",
-  "A.06": "/assets/aparments/2PN-70-4m2.optimized.webp",
-  "A.07": "/assets/aparments/2PN-94-9m2.optimized.webp",
-  "A.08": "/assets/aparments/A08.optimized.webp",
-  "A.09": "/assets/aparments/2PN -70m2.optimized.webp",
-  "A.10": "/assets/aparments/2PN -70m2.optimized.webp", //CHƯA CÓ ẢNH
-  "A.11": "/assets/aparments/2PN -70m2.optimized.webp",
-  "A.12": "/assets/aparments/2PN -70m2.optimized.webp",
-  "A.12A": "/assets/aparments/A12A.optimized.webp",
-  "A.12B": "/assets/aparments/2PN -70m2.optimized.webp", //CHƯA CÓ ẢNH
-  "A.15": "/assets/aparments/2PN -70m2.optimized.webp",
-  "A.16": "/assets/aparments/2PN -70m2.optimized.webp", //CHƯA CÓ ẢNH
-  "A.17": "/assets/aparments/2PN -70m2.optimized.webp",
-  "A.19": "/assets/aparments/2PN-94-9m2.optimized.webp",
-  "A.20": "/assets/aparments/2PN-70-4m2.optimized.webp",
-  "B.01": "/assets/aparments/B12A.optimized.webp",
-  "B.02": "/assets/aparments/B02.optimized.webp",
-  "B.03": "/assets/aparments/B03-2ND.optimized.webp",
-  "B.03A": "/assets/aparments/2PN-70-1m2.optimized.webp",
-  "B.05": "/assets/aparments/2PN-70-1m2.optimized.webp",
-  "B.06": "/assets/aparments/2PN-70-1m2.optimized.webp",
-  "B.07": "/assets/aparments/2PN-70-1m2.optimized.webp", //CHƯA CÓ ẢNH
-  "B.08": "/assets/aparments/A18-1ST.optimized.webp", //CHƯA CÓ ẢNH
-  "B.09": "/assets/aparments/B09.optimized.webp",
-  "B.10": "/assets/aparments/2PN-70-1m2.optimized.webp",
-  "B.11": "/assets/aparments/2PN-70-1m2.optimized.webp",
-  "B.12": "/assets/aparments/B12.optimized.webp",
-  "B.12A": "/assets/aparments/B12A.optimized.webp",
-  "B.12B": "/assets/aparments/B-DUPLEX.optimized.webp",
-  "B.15": "/assets/aparments/B15.optimized.webp",
-  "B.16": "/assets/aparments/2PN-70-4m2.optimized.webp",
-  "B.17": "/assets/aparments/2PN-70-4m2.optimized.webp",
-  "B.18": "/assets/aparments/2PN-70-4m2.optimized.webp",
-  "B.19": "/assets/aparments/2PN-70-4m2.optimized.webp",
-  "B.20": "/assets/aparments/2PN-70-4m2.optimized.webp",
-};
-
-const UNIT_FLOOR_LAYOUT_IMAGES = {
-  "A.18": {
-    1: "/assets/aparments/A18-1ST.optimized.webp",
-    2: "/assets/aparments/A18-2ND.optimized.webp",
-  },
-};
+import { LAYOUT_IMAGES, UNIT_LAYOUT_IMAGES, UNIT_FLOOR_LAYOUT_IMAGES } from "../../data/apartmentLayouts";
 
 function parsePolygonPoints(pointsStr) {
   return pointsStr
@@ -674,7 +618,7 @@ export default function FloorPlan({
           ) : null}
           {activeLayoutImage ? (
             <div className="mt-3 overflow-hidden rounded-xl border border-imperia-primary/10 bg-imperia-cream/40">
-              <img
+              <Image
                 key={activeLayoutImage}
                 src={activeLayoutImage}
                 alt={`Phối cảnh layout căn ${activeUnit.unit_code} (${typeLabel})${activeItem?.floor ? ` — ${floorLabel(activeItem.floor)}` : ""}`}
@@ -715,7 +659,7 @@ export default function FloorPlan({
           </p>
           {activeLayoutImage ? (
             <div className="mt-3 overflow-hidden rounded-xl border border-imperia-primary/10 bg-imperia-cream/40">
-              <img
+              <Image
                 key={activeLayoutImage}
                 src={activeLayoutImage}
                 alt={`Phối cảnh layout ${legendByKey[hoverType]?.label || hoverType}`}
@@ -906,7 +850,7 @@ export default function FloorPlan({
               }}
             >
             {imageSrc ? (
-              <img
+              <Image
                 src={imageSrc}
                 alt={`${imageAlt} — ${towerData.label}`}
                 width={imgW}
@@ -1186,7 +1130,7 @@ export default function FloorPlan({
           >
             ×
           </button>
-          <img
+          <Image
             src={imageSrc}
             alt={`${imageAlt} — ${towerData.label}`}
             onClick={(event) => event.stopPropagation()}
@@ -1194,6 +1138,7 @@ export default function FloorPlan({
           />
         </div>
       ) : null}
+      <div className="container-page section-actions mt-4"><TopicLink to="/mat-bang">Chi tiết mặt bằng căn hộ</TopicLink><a href="#chinh-sach-ban-hang" className="btn-base btn-outline">Chính sách bán hàng</a></div>
     </section>
   );
 }

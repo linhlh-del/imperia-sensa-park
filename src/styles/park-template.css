@@ -1,0 +1,588 @@
+/* ============================================================
+   PARK TEMPLATE — bố cục chuyển từ norton-park sang Sensa Park.
+   Giữ ngôn ngữ layout của Norton (section cao đúng 1 khung hình, cuộn theo section trên máy tính,
+   eyebrow chữ nhỏ giãn rộng + tiêu đề lớn, lưới số liệu kẻ dòng, rail thẻ ảnh, carousel ló slide kế,
+   footer 4 cột) nhưng dùng bảng màu + font của Sensa (olive / nâu / kem, SVN Bon Voyage + SVN Selecta).
+   File CSS thuần (không @layer) — nạp sau index.css trong main.jsx nên thắng các lớp component cũ.
+   ============================================================ */
+
+:root {
+  /* Bảng màu The Sensa Brand Guidelines, đồng bộ với imperia.* / index.css. */
+  --park-deep: #4d5538;          /* Forest Green */
+  --park-dark: #4d5538;          /* Forest Green */
+  --park-pine: #4d5538;          /* Forest Green */
+  --park-bronze: #917663;        /* imperia-secondary */
+  --park-bronze-deep: #6f594c;   /* imperia-secondary-dark */
+  --park-ivory: #ffffff;         /* imperia-white */
+  --park-cream: #d6c7bb;         /* Cream Beige */
+  --park-sand: #d6c7bb;
+  --park-stone: rgb(255 255 255 / 0.8);
+  --park-ink: #20231b;           /* imperia-black */
+  --park-ink-soft: #4d5538;      /* Forest Green cho nội dung phụ trên nền sáng */
+  --park-on-dark: #ffffff;
+  --park-on-dark-soft: #d6c7bb;  /* imperia-beige */
+  --park-line: rgb(77 85 56 / 0.16);
+  --park-line-strong: rgb(77 85 56 / 0.3);
+  --park-line-dark: rgb(255 255 255 / 0.2);
+
+  --park-display-1: clamp(2.4rem, 4.6vw, 4.25rem);
+  --park-display-2: clamp(1.75rem, 3vw, 2.9rem);
+  --park-display-3: clamp(1.3rem, 1.8vw, 1.7rem);
+  --park-lead: clamp(1rem, 1.3vw, 1.15rem);
+  --park-section-y: clamp(1.25rem, 4.5svh, 4rem);
+  --park-radius: 0.625rem;
+  --park-ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+/* ---------- nút: chỉ chỉnh kích thước cho đồng bộ nhịp Norton (màu, font giữ nguyên) ---------- */
+.btn-base { min-height: 3rem; padding-inline: 1.5rem; white-space: nowrap; }
+@media (max-width: 639px) {
+  .btn-base { white-space: normal; text-wrap: balance; line-height: 1.35; padding-inline: 1.25rem; }
+}
+
+/* ---------- chữ ---------- */
+.park-eyebrow {
+  margin: 0;
+  font-size: 0.75rem;
+  line-height: 1.45;
+  font-weight: 700;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--park-bronze-deep);
+}
+.park-eyebrow a { color: inherit; text-transform: inherit; }
+.park-eyebrow a:hover { text-decoration: underline; text-underline-offset: 4px; }
+.park-page-copy h1 {
+  margin: 0;
+  font-family: "SVN Bon Voyage", Georgia, serif;
+  font-weight: 600;
+  font-size: var(--park-display-2);
+  text-transform: uppercase;
+  line-height: 1.12;
+  text-wrap: balance;
+  color: var(--park-dark);
+}
+.park-page-copy > p {
+  margin: 0;
+  font-size: var(--park-lead);
+  line-height: 1.7;
+  color: var(--park-ink-soft);
+}
+
+/* cụm tiêu đề: trái = eyebrow + tiêu đề, phải = đoạn dẫn (máy tính); xếp dọc trên điện thoại */
+.park-heading {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem clamp(1.5rem, 5vw, 5rem);
+  margin-bottom: clamp(1.25rem, 4.5svh, 3.5rem);
+}
+.park-heading > div { display: flex; flex-direction: column; gap: 1rem; max-width: 46rem; }
+.park-heading .park-intro { max-width: 32rem; }
+.park-heading.is-dark h2 { color: var(--park-on-dark); }
+.park-heading.is-dark .park-eyebrow { color: var(--park-on-dark-soft); }
+.park-heading.is-dark .park-intro { color: rgb(255 255 255 / 0.88); }
+
+.park-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 0.75rem; margin-top: clamp(1.25rem, 4svh, 2.5rem); }
+.park-small { font-size: 0.8125rem !important; line-height: 1.6 !important; margin-top: 1rem !important; color: var(--park-ink-soft); }
+
+/* ---------- section: nền xen kẽ, padding theo chiều cao màn hình ---------- */
+.park-section { padding-block: var(--park-section-y); background: var(--park-ivory); color: var(--park-ink); }
+.park-section img { border-radius: var(--park-radius); }
+
+/* Trang chủ: mọi section cao tối thiểu đúng 1 "khung hình" (màn hình − header − thanh đáy), nội dung căn giữa
+   dọc — điểm dừng khi cuộn theo section (src/lib/useSectionPaging.js) trùng đầu section, như Norton. */
+.park-home > section:not(#hero) {
+  min-height: var(--screen);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  align-content: center;
+}
+
+/* ---------- Hero: vừa một màn hình; cắt ảnh cân hai bên và ưu tiên giữ mép trên ---------- */
+.park-hero {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  flex-direction: column;
+  /* min-height (không phải height): màn thấp như điện thoại xoay ngang (~375px) thì hero dài ra theo nội dung,
+     không cắt mất tiêu đề, mô tả và nút CTA (audit 14/11/2026: iPhone/Android ngang) */
+  min-height: calc(100svh - var(--bar));
+  padding-top: var(--header-h);
+  overflow: hidden;
+  background: var(--park-deep);
+  color: var(--park-on-dark);
+}
+.park-hero-media { position: absolute; inset: var(--header-h) 0 0; z-index: -2; }
+.park-hero-media img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: 50% 40%; }
+.park-hero::after { content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none; }
+.park-hero::after { background: linear-gradient(to top, rgb(35 42 27 / 0.22), transparent 22%); }
+.park-hero.is-bottom .park-hero-copy { justify-content: flex-end; }
+.park-hero-copy {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-end;
+  padding-block: clamp(2rem, 6svh, 4rem);
+}
+.park-hero-copy-inner {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(1rem, 2.6svh, 1.75rem);
+  width: min(100%, 25rem);
+  padding: 1.5rem;
+  border-radius: 1rem;
+  background: rgb(35 42 27 / 0.42);
+}
+/* main.jsx dùng createRoot → khi JS tải xong DOM hero dựng lại và hiệu ứng chạy lại: giữ ngắn và không bắt đầu từ trong suốt,
+   để tiêu đề/CTA không biến mất 1–4 giây (audit 14/11/2026) */
+.park-hero-copy-inner > * { animation: park-rise 0.8s var(--park-ease) both; animation-delay: calc(var(--i, 0) * 90ms); }
+.park-hero .park-eyebrow { color: var(--park-on-dark-soft); }
+.park-hero h1 {
+  margin: 0;
+  max-width: 56rem;
+  font-family: "SVN Bon Voyage", Georgia, serif;
+  font-weight: 400;
+  font-size: clamp(2rem, 3vw, 3.25rem);
+  line-height: 1.04;
+  text-transform: uppercase;
+  text-wrap: balance;
+  text-shadow: 0 2px 24px rgb(53 60 39 / 0.35);
+}
+.park-hero h1 span:not(.sr-only) { color: var(--imperia-accent); }
+.park-hero-copy-inner > p:not(.park-eyebrow) { margin: 0; max-width: 38rem; font-size: var(--park-lead); line-height: 1.7; color: #fff; }
+.park-hero-copy-inner .park-actions { margin-top: 0.5rem; }
+.park-hero-bottom {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-block: 1.1rem;
+  border-top: 1px solid var(--park-line-dark);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--park-on-dark-soft);
+}
+.park-hero-bottom a { display: inline-flex; align-items: center; min-height: 2.75rem; margin-block: -0.8rem; color: var(--park-on-dark); text-transform: inherit; }
+.park-hero-bottom a:hover { color: #fff; }
+@media (max-width: 639px) { .park-hero-bottom span { display: none; } .park-hero-bottom { justify-content: center; } }
+@media (max-width: 1279px) {
+  .park-hero-media { position: relative; inset: auto; flex: none; height: clamp(160px, 38svh, 340px); }
+  .park-hero-copy { padding-block: 1rem; }
+  .park-hero-copy-inner { width: 100%; gap: 0.75rem; padding: 0; background: none; }
+}
+@media (max-width: 639px) {
+  .park-hero-media { height: clamp(140px, 26svh, 240px); }
+  .park-hero h1 { font-size: clamp(1.75rem, 8vw, 2.25rem); }
+  .park-hero-copy-inner > p:not(.park-eyebrow) { font-size: 0.875rem; line-height: 1.5; }
+}
+@media (max-width: 639px) and (max-height: 600px) {
+  .park-hero-media { height: 20svh; }
+  .park-hero-copy { padding-block: 0.5rem; }
+  .park-hero-copy-inner { gap: 0.5rem; }
+  .park-hero h1 { font-size: 1.625rem; }
+  .park-hero-bottom { display: none; }
+}
+
+/* ============================================================
+   BỐ CỤC THEO QTOPIA-LANDING
+   ============================================================ */
+/* nhãn section (h2 chứa từ khoá, chữ nhỏ in hoa) + câu dẫn ngắn */
+.q-heading { display: flex; flex-direction: column; align-items: flex-start; gap: 0.6rem; max-width: 42rem; }
+.q-heading.is-center { align-items: center; text-align: center; margin-inline: auto; }
+.q-label {
+  margin: 0; font-family: "SVN Selecta", Arial, sans-serif; font-weight: 700; text-transform: uppercase;
+  font-size: clamp(1rem, 1.35vw, 1.2rem); letter-spacing: 0.16em; line-height: 1.35; color: var(--park-dark);
+}
+/* slogan ngắn (font display) — chỉ dùng cho câu 1 dòng như "Một chuẩn sống xanh giữa lòng đại đô thị." */
+.q-title {
+  margin: 0; font-family: "SVN Bon Voyage", Georgia, serif; font-weight: 400; text-transform: uppercase;
+  font-size: clamp(1.45rem, 2.4vw, 2.25rem); line-height: 1.18; text-wrap: balance; color: var(--park-ink);
+}
+/* câu dẫn: đoạn văn thường như prose-lead của qtopia */
+.q-lead { margin: 0; max-width: 40rem; font-size: clamp(0.95rem, 1.15vw, 1.075rem); line-height: 1.6; color: var(--park-ink-soft); text-wrap: pretty; }
+.q-heading.is-light .q-label { color: var(--imperia-accent); }
+.q-heading.is-light .q-title { color: #fff; }
+.q-heading.is-light .q-lead, .is-light-text .q-lead { color: rgb(255 255 255 / 0.86); }
+.q-head-row { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 1rem 2rem; margin-bottom: clamp(1rem, 3.2svh, 2rem); }
+.q-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 0.6rem; }
+.q-actions .topic-link { margin-top: 0; }
+.q-note { margin: 0.75rem 0 0; font-size: 0.75rem; line-height: 1.5; color: var(--park-ink-soft); }
+
+/* ---------- Tổng quan: ảnh tràn khung + khối chữ một bên (Story của qtopia) ---------- */
+.q-story { position: relative; isolation: isolate; overflow: hidden; background: linear-gradient(110deg, var(--park-deep), #829365 70%, var(--imperia-accent)); color: #fff; }
+.q-story-media { position: absolute; inset: 0; z-index: -2; }
+.q-story-media img { width: 100%; height: 100%; object-fit: cover; }
+.q-story::after { content: ""; position: absolute; inset: 0; z-index: -1; background: linear-gradient(90deg, rgb(77 85 56 / 0.76), rgb(169 181 120 / 0.3) 55%, transparent 82%); }
+.q-story-inner { display: flex; align-items: center; padding-block: clamp(1.5rem, 5svh, 3.5rem); }
+.q-panel { display: flex; flex-direction: column; gap: clamp(0.8rem, 2svh, 1.25rem); max-width: 34rem; }
+.q-points { margin: 0; padding: 0; list-style: none; display: grid; gap: 0.4rem; font-size: 0.95rem; color: rgb(255 255 255 / 0.92); }
+.q-points li { display: flex; gap: 0.6rem; align-items: baseline; }
+.q-points li::before { content: ""; flex: none; width: 0.4rem; height: 0.4rem; border-radius: 50%; background: var(--imperia-accent); transform: translateY(-0.1rem); }
+.q-stats { margin: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.6rem; }
+.q-stats > div { display: flex; flex-direction: column-reverse; gap: 0.2rem; padding: 0.75rem 0.9rem; border: 1px solid rgb(255 255 255 / 0.18); border-radius: 0.75rem; background: rgb(53 60 39 / 0.45); backdrop-filter: blur(6px); }
+.q-stats dt { font-size: 0.75rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: rgb(255 255 255 / 0.8); }
+.q-stats dd { margin: 0; font-family: "SVN Bon Voyage", Georgia, serif; font-size: clamp(1.25rem, 1.9vw, 1.75rem); line-height: 1.1; color: #fff; }
+@media (max-width: 1023px) {
+  .q-story::after { background: linear-gradient(to top, rgb(77 85 56 / 0.82), rgb(112 129 85 / 0.5) 60%, rgb(169 181 120 / 0.1)); }
+  .q-story-inner { align-items: flex-end; }
+}
+
+/* ---------- Vị trí: cột chữ hẹp + bản đồ lớn (gọn như qtopia) ---------- */
+.q-location { padding-block: clamp(12px, 2svh, 24px); background: linear-gradient(105deg, #4d5538 0%, #77875a 52%, #a9b578 100%); color: #fff; }
+.q-location-grid { display: grid; gap: clamp(1rem, 3svh, 2rem); align-items: stretch; }
+@media (min-width: 1024px) {
+  .q-location-grid { grid-template-columns: minmax(0, 6fr) minmax(0, 14fr); gap: clamp(1.5rem, 3vw, 3rem); }
+  .q-location.is-map-left .q-location-copy { order: 2; }
+}
+.q-location-copy { display: flex; flex-direction: column; justify-content: center; gap: clamp(0.75rem, 2svh, 1.1rem); min-width: 0; }
+@media (min-width: 1024px) { .q-location-copy { justify-content: space-between; } }
+.q-location .q-title { font-size: clamp(1.6rem, 2.5vw, 2.25rem); }
+.q-distances { margin: 0; padding: 0; list-style: none; }
+.q-distances li { display: flex; align-items: baseline; gap: 1rem; padding-block: clamp(0.35rem, 1.1svh, 0.65rem); border-bottom: 1px solid rgb(255 255 255 / 0.14); }
+.q-distances li:last-child { border-bottom: 0; }
+.q-distances strong { flex: none; width: 4.6rem; font-family: "SVN Bon Voyage", Georgia, serif; font-weight: 400; font-size: clamp(1.5rem, 2.2vw, 2rem); line-height: 1; }
+.q-distances small { margin-left: 0.25rem; font-family: "SVN Selecta", Arial, sans-serif; font-size: 0.75rem; color: var(--imperia-accent); }
+.q-distances span { font-size: 0.9rem; line-height: 1.45; color: rgb(255 255 255 / 0.88); }
+.q-location .q-note { margin: 0; color: rgb(255 255 255 / 0.72); }
+/* width cố định theo cột lưới: nếu để chiều cao kéo theo cột chữ (stretch), aspect-ratio đẩy bề rộng vượt cột → tràn ngang trang */
+.location-map-shell.q-location-map { width: 100%; min-width: 0; align-self: center; height: auto; aspect-ratio: 6000 / 3615; border-radius: 0.875rem; overflow: hidden; border: 1px solid rgb(255 255 255 / 0.12); }
+.location-map-shell.q-location-map .location-explorer { height: 100%; }
+@media (max-width: 1023px) {
+  .q-location { background: linear-gradient(180deg, #4d5538 0%, #708056 48%, #a9b578 100%); }
+  .q-location .q-lead { display: none; }
+  .location-map-shell.q-location-map { width: 100%; }
+}
+
+/* ---------- Concept Discovery Residences: một ảnh vừa khung hình, điều khiển phía dưới ---------- */
+.q-concept { background: var(--park-ivory); }
+.q-concept-carousel { width: min(100%, calc((var(--screen) - 16rem) * 1.61), 1200px); margin-inline: auto; }
+.q-tile { position: relative; display: block; width: 100%; padding: 0; border: 1px solid var(--park-line); border-radius: 1rem; overflow: hidden; background: var(--park-cream); box-shadow: 0 14px 34px rgb(77 85 56 / 0.08); cursor: zoom-in; }
+.q-tile img { width: 100%; height: 100%; object-fit: cover; transition: transform 1.2s var(--park-ease); }
+.q-tile:hover img { transform: scale(1.03); }
+.q-concept-controls { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-top: 0.75rem; }
+.q-concept-count { display: flex; align-items: baseline; gap: 0.4rem; margin: 0; color: var(--park-ink-soft); font-size: 0.8rem; font-weight: 700; }
+.q-concept-count > span:first-child { color: var(--park-dark); font-family: "SVN Bon Voyage", Georgia, serif; font-size: 1.5rem; font-weight: 400; }
+.q-concept-label { margin-left: 0.6rem; font-weight: 400; }
+.q-concept-navigation { display: flex; gap: 0.5rem; }
+.q-concept-navigation button { display: grid; place-items: center; width: 2.75rem; height: 2.75rem; border: 1px solid var(--park-line-strong); border-radius: 999px; background: #fff; color: var(--park-dark); font-size: 1.2rem; transition: background-color 0.2s, color 0.2s; }
+.q-concept-navigation button:hover { background: var(--imperia-accent); }
+@media (max-width: 767px) {
+  .q-concept-carousel { width: 100%; }
+  .q-concept-label { display: none; }
+}
+
+/* Coverflow tiện ích: thẻ giữa lớn + chú thích; 2 thẻ mỗi bên xếp lớp, nhỏ dần, tối và mờ dần (lấp khoảng trống 2 bên) */
+.q-flow { --card-w: min(58vw, 980px); --step: calc(var(--card-w) * 0.4); position: relative; overflow: hidden; padding-block: 0.5rem 0; outline: none; touch-action: pan-y; }
+.q-flow:focus-visible .q-flow-card.is-active { outline: 3px solid var(--imperia-accent); outline-offset: 4px; }
+.q-flow-stage { position: relative; height: calc(var(--card-w) * 0.625 + 2.5rem); user-select: none; }
+.q-flow-card {
+  position: absolute; left: 50%; top: 50%; width: var(--card-w); aspect-ratio: 16 / 10; padding: 0; border: 0; border-radius: 1.1rem; overflow: hidden;
+  background: var(--park-deep); box-shadow: 0 24px 60px rgb(32 35 27 / calc(0.32 - var(--ad) * 0.08));
+  transform: translate(-50%, -50%) translateX(calc(var(--d) * var(--step))) scale(calc(1 - var(--ad) * 0.15));
+  filter: brightness(calc(1 - var(--ad) * 0.3)) saturate(calc(1 - var(--ad) * 0.15)) blur(calc(var(--ad) * 1.2px));
+  transition: transform 0.75s var(--park-ease), filter 0.75s var(--park-ease), opacity 0.5s ease; cursor: pointer;
+}
+.q-flow-card[aria-hidden="true"] { opacity: 0; pointer-events: none; }
+.q-flow-card.is-active { cursor: zoom-in; }
+.q-flow-card img { width: 100%; height: 100%; object-fit: cover; pointer-events: none; }
+.q-flow-caption {
+  position: absolute; inset: auto 0 0 0; display: grid; gap: 0.5rem; padding: clamp(1.25rem, 3vw, 2.5rem); text-align: left; color: #fff;
+  background: linear-gradient(180deg, transparent 0%, rgb(20 23 15 / 0.35) 30%, rgb(20 23 15 / 0.82) 100%);
+}
+.q-flow-title { font-family: "SVN Bon Voyage", Georgia, serif; font-size: clamp(1.35rem, 2.6vw, 2.4rem); line-height: 1.15; text-transform: uppercase; }
+.q-flow-desc { max-width: 46rem; font-size: clamp(0.9rem, 1.05vw, 1.05rem); line-height: 1.6; color: rgb(255 255 255 / 0.9); }
+.q-flow-controls { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-top: 1rem; }
+.q-flow-dots { display: flex; flex-wrap: wrap; justify-content: center; }
+.q-flow-dots button { position: relative; width: 1.5rem; height: 2.75rem; padding: 0; border: 0; background: none; cursor: pointer; }
+.q-flow-dots button::after { content: ""; position: absolute; left: 50%; top: 50%; width: 0.5rem; height: 0.5rem; border-radius: 999px; background: var(--park-line-strong); transform: translate(-50%, -50%); transition: width 0.3s, background-color 0.3s; }
+.q-flow-dots button[aria-current="true"]::after { width: 1.25rem; background: var(--park-dark); }
+@media (max-width: 1023px) {
+  .q-flow { --card-w: 78vw; --step: calc(var(--card-w) * 0.34); }
+}
+@media (max-width: 767px) {
+  .q-flow { --card-w: 84vw; --step: calc(var(--card-w) * 0.3); }
+  .q-flow-card { aspect-ratio: 4 / 5; }
+  .q-flow-stage { height: calc(var(--card-w) * 1.25 + 1.5rem); }
+  .q-flow-dots { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .q-flow-card { transition: none; }
+}
+
+/* ---------- Gallery: thẻ carousel rộng theo tỉ lệ ảnh (cùng chiều cao) ---------- */
+.q-gallery { background: var(--park-cream); }
+.q-tabs { display: inline-flex; flex-wrap: wrap; gap: 0.25rem; padding: 0.25rem; margin-bottom: clamp(0.75rem, 2.4svh, 1.25rem); border: 1px solid var(--park-line); border-radius: 999px; background: #fff; }
+.q-tabs button { min-height: 2.75rem; padding: 0 1.1rem; border: 0; border-radius: 999px; background: transparent; color: var(--park-ink-soft); font-size: 0.875rem; font-weight: 700; text-transform: none; }
+.q-tabs button span { margin-left: 0.3rem; font-size: 0.75rem; font-weight: 400; opacity: 0.75; }
+.q-tabs button[aria-selected="true"] { background: var(--park-dark); color: #fff; }
+.q-tabs button:not([aria-selected="true"]):hover { background: rgb(77 85 56 / 0.08); color: var(--park-dark); }
+.q-carousel-nav { display: flex; gap: 0.5rem; }
+.q-carousel-nav button { display: grid; place-items: center; width: 3rem; height: 3rem; border-radius: 999px; border: 1px solid var(--park-line-strong); background: transparent; color: var(--park-dark); font-size: 1.1rem; transition: opacity 0.2s, background-color 0.2s; }
+.q-carousel-nav button:hover { background: rgb(77 85 56 / 0.08); }
+.q-carousel-nav button:disabled { opacity: 0.3; pointer-events: none; }
+.q-track {
+  --row-h: clamp(220px, 52svh, 560px);
+  display: flex; gap: 0.75rem; overflow-x: auto; overscroll-behavior-x: contain; scroll-snap-type: x proximity; scrollbar-width: none;
+}
+.q-track::-webkit-scrollbar { display: none; }
+.q-track:focus-visible { outline-offset: 4px; }
+/* chiều cao chung; bề rộng = chiều cao × tỉ lệ ảnh (aspect-ratio gắn inline theo w/h của ảnh) */
+.q-slide { position: relative; flex: none; height: var(--row-h); width: auto; max-width: 92vw; padding: 0; border: 0; border-radius: 0.75rem; overflow: hidden; background: var(--park-stone); scroll-snap-align: start; cursor: zoom-in; }
+.q-slide img { width: 100%; height: 100%; object-fit: cover; transition: transform 1.2s var(--park-ease); }
+.q-slide:hover img { transform: scale(1.04); }
+.q-slide-label { position: absolute; left: 0.75rem; bottom: 0.75rem; max-width: calc(100% - 1.5rem); padding: 0.35rem 0.7rem; border-radius: 999px; background: rgb(53 60 39 / 0.78); color: #fff; font-size: 0.8rem; line-height: 1.3; text-align: left; backdrop-filter: blur(4px); }
+@media (max-width: 767px) {
+  .q-track { --row-h: clamp(200px, 34svh, 300px); margin-inline: calc(-1 * var(--gutter)); padding-inline: var(--gutter); scroll-padding-inline: var(--gutter); }
+  .q-carousel-nav { display: none; }
+  .q-tabs { display: flex; width: 100%; }
+  .q-tabs button { flex: 1; padding: 0 0.5rem; font-size: 0.8rem; }
+}
+
+/* ---------- Lightbox ---------- */
+.q-lightbox { width: 100vw; height: 100dvh; max-width: none; max-height: none; margin: 0; padding: 0; border: 0; background: rgb(20 23 15 / 0.94); color: #fff; }
+.q-lightbox::backdrop { background: rgb(20 23 15 / 0.6); }
+.q-lightbox figure { margin: 0; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.75rem; padding: 3.5rem 4.5rem 1.5rem; }
+.q-lightbox img { max-width: 100%; max-height: calc(100dvh - 7rem); width: auto; height: auto; object-fit: contain; border-radius: 0.5rem; }
+.q-lightbox figcaption { font-size: 0.9rem; color: rgb(255 255 255 / 0.85); }
+.q-lightbox-close, .q-lightbox-nav { position: absolute; display: grid; place-items: center; width: 3rem; height: 3rem; border-radius: 999px; border: 1px solid rgb(255 255 255 / 0.35); background: rgb(255 255 255 / 0.08); color: #fff; font-size: 1.4rem; }
+.q-lightbox-close { top: 0.75rem; right: 0.75rem; }
+.q-lightbox-nav { top: 50%; transform: translateY(-50%); }
+.q-lightbox-nav.is-prev { left: 0.75rem; }
+.q-lightbox-nav.is-next { right: 0.75rem; }
+@media (max-width: 639px) { .q-lightbox figure { padding: 3.5rem 0.75rem 4.5rem; } .q-lightbox-nav { top: auto; bottom: 0.75rem; transform: none; } }
+
+/* ---------- Chính sách bán hàng (CSBH): tab + timeline như qtopia ---------- */
+.csbh { background: linear-gradient(115deg, #4d5538 0%, #607049 58%, #687850 100%); color: #fff; }
+.csbh-badge { margin: 0; display: inline-flex; align-items: stretch; gap: 0.75rem; padding: 0.6rem 1.1rem; border: 1px solid rgb(255 255 255 / 0.2); border-radius: 1rem; background: rgb(255 255 255 / 0.06); }
+.csbh-badge-side { display: flex; flex-direction: column; justify-content: center; font-size: 0.75rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; line-height: 1.3; }
+.csbh-badge-num { font-family: "SVN Bon Voyage", Georgia, serif; font-size: clamp(2.6rem, 4.5vw, 4rem); line-height: 1; color: var(--imperia-accent); }
+.csbh-badge-num small { font-size: 0.5em; }
+.csbh-tabs { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 0.25rem; padding: 0.25rem; border: 1px solid rgb(255 255 255 / 0.18); border-radius: 999px; background: rgb(255 255 255 / 0.05); }
+@media (min-width: 1024px) { .csbh-tabs { display: inline-grid; grid-template-columns: repeat(5, auto); } }
+.csbh-tabs button { min-height: 2.75rem; padding: 0 1.1rem; border: 0; border-radius: 999px; background: transparent; color: rgb(255 255 255 / 0.85); font-size: 0.875rem; font-weight: 700; text-transform: none; white-space: nowrap; }
+.csbh-tabs button[aria-selected="true"] { background: var(--imperia-accent); color: var(--park-deep); }
+.csbh-tabs button:not([aria-selected="true"]):hover { background: rgb(255 255 255 / 0.1); color: #fff; }
+.csbh-panel { margin-top: 0.75rem; padding: clamp(1rem, 2.6svh, 1.75rem) clamp(1rem, 2.5vw, 2rem); border: 1px solid rgb(255 255 255 / 0.12); border-radius: 1.25rem; background: rgb(53 60 39 / 0.55); }
+.csbh-panel-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.5rem 1rem; margin-bottom: clamp(0.75rem, 2.6svh, 1.5rem); }
+.csbh-panel-head h3 { margin: 0; font-size: clamp(0.95rem, 1.2vw, 1.1rem); font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; }
+.csbh-panel-head div { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+.csbh-chip { padding: 0.3rem 0.75rem; border-radius: 999px; background: rgb(169 181 120 / 0.18); color: var(--imperia-accent); font-size: 0.8rem; font-weight: 700; }
+.csbh-row { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); }
+.csbh-row > div { display: flex; flex-direction: column; align-items: center; gap: 0.25rem; padding-inline: 0.25rem; text-align: center; }
+.csbh-mlabel { font-size: 0.75rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: rgb(255 255 255 / 0.75); }
+.csbh-amount { font-family: "SVN Bon Voyage", Georgia, serif; font-size: clamp(1.6rem, 2.6vw, 2.4rem); line-height: 1; white-space: nowrap; color: #fff; }
+.csbh-amount small { margin-left: 0.1rem; font-family: "SVN Selecta", Arial, sans-serif; font-size: 0.45em; font-weight: 700; color: var(--imperia-accent); }
+.csbh-amount.is-empty { color: rgb(255 255 255 / 0.4); }
+.csbh-amount.is-sm { font-size: 1.25rem; }
+.csbh-line { position: relative; height: 2.5rem; }
+.csbh-bar { position: absolute; top: 50%; height: 2px; transform: translateY(-50%); border-radius: 2px; background: linear-gradient(90deg, var(--imperia-accent), rgb(255 255 255 / 0.5), var(--park-bronze)); }
+.csbh-dot { position: absolute; top: 50%; width: 0.85rem; height: 0.85rem; transform: translate(-50%, -50%); border: 2px solid var(--park-dark); border-radius: 50%; background: var(--imperia-accent); box-shadow: 0 0 0 4px rgb(169 181 120 / 0.22); }
+.csbh-dot.is-group { width: 2.25rem; border-radius: 999px; background: repeating-linear-gradient(90deg, var(--imperia-accent) 0 0.4rem, var(--park-dark) 0.4rem 0.55rem); }
+.csbh-between { position: absolute; top: 50%; transform: translate(-50%, -50%); padding: 0.15rem 0.55rem; border: 1px solid rgb(255 255 255 / 0.15); border-radius: 999px; background: var(--park-dark); font-size: 0.75rem; font-style: italic; white-space: nowrap; color: rgb(255 255 255 / 0.85); }
+.csbh-row.is-bottom > div { gap: 0.3rem; }
+.csbh-when { font-size: 0.85rem; font-weight: 700; color: #fff; }
+.csbh-when em { font-weight: 400; font-size: 0.75rem; color: rgb(255 255 255 / 0.7); }
+.csbh-sub { font-size: 0.75rem; line-height: 1.35; color: rgb(255 255 255 / 0.75); }
+.csbh-bank { padding: 0.2rem 0.55rem; border: 1px solid rgb(214 199 187 / 0.6); border-radius: 999px; font-size: 0.7rem; font-weight: 700; color: var(--imperia-beige); }
+.csbh-note { margin: clamp(0.75rem, 2svh, 1.25rem) 0 0; padding-top: 0.75rem; border-top: 1px solid rgb(255 255 255 / 0.12); font-size: 0.8rem; font-style: italic; color: rgb(255 255 255 / 0.8); }
+.csbh-v { display: none; margin: 0; padding: 0; list-style: none; position: relative; }
+.csbh-v::before { content: ""; position: absolute; left: 0.35rem; top: 0.9rem; bottom: 0.9rem; width: 2px; border-radius: 2px; background: linear-gradient(var(--imperia-accent), var(--park-bronze)); }
+.csbh-v li { position: relative; padding-left: 1.5rem; }
+.csbh-v li::before { content: ""; position: absolute; left: 0; top: 0.85rem; width: 0.8rem; height: 0.8rem; border: 2px solid var(--park-dark); border-radius: 50%; background: var(--imperia-accent); }
+.csbh-v-row { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; min-height: 2.75rem; border-bottom: 1px solid rgb(255 255 255 / 0.1); }
+.csbh-v-text { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0 0.5rem; font-size: 0.75rem; color: rgb(255 255 255 / 0.7); }
+.csbh-v-text strong { font-size: 0.95rem; color: #fff; }
+.csbh-v-between { display: block; padding: 0.2rem 0; font-size: 0.75rem; font-style: italic; color: rgb(255 255 255 / 0.7); }
+.csbh-foot { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.75rem 1.5rem; margin-top: clamp(0.75rem, 2.4svh, 1.25rem); }
+.csbh-legal { display: flex; flex-direction: column; gap: 0.2rem; max-width: 46rem; font-size: 0.75rem; line-height: 1.5; color: rgb(255 255 255 / 0.8); }
+@media (max-width: 1023px) {
+  .csbh-tabs { display: flex; overflow-x: auto; scrollbar-width: none; border-radius: 1rem; }
+  .csbh-tabs::-webkit-scrollbar { display: none; }
+  .csbh-tabs button { flex: none; }
+}
+@media (max-width: 639px) {
+  .csbh-h { display: none; }
+  .csbh-v { display: block; }
+  .csbh-legal span:first-child { display: none; }
+}
+
+/* ---------- mặt bằng: 2 thẻ tháp ---------- */
+.park-residences { display: grid; gap: clamp(1rem, 3vw, 2.5rem); }
+@media (min-width: 768px) { .park-residences { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.park-residences article { display: flex; flex-direction: column; gap: 1rem; padding: clamp(1rem, 2.4svh, 1.75rem); border: 1px solid var(--park-line); border-radius: var(--park-radius); background: #fff; }
+.park-residence-title { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; }
+.park-residence-title h3 { margin: 0; font-family: "SVN Bon Voyage", Georgia, serif; font-weight: 400; font-size: var(--park-display-3); color: var(--park-dark); }
+.park-residences article img { height: clamp(160px, 34svh, 420px); width: 100%; object-fit: contain; border-radius: 0; transition: transform 1.2s var(--park-ease); }
+.park-residences article a:hover img { transform: scale(1.03); }
+.park-text-link { display: inline-flex; align-items: center; justify-content: space-between; gap: 0.75rem; padding-top: 0.875rem; border-top: 1px solid var(--park-line); font-size: 0.75rem; font-weight: 700; letter-spacing: 0.16em; color: var(--park-bronze-deep); }
+.park-text-link:hover { color: var(--park-dark); }
+#mat-bang.park-section { background: var(--park-cream); }
+
+/* ---------- bảng tính khoản vay (teaser) ---------- */
+.park-calc { background: var(--park-sand); }
+.park-calc-grid { display: grid; gap: clamp(1.5rem, 5vw, 6rem); align-items: center; }
+@media (min-width: 1024px) { .park-calc-grid { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } }
+
+/* ---------- các section còn lại của trang chủ: nhịp tiêu đề + nền theo Norton ---------- */
+.park-home #faq .home-faq-item { border-bottom-color: var(--park-line-strong); }
+.park-home #faq .home-faq-item button { font-size: clamp(1rem, 1.3vw, 1.2rem); }
+
+/* ---------- trang con: masthead tối 2 cột + thanh chủ đề dính ---------- */
+.park-page-masthead { padding: calc(var(--header-h) + clamp(2rem, 6svh, 4rem)) 0 clamp(2rem, 6svh, 4rem); background: linear-gradient(105deg, #4d5538, #798b5f 70%, #a9b578); color: var(--park-on-dark); }
+.park-page-grid { display: grid; gap: clamp(1.5rem, 4vw, 4rem); align-items: center; }
+@media (min-width: 1024px) { .park-page-grid { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); } }
+.park-page-copy { display: flex; flex-direction: column; gap: 1rem; }
+.park-page-copy .park-eyebrow { color: var(--park-on-dark-soft); }
+.park-page-copy h1 { color: var(--park-on-dark); }
+.park-page-copy > p { color: var(--park-stone); }
+.park-page-masthead figure { position: relative; margin: 0; overflow: hidden; border-radius: var(--park-radius); }
+.park-page-masthead figure img { height: clamp(220px, 50svh, 560px); width: 100%; object-fit: cover; }
+.park-page-masthead figcaption { position: absolute; left: 1rem; bottom: 0.875rem; font-size: 0.75rem; letter-spacing: 0.12em; color: rgb(255 255 255 / 0.9); text-shadow: 0 1px 8px rgb(0 0 0 / 0.45); }
+.park-topic-nav { position: sticky; top: var(--header-h); z-index: 30; background: var(--park-ivory); border-bottom: 1px solid var(--park-line); }
+.park-topic-nav .container-page { display: flex; gap: 1.75rem; overflow-x: auto; scrollbar-width: none; }
+.park-topic-nav .container-page::-webkit-scrollbar { display: none; }
+.park-topic-nav a { display: inline-flex; align-items: center; min-height: 3.25rem; white-space: nowrap; border-bottom: 2px solid transparent; font-size: 0.75rem; font-weight: 700; letter-spacing: 0.14em; color: var(--park-ink-soft); }
+.park-topic-nav a:hover, .park-topic-nav a[aria-current="page"] { color: var(--park-dark); border-bottom-color: var(--park-bronze); }
+
+/* ---------- chuyển động ---------- */
+@keyframes park-rise { from { opacity: 0.25; transform: translate3d(0, 16px, 0); } }
+@media (prefers-reduced-motion: reduce) {
+  .park-hero-copy-inner > * { animation: none; }
+}
+
+/* ---------- điện thoại: mặt bằng dạng dải trượt ngang ---------- */
+@media (max-width: 767px) {
+  .park-residences { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; gap: 0.75rem; margin-inline: calc(-1 * var(--gutter)); padding-inline: var(--gutter); scroll-padding-inline: var(--gutter); }
+  .park-residences::-webkit-scrollbar { display: none; }
+  .park-residences > * { flex: 0 0 84%; min-width: 0; scroll-snap-align: start; }
+  .park-residences article img { height: clamp(150px, 26svh, 260px); }
+}
+
+/* ---------- Loại căn hộ + thông tin từng căn (ApartmentTypes.jsx) ---------- */
+.apt { margin-top: clamp(1.5rem, 4vw, 3rem); }
+.apt-tabs { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 0.5rem; }
+.apt-tabs button { display: grid; gap: 0.15rem; min-height: 3.5rem; padding: 0.6rem 0.75rem; border: 1px solid var(--park-line-strong); border-radius: 0.9rem; background: #fff; color: var(--park-dark); text-align: left; cursor: pointer; transition: background-color 0.25s, color 0.25s; }
+.apt-tabs button[aria-selected="true"] { background: var(--park-dark); border-color: var(--park-dark); color: #fff; }
+.apt-tabs button:not([aria-selected="true"]):hover { background: rgb(77 85 56 / 0.06); }
+.apt-tab-name { font-weight: 700; font-size: 1rem; }
+.apt-tab-area { font-size: 0.78rem; opacity: 0.8; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+/* khoá chiều cao panel ở desktop để đổi loại căn không làm cả section "nhảy" */
+.apt-panel { display: grid; gap: clamp(1rem, 3vw, 2.5rem); margin-top: 1rem; padding: clamp(1rem, 2.5vw, 2rem); border: 1px solid var(--park-line); border-radius: 1.25rem; background: var(--park-ivory); }
+@media (min-width: 1024px) {
+  .apt-panel { grid-template-columns: minmax(0, 11fr) minmax(0, 9fr); min-height: 38rem; align-items: start; }
+  .apt-photos { grid-column: 1 / -1; }
+}
+.apt-layout { position: relative; display: block; width: 100%; aspect-ratio: 4 / 3; padding: 0.75rem; border: 0; border-radius: 1rem; background: #f4efe9; cursor: zoom-in; }
+.apt-layout img { width: 100%; height: 100%; object-fit: contain; }
+.apt-zoom { position: absolute; right: 0.75rem; bottom: 0.75rem; padding: 0.35rem 0.75rem; border-radius: 999px; background: rgb(255 255 255 / 0.92); color: var(--park-dark); font-size: 0.8rem; font-weight: 700; }
+.apt-info h3 { margin: 0.25rem 0 0.5rem; font-family: "SVN Bon Voyage", Georgia, serif; font-size: clamp(1.6rem, 2.6vw, 2.3rem); font-weight: 400; color: var(--park-dark); }
+.apt-summary { margin: 0; line-height: 1.7; color: var(--park-ink); }
+.apt-specs { display: grid; gap: 0; margin: 1rem 0; border-top: 1px solid var(--park-line); }
+.apt-specs > div { display: flex; justify-content: space-between; gap: 1rem; padding: 0.6rem 0; border-bottom: 1px solid var(--park-line); }
+.apt-specs dt { color: var(--park-ink-soft); font-size: 0.9rem; }
+.apt-specs dd { margin: 0; font-weight: 700; text-align: right; color: var(--park-ink); }
+.apt-highlights { display: grid; gap: 0.45rem; margin: 0 0 1.25rem; padding: 0; list-style: none; }
+.apt-highlights li { position: relative; padding-left: 1.4rem; line-height: 1.6; }
+.apt-highlights li::before { content: ""; position: absolute; left: 0; top: 0.55em; width: 0.55rem; height: 0.55rem; border-radius: 999px; background: var(--imperia-accent, #b5c46a); }
+.apt-photos { display: grid; grid-template-columns: repeat(auto-fill, minmax(11rem, 1fr)); gap: 0.75rem; margin: 0; padding: 0; list-style: none; }
+.apt-photos li { position: relative; overflow: hidden; border-radius: 0.8rem; aspect-ratio: 4 / 3; background: var(--park-cream); }
+.apt-photos img { width: 100%; height: 100%; object-fit: cover; }
+.apt-photos span { position: absolute; inset: auto 0 0 0; padding: 1.5rem 0.75rem 0.5rem; background: linear-gradient(transparent, rgb(20 23 15 / 0.75)); color: #fff; font-size: 0.8rem; }
+.apt-disclaimer { margin: 0.75rem 0 0; font-size: 0.8rem; line-height: 1.6; color: var(--park-ink-soft); }
+.apt-units { margin-top: clamp(2rem, 5vw, 3.5rem); }
+.apt-units-head { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: 1rem; }
+.apt-units-head h3 { margin: 0; font-family: "SVN Bon Voyage", Georgia, serif; font-size: clamp(1.4rem, 2.2vw, 2rem); font-weight: 400; color: var(--park-dark); }
+.apt-units-head p { margin: 0.35rem 0 0; color: var(--park-ink-soft); }
+.apt-filters { display: flex; flex-wrap: wrap; gap: 0.75rem; }
+.apt-filters label { display: grid; gap: 0.25rem; font-size: 0.8rem; font-weight: 700; color: var(--park-ink-soft); }
+.apt-filters select { min-height: 2.75rem; min-width: 10rem; padding: 0 0.75rem; border: 1px solid var(--park-line-strong); border-radius: 0.75rem; background: #fff; color: var(--park-ink); font-size: 0.95rem; }
+.apt-count { margin: 1rem 0 0.75rem; font-size: 0.85rem; color: var(--park-ink-soft); }
+.apt-unit-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(13.5rem, 1fr)); gap: 0.75rem; margin: 0; padding: 0; list-style: none; }
+.apt-unit-list button { display: grid; gap: 0.2rem; width: 100%; height: 100%; padding: 0.75rem; border: 1px solid var(--park-line); border-radius: 1rem; background: #fff; text-align: left; cursor: pointer; transition: border-color 0.25s, box-shadow 0.25s; }
+.apt-unit-list button:hover, .apt-unit-list button:focus-visible { border-color: var(--park-dark); box-shadow: 0 10px 24px rgb(77 85 56 / 0.12); }
+.apt-unit-list img { width: 100%; aspect-ratio: 4 / 3; object-fit: contain; margin-bottom: 0.4rem; border-radius: 0.6rem; background: #f4efe9; }
+.apt-unit-code { font-size: 1.15rem; font-weight: 800; color: var(--park-dark); }
+.apt-unit-type { font-size: 0.9rem; color: var(--park-ink); }
+.apt-unit-area { font-size: 0.82rem; color: var(--park-ink-soft); }
+.apt-unit-more { margin-top: 0.35rem; font-size: 0.85rem; font-weight: 700; color: var(--park-bronze-deep); }
+.apt-dialog { width: min(1100px, 94vw); max-height: 92svh; padding: 0; border: 0; border-radius: 1.25rem; background: #fff; }
+.apt-dialog::backdrop { background: rgb(20 23 15 / 0.7); }
+.apt-dialog-body { display: grid; gap: 1.25rem; padding: clamp(1rem, 2.5vw, 2rem); }
+@media (min-width: 900px) { .apt-dialog-body { grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); align-items: start; } }
+.apt-dialog-media { display: grid; gap: 0.75rem; }
+.apt-dialog-media figure { margin: 0; }
+.apt-dialog-media img { width: 100%; max-height: 70svh; object-fit: contain; border-radius: 0.8rem; background: #f4efe9; }
+.apt-dialog-media figcaption { margin-top: 0.35rem; font-size: 0.85rem; color: var(--park-ink-soft); }
+.apt-dialog-info h3 { margin: 0.25rem 0 0; font-family: "SVN Bon Voyage", Georgia, serif; font-size: 2rem; font-weight: 400; color: var(--park-dark); }
+.apt-note { font-size: 0.85rem; line-height: 1.6; color: var(--park-ink-soft); }
+.apt-dialog-close { position: absolute; top: 0.75rem; right: 0.75rem; display: grid; place-items: center; width: 2.75rem; height: 2.75rem; border: 0; border-radius: 999px; background: rgb(255 255 255 / 0.92); color: var(--park-dark); font-size: 1.6rem; cursor: pointer; box-shadow: 0 4px 14px rgb(0 0 0 / 0.15); }
+@media (max-width: 767px) {
+  .apt-tabs { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .apt-tab-area { font-size: 0.75rem; }
+  .apt-specs > div { flex-direction: column; gap: 0.15rem; }
+  .apt-specs dd { text-align: left; }
+  .apt-photos { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .apt-unit-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .apt-filters, .apt-filters label, .apt-filters select { width: 100%; }
+}
+.apt.is-compact .apt-photos li:nth-child(n + 4) { display: none; }
+
+/* Trang chi tiết: giới hạn độ dài dòng ~75 ký tự cho dễ đọc trên màn rộng (audit: >110 ký tự/dòng ở 1440px trở lên) */
+.topic-content p, .topic-content li { max-width: 75ch; }
+.apt-disclaimer, .apt-summary { max-width: 75ch; }
+
+/* Sơ đồ tiện ích (ảnh utility 16:9): luôn hiện TRỌN trong khung nhìn dưới header — không bị cắt đáy trên laptop thấp
+   (1366×657, 1280×720…) và không bị header che mép trên. Giới hạn bề rộng theo chiều cao còn lại, giữ đúng tỉ lệ ảnh. */
+@media (min-width: 1024px) {
+  [data-section="amenities-map"] .amenities-grid > .amenities-map-box { width: 100%; max-width: calc((100svh - var(--header-h, 76px) - 5rem) * 16 / 9); justify-self: center; scroll-margin-top: calc(var(--header-h, 76px) + 1rem); }
+}
+.amenities-map-box img { width: 100%; height: auto; object-fit: contain; }
+
+/* Breadcrumb đầu trang chi tiết: vùng chạm 44px (audit: link "Trang chủ" chỉ cao 17px) */
+.park-page-masthead nav[aria-label="Breadcrumb"] a { display: inline-flex; align-items: center; min-height: 2.75rem; }
+/* Ảnh đầu trang /mat-bang là bản vẽ mặt bằng: hiện trọn ảnh, không cắt */
+.park-page-masthead figure.is-plan { background: #f4efe9; }
+.park-page-masthead figure.is-plan img { object-fit: contain; padding: 0.75rem; }
+.park-page-masthead figure.is-plan figcaption { color: var(--park-dark); text-shadow: none; }
+/* Bài viết tin tức: giới hạn ~75 ký tự/dòng trên màn rộng (audit: 148 ký tự/dòng ở 2K–5K) */
+main article p, main article li { max-width: 75ch; }
+.q-concept-count { max-width: 75ch; }
+
+.q-residences-cta { justify-content: center; margin-top: clamp(1.25rem, 3vw, 2rem); }
+
+/* audit sau sửa: link thẻ tháp đủ vùng chạm 44px; ghi chú công cụ tính vay không quá dài trên màn lớn */
+.park-text-link { min-height: 2.75rem; }
+#tinh-tra-gop p.leading-relaxed { max-width: 75ch; }
+
+.csbh-stack { display: grid; }
+.csbh-layer { grid-area: 1 / 1; min-width: 0; }
+.csbh-layer[aria-hidden="true"] { visibility: hidden; }
+.csbh-ghost-title { margin: 0; font-size: clamp(0.95rem, 1.2vw, 1.1rem); font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; }
+
+/* Checklist 1.4: tab chọn phương thức trên điện thoại phải thấy hết, không cuộn ngang → lưới 3 + 2 */
+@media (max-width: 767px) {
+  .csbh-tabs { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); overflow: visible; border-radius: 1.1rem; }
+  .csbh-tabs button { flex: initial; grid-column: span 2; padding: 0 0.4rem; white-space: normal; line-height: 1.2; font-size: 0.8rem; }
+  .csbh-tabs button:nth-child(n + 4) { grid-column: span 3; }
+}
+
+/* Sơ đồ tiện ích: lọc 4 nhóm (màu khớp chấm số trên sơ đồ) */
+.amenity-groups { display: flex; flex-wrap: wrap; gap: 0.4rem; padding: 0.75rem 0.75rem 0.25rem; }
+.amenity-groups button { display: inline-flex; align-items: center; gap: 0.4rem; min-height: 2.75rem; padding: 0 0.85rem; border: 1px solid rgb(255 255 255 / 0.22); border-radius: 999px; background: transparent; color: rgb(255 255 255 / 0.9); font-size: 0.8rem; font-weight: 700; cursor: pointer; }
+.amenity-groups button[aria-pressed="true"] { background: var(--imperia-cream, #d6c7bb); border-color: transparent; color: var(--park-dark); }
+.amenity-groups i { width: 0.65rem; height: 0.65rem; border-radius: 999px; box-shadow: 0 0 0 1.5px rgb(255 255 255 / 0.8); }
+.amenity-groups span { font-weight: 400; opacity: 0.75; }
+
+/* Chấm số tiện ích co giãn theo bề rộng sơ đồ (≈ tỉ lệ trên trang chủ đầu tư: 26px trên ảnh rộng 1915px) */
+.amenities-map-box { container-type: inline-size; }
+.amenity-dot { width: clamp(15px, 2.15cqw, 26px); height: clamp(15px, 2.15cqw, 26px); font-size: clamp(8px, 1cqw, 12px); letter-spacing: -0.02em; box-shadow: 0 2px 6px rgb(0 0 0 / 0.35); }
+@media (max-width: 600px) {
+  .amenity-groups { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 0.35rem; }
+  .amenity-groups button { grid-column: span 2; justify-content: center; padding: 0 0.4rem; font-size: 0.75rem; }
+  .amenity-groups button:nth-child(n + 4) { grid-column: span 3; }
+}
+@media (max-width: 420px) { .amenity-groups span { display: none; } }

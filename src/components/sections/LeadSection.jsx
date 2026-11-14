@@ -1,3 +1,4 @@
+import Image from "../ui/Image";
 import Button from "../ui/Button";
 import SectionHeading from "../ui/SectionHeading";
 import { clearPhoneError } from "../../lib/lead";
@@ -73,7 +74,7 @@ export default function LeadSection({ onSubmit }) {
       className="section-y relative overflow-hidden bg-imperia-beige"
     >
       {/* ảnh nền (đổi được trong CMS), tải lười vì nằm cuối trang */}
-      <img
+      <Image
         src={img("lead.background", "/assets/lead-bg.optimized.webp")}
         alt=""
         aria-hidden="true"

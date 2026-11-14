@@ -6,17 +6,16 @@ export default {
       colors: {
         imperia: {
           primary: "#4D5538",
-          dark: "#353C27",
-          light: "#68734B",
-          /* Nền olive chứa chữ trắng/kem — đậm hơn bản gốc (#8C915E, 3.3:1) để đạt WCAG AA:
-             trắng 5.7:1, kem 5.1:1. background-light dùng cho hover/active trên nền này. */
-          "background-dark": "#646A44",
+          dark: "#4D5538",
+          light: "#A9B578",
+          /* Màu nền chính theo Brand Guidelines; hover dùng sắc độ đậm hơn để giữ tương phản chữ trắng. */
+          "background-dark": "#4D5538",
           "background-light": "#6B7148",
           accent: "#A9B578",
           secondary: "#917663",
           "secondary-dark": "#6F594C",
           beige: "#D6C7BB",
-          cream: "#F5F1EB",
+          cream: "#D6C7BB",
           white: "#FFFFFF",
           black: "#20231B",
         },

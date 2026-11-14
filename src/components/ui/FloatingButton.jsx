@@ -1,3 +1,4 @@
+import Image from "./Image";
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { sectionForPath } from "../../lib/sections";
@@ -64,7 +65,7 @@ function FbLabel({ children }) {
    tương ứng (xem index.css) để thanh không che nội dung cuối trang. */
 function MobileStickyBar({ onLead }) {
   const item =
-    "flex min-h-12 flex-1 flex-col items-center justify-center gap-0.5 text-[11px] font-bold uppercase tracking-[.04em]";
+    "flex min-h-12 flex-1 flex-col items-center justify-center gap-0.5 text-xs font-bold uppercase tracking-[.04em]";
   return (
     <nav
       aria-label="Liên hệ nhanh"
@@ -83,9 +84,9 @@ function MobileStickyBar({ onLead }) {
         target="_blank"
         rel="noopener noreferrer"
         className={`${item} border-x border-white/15`}
-        aria-label="Chat qua Zalo"
+        aria-label="Chat Zalo"
       >
-        <img
+        <Image
           src="/assets/logo-zalo.webp"
           alt=""
           width="20"
@@ -224,10 +225,10 @@ export default function FloatingButtons({ onLead }) {
           target="_blank"
           rel="noopener noreferrer"
           tabIndex={hidden ? -1 : undefined}
-          aria-label="Chat qua Zalo"
+          aria-label="Chat Zalo"
           className={`${fbBtn} border border-imperia-primary/15 bg-white`}
         >
-          <img
+          <Image
             src="/assets/logo-zalo.webp"
             alt=""
             width="30"

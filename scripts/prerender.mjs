@@ -4,7 +4,7 @@
 //  2) Prerender "/", "/tin-tuc", "/tin-tuc/:id" thành HTML tĩnh để Googlebot,
 //     Bing và các crawler AI (GPTBot, ClaudeBot, PerplexityBot... không chạy JS)
 //     đọc được toàn bộ nội dung. Nếu Chrome không chạy được trong môi trường build
-//     thì báo lỗi rõ (log + dist/cms-status.json) nhưng KHÔNG làm hỏng build.
+//     thì báo lỗi rõ (log + dist/cms-status.json) và dừng build để tránh phát hành HTML rỗng.
 //  Chrome: trên Vercel dùng @sparticuz/chromium + puppeteer-core (Chrome đóng gói sẵn
 //  thư viện hệ thống — Chrome của gói `puppeteer` thiếu thư viện trên máy build Vercel);
 //  ở máy dev dùng `puppeteer` (tự tải Chrome).
@@ -15,14 +15,22 @@ import path from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
-const dist = path.join(root, "dist");
+const dist = path.join(root, process.env.DIST_DIR || "dist"); // DIST_DIR: build ra thư mục khác (vd. dist-local)
+const { loadEnv } = await import("vite");
+const buildOrigin = loadEnv("production", root, "VITE_").VITE_SITE_URL;
+if (!process.env.VITE_SITE_URL && buildOrigin) process.env.VITE_SITE_URL = buildOrigin;
 
 const { SITE_URL, SUBPAGES } = await import(pathToFileURL(path.join(root, "src/lib/seo.js")).href);
 const { default: NEWS } = await import(pathToFileURL(path.join(root, "src/data/newsData.js")).href);
 const { buildCmsSchema } = await import(pathToFileURL(path.join(root, "src/cms/schema.js")).href);
 
+const { CONTENT_UPDATED } = await import(pathToFileURL(path.join(root, "src/data/topicContent.js")).href);
 const routes = [
-  { url: "/", ready: "document.querySelector('#tin-tuc article')" },
+  { url: "/chinh-sach-bao-mat", ready: "document.querySelector('main h1')" },
+  { url: "/dieu-khoan", ready: "document.querySelector('main h1')" },
+  { url: "/404", ready: "document.querySelector('main h1')" },
+  { url: "/cam-on", ready: "document.querySelector('main h1')" },
+  { url: "/", ready: "document.querySelector('#hero h1')" },
   ...SUBPAGES.map((p) => ({ url: p.path, ready: "document.querySelector('main h1')" })),
   { url: "/tin-tuc", ready: "document.querySelector('h1') && document.querySelector('article')" },
   ...NEWS.map((a) => ({
@@ -33,7 +41,7 @@ const routes = [
 
 /* ---------- 1) sitemap.xml ---------- */
 const newestDate = NEWS.map((a) => a.published_at).sort().at(-1);
-const today = new Date().toISOString().slice(0, 10);
+const today = CONTENT_UPDATED;
 const urlEntry = (loc, lastmod, changefreq, priority, images = []) =>
   `  <url>
     <loc>${loc}</loc>
@@ -49,7 +57,7 @@ const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
 ${[
   urlEntry(`${SITE_URL}/`, today, "weekly", "1.0", [`${SITE_URL}/assets/thumbnail.jpg`]),
   ...SUBPAGES.map((p) => urlEntry(`${SITE_URL}${p.path}`, today, "weekly", "0.9")),
-  urlEntry(`${SITE_URL}/tin-tuc`, newestDate, "daily", "0.8"),
+  urlEntry(`${SITE_URL}/tin-tuc`, newestDate || CONTENT_UPDATED, "daily", "0.8"),
   ...NEWS.map((a) =>
     urlEntry(`${SITE_URL}/tin-tuc/${a.id}`, a.published_at, "monthly", "0.7", a.image_url ? [a.image_url] : []),
   ),
@@ -144,6 +152,8 @@ try {
   for (const route of routes) {
     const page = await browser.newPage();
     await page.setViewport({ width: 1440, height: 900 });
+    await page.evaluateOnNewDocument(() => { window.__PRERENDER__ = true; });
+    await page.emulateMediaFeatures([{ name: "prefers-reduced-motion", value: "reduce" }]);
     // Chặn tài nguyên ngoài để build nhanh và không phụ thuộc mạng.
     await page.setRequestInterception(true);
     page.on("request", (r) =>
@@ -152,6 +162,12 @@ try {
     await page.goto(`${base}${route.url}`, { waitUntil: "load", timeout: 60000 });
     await page.waitForFunction(route.ready, { timeout: 30000 });
     await new Promise((r) => setTimeout(r, 300)); // chờ useEffect RouteSeo cập nhật <head>
+    await page.evaluate(() => {
+      document.documentElement.classList.remove("home-paging", "reveal-ready");
+      document.querySelectorAll("[data-reveal]").forEach((el) => el.removeAttribute("data-reveal"));
+      document.documentElement.style.scrollBehavior = "";
+      document.documentElement.style.scrollSnapType = "";
+    });
     let html = await page.content();
     /* bỏ thẻ script do snippet GA4 / Pixel / TikTok tự chèn lúc prerender (trình duyệt sẽ tự chèn lại khi chạy) */
     html = html.replace(/<script[^>]+src="https:\/\/(?:www\.googletagmanager\.com|connect\.facebook\.net|analytics\.tiktok\.com)[^"]*"[^>]*><\/script>/g, "");
@@ -185,3 +201,10 @@ await writePrerenderStatus({
   engine,
   error: failure ? failure.slice(0, 300) : undefined,
 });
+
+if (failure || results.length !== routes.length) {
+  process.exitCode = 1;
+} else {
+  await fs.copyFile(path.join(dist, "404/index.html"), path.join(dist, "404.html"));
+  await fs.writeFile(path.join(dist, "robots.txt"), `User-agent: *\nAllow: /\n\nSitemap: ${SITE_URL}/sitemap.xml\n`);
+}

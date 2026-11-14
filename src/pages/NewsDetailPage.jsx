@@ -1,3 +1,4 @@
+import Image from "../components/ui/Image";
 // src/pages/NewsDetailPage.jsx
 //
 // Trang chi tiết "/tin-tuc/:articleId" — banner, nội dung bài viết, sidebar
@@ -20,7 +21,7 @@ function Shell({ children, onLead }) {
   return (
     <div className="min-h-screen bg-imperia-cream pt-[var(--header-h)]">
       <Header onLead={onLead} />
-      <main className="container-page section-y">{children}</main>
+      <main id="main-content" tabIndex={-1} className="container-page section-y">{children}</main>
       <Footer />
     </div>
   );
@@ -54,7 +55,8 @@ export default function NewsDetailPage({ onLead }) {
     try {
       await navigator.clipboard.writeText(window.location.href);
     } catch {
-      /* clipboard không khả dụng — vẫn báo đã copy để không chặn UI */
+      setCopied(false);
+      return;
     }
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
@@ -116,13 +118,14 @@ export default function NewsDetailPage({ onLead }) {
     <div className="min-h-screen bg-imperia-cream pt-[var(--header-h)]">
       <Header onLead={onLead} />
 
-      <main>
+      <main id="main-content" tabIndex={-1}>
       {/* Banner — KHÔNG dùng `relative` ở đây: position khác static sẽ tự
           động vẽ đè lên các phần tử static phía sau trong cùng stacking
           context, dù DOM order có sau đi nữa. */}
       <div className="h-64 w-full overflow-hidden bg-imperia-background-dark md:h-96">
-        <img
+        <Image
           src={getBannerSrc(article)}
+          fetchPriority="high"
           alt={article.title}
           className="h-full w-full object-cover"
         />
@@ -172,7 +175,7 @@ export default function NewsDetailPage({ onLead }) {
                 </svg>
               </button>
               {copied && (
-                <span className="self-center text-[11px] font-bold text-imperia-primary lg:self-start">
+                <span className="self-center text-xs font-bold text-imperia-primary lg:self-start">
                   Đã copy link
                 </span>
               )}
@@ -183,7 +186,7 @@ export default function NewsDetailPage({ onLead }) {
               <div className="border-b border-imperia-primary/10 pb-8">
                 <Link
                   to="/tin-tuc"
-                  className="inline-block rounded-full bg-imperia-accent/30 px-3 py-1 text-[11px] font-bold uppercase tracking-widest text-imperia-primary"
+                  className="inline-flex min-h-11 items-center rounded-full bg-imperia-accent/30 px-4 text-xs font-bold uppercase tracking-widest text-imperia-primary"
                 >
                   {article.tag}
                 </Link>
@@ -212,7 +215,7 @@ export default function NewsDetailPage({ onLead }) {
                     return (
                       <figure key={i} className="my-8">
                         <div className="border border-imperia-primary/10">
-                          <img
+                          <Image
                             src={block.src}
                             alt={block.caption || article.title}
                             loading="lazy"
@@ -271,7 +274,7 @@ export default function NewsDetailPage({ onLead }) {
                     <div className="font-display text-base font-semibold text-imperia-primary">
                       {h.title}
                     </div>
-                    <div className="mt-3 flex justify-between text-[11px] uppercase tracking-wide text-imperia-black/40">
+                    <div className="mt-3 flex justify-between text-xs uppercase tracking-wide text-imperia-black/40">
                       <span>{h.tag}</span>
                       <span>{formatDate(h.published_at)}</span>
                     </div>
@@ -300,7 +303,7 @@ export default function NewsDetailPage({ onLead }) {
                     to={getHref(item.id)}
                     className="block h-44 overflow-hidden"
                   >
-                    <img
+                    <Image
                       src={item.image_url}
                       alt={item.title}
                       loading="lazy"
@@ -316,7 +319,7 @@ export default function NewsDetailPage({ onLead }) {
                         {item.title}
                       </Link>
                     </h3>
-                    <div className="mt-auto flex justify-between pt-4 text-[11px] uppercase tracking-wide text-imperia-black/40">
+                    <div className="mt-auto flex justify-between pt-4 text-xs uppercase tracking-wide text-imperia-black/40">
                       <span>{item.tag}</span>
                       <span>{formatDate(item.published_at)}</span>
                     </div>

@@ -2,18 +2,18 @@
 // URL cho các mục menu / CTA trỏ tới section trang chủ — KHÔNG dùng dấu "#".
 //  - Section có trang SEO riêng cùng chủ đề (Vị trí, Tiện ích, Mặt bằng, Tin tức) → đi tới trang đó
 //    (giữ trang đã index, không tạo 2 URL cùng nội dung).
-//  - Section còn lại → đường dẫn riêng (/tong-quan, /tinh-tra-gop, /lien-he): mở trang chủ và cuộn tới section.
+//  - Section còn lại → đường dẫn riêng (/chinh-sach-ban-hang, /lien-he; /tinh-tra-gop chuyển 308 sang /bang-gia): mở trang chủ và cuộn tới section.
 //    Các đường dẫn này dùng chung SEO của trang chủ (canonical "/"), không đưa vào sitemap.
 
 /** đường dẫn → id section trên trang chủ */
 export const SECTION_PATHS = {
-  "/tong-quan": "tong-quan",
-  "/tinh-tra-gop": "tinh-tra-gop",
+  "/chinh-sach-ban-hang": "chinh-sach-ban-hang",
   "/lien-he": "lien-he",
 };
 
 /** id section → trang SEO cùng chủ đề */
 export const PAGE_FOR_SECTION = {
+  "tong-quan": "/tong-quan",
   "vi-tri": "/vi-tri",
   "tien-ich": "/tien-ich",
   "mat-bang": "/mat-bang",

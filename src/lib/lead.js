@@ -1,3 +1,4 @@
+import { firstTouch } from "./attribution";
 // src/lib/lead.js
 // Tiện ích dùng chung cho các form đăng ký: chuẩn hoá + kiểm tra số điện thoại
 // Việt Nam phía client (di động 10 số đầu 03/05/07/08/09, chấp nhận +84/84).
@@ -63,7 +64,7 @@ function attribution() {
 
 /**
  * Gửi lead của 1 form. form_type lấy từ data-form-type của <form>.
- * Trả { ok: true } hoặc { ok: false, error }. Chưa cấu hình VITE_LEAD_ENDPOINT → chỉ ghi console (dev).
+ * Trả { ok: true } hoặc { ok: false, error }. Thiếu endpoint trả lỗi, không báo thành công giả.
  */
 export async function sendLead(form) {
   const fd = new FormData(form);
@@ -81,10 +82,10 @@ export async function sendLead(form) {
     submitted_at: new Date().toISOString(),
     website: fd.get("website") || "", // honeypot
     ...attribution(),
+    ...firstTouch(),
   };
   if (!ENDPOINT) {
-    console.info("[lead] Chưa cấu hình VITE_LEAD_ENDPOINT — dữ liệu:", body);
-    return { ok: true };
+    return { ok: false, error: "Biểu mẫu hiện chưa kết nối hệ thống tiếp nhận. Vui lòng gọi hotline để được hỗ trợ." };
   }
   try {
     const res = await fetch(ENDPOINT, {

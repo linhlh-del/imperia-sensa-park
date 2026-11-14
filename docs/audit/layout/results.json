@@ -1,0 +1,138 @@
+[
+  {
+    "id": "hero",
+    "width": 1440,
+    "height": 900,
+    "overflow": false,
+    "links": [
+      "#tong-quan",
+      "#chinh-sach-ban-hang"
+    ]
+  },
+  {
+    "id": "tong-quan",
+    "width": 1440,
+    "height": 787,
+    "overflow": false,
+    "links": [
+      "/tong-quan",
+      "#tien-ich"
+    ]
+  },
+  {
+    "id": "vi-tri",
+    "width": 1440,
+    "height": 824,
+    "overflow": false,
+    "links": [
+      "/vi-tri",
+      "#mat-bang"
+    ]
+  },
+  {
+    "id": "tien-ich",
+    "width": 1440,
+    "height": 887,
+    "overflow": false,
+    "links": [
+      "/tien-ich"
+    ]
+  },
+  {
+    "id": "mat-bang",
+    "width": 1440,
+    "height": 740,
+    "overflow": false,
+    "links": [
+      "/mat-bang"
+    ]
+  },
+  {
+    "id": "chinh-sach-ban-hang",
+    "width": 1440,
+    "height": 556,
+    "overflow": false,
+    "links": [
+      "/bang-gia",
+      "#tinh-tra-gop"
+    ]
+  },
+  {
+    "id": "faq",
+    "width": 1440,
+    "height": 445,
+    "overflow": false,
+    "links": [
+      "/faq",
+      "#lien-he"
+    ]
+  },
+  {
+    "id": "hero",
+    "width": 375,
+    "height": 816,
+    "overflow": false,
+    "links": [
+      "#tong-quan",
+      "#chinh-sach-ban-hang"
+    ]
+  },
+  {
+    "id": "tong-quan",
+    "width": 375,
+    "height": 945,
+    "overflow": false,
+    "links": [
+      "/tong-quan",
+      "#tien-ich"
+    ]
+  },
+  {
+    "id": "vi-tri",
+    "width": 375,
+    "height": 787,
+    "overflow": false,
+    "links": [
+      "/vi-tri",
+      "#mat-bang"
+    ]
+  },
+  {
+    "id": "tien-ich",
+    "width": 375,
+    "height": 981,
+    "overflow": false,
+    "links": [
+      "/tien-ich"
+    ]
+  },
+  {
+    "id": "mat-bang",
+    "width": 375,
+    "height": 661,
+    "overflow": false,
+    "links": [
+      "/mat-bang"
+    ]
+  },
+  {
+    "id": "chinh-sach-ban-hang",
+    "width": 375,
+    "height": 817,
+    "overflow": false,
+    "links": [
+      "/bang-gia",
+      "#tinh-tra-gop"
+    ]
+  },
+  {
+    "id": "faq",
+    "width": 375,
+    "height": 703,
+    "overflow": false,
+    "links": [
+      "/faq",
+      "#lien-he"
+    ]
+  }
+]

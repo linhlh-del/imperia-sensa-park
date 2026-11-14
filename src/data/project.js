@@ -41,10 +41,10 @@ export const project = {
       "Không gian dành cho gia đình và cộng đồng.",
     ],
     facts: [
-      ["05", "LOẠI HÌNH CĂN HỘ"],
+      ["~5 ha", "QUY MÔ DỰ ÁN"],
       ["28%", "MẬT ĐỘ XÂY DỰNG"],
       ["93 CĂN", "THẤP TẦNG · NHÀ PHỐ & BIỆT THỰ"],
-      ["QUÝ IV/ 2028", "DỰ KIẾN BÀN GIAO"],
+      ["05", "LOẠI HÌNH CĂN HỘ"],
     ],
   },
   location: {

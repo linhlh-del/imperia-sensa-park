@@ -1,18 +1,4 @@
-// src/data/newsData.js
-//
-// ⚠️ MOCK DATA — chưa có database / CMS thật.
-// Cấu trúc mỗi item được thiết kế giống hệt shape mà API thật sẽ trả về
-// (xem README-NEWS-MODULE.md), để khi backend xong chỉ cần thay phần
-// fetchNewsList() trong newsService.js, KHÔNG cần sửa bất kỳ component nào.
-//
-// Ảnh dùng placehold.co (đúng bảng màu imperia) để không phụ thuộc asset
-// thật — thay bằng ảnh dự án khi có nội dung chính thức.
-
-const ph = (label, bg = "4D5538", fg = "F5F1EB") =>
-  `https://placehold.co/1200x750/${bg}/${fg}?font=roboto&text=${encodeURIComponent(
-    label,
-  )}`;
-
+// Các bài viết tĩnh hiện có của Imperia Sensa Park. Giữ nguyên nội dung và ảnh nguồn.
 const NEWS_DATA = [
   {
     id: "mik-group-khai-truong-house-of-mik-mien-nam",

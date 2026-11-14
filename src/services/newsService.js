@@ -1,34 +1,9 @@
-// src/services/newsService.js
-//
-// Lớp "service" đứng giữa component và nguồn dữ liệu.
-// Hiện tại nguồn dữ liệu là mock (newsData.js). Khi có backend thật,
-// CHỈ cần sửa nội dung bên trong fetchNewsList() (đổi sang gọi
-// `fetch('/api/news')` hoặc axios...) — mọi component dùng service này
-// (News.jsx, NewsPage.jsx, NewsDetailPage.jsx) sẽ KHÔNG cần sửa gì cả,
-// miễn là API trả về đúng shape đã mô tả trong newsData.js.
-
+// Danh sách bài viết dùng chung cho trang chủ, trang tin và trang chi tiết.
 import NEWS_DATA from "../data/newsData.js";
 
-const SIMULATED_LATENCY_MS = 250;
-
-/**
- * Trả về toàn bộ danh sách bài viết, sắp xếp mới nhất trước.
- * @returns {Promise<Array>}
- */
+/** Dữ liệu bài viết tĩnh, không tạo độ trễ giả cho nội dung đã có sẵn. */
 export function fetchNewsList() {
-  // --- MOCK: thay đoạn này bằng gọi API thật ---
-  // return fetch("/api/news").then((res) => {
-  //   if (!res.ok) throw new Error("Network error");
-  //   return res.json();
-  // });
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      const sorted = [...NEWS_DATA].sort(
-        (a, b) => new Date(b.published_at) - new Date(a.published_at),
-      );
-      resolve(sorted);
-    }, SIMULATED_LATENCY_MS);
-  });
+  return Promise.resolve([...NEWS_DATA].sort((a, b) => new Date(b.published_at) - new Date(a.published_at)));
 }
 
 /** Bài viết nổi bật (mới nhất). */

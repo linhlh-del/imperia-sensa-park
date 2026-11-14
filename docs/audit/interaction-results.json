@@ -1,0 +1,42 @@
+[
+  {
+    "name": "map deferred at hero",
+    "ok": true
+  },
+  {
+    "name": "lead dialog closes with Escape",
+    "ok": true
+  },
+  {
+    "name": "missing endpoint does not report success",
+    "ok": true
+  },
+  {
+    "name": "no false lead event",
+    "ok": true
+  },
+  {
+    "name": "TOC stays on current page",
+    "ok": true
+  },
+  {
+    "name": "map group filter",
+    "ok": true
+  },
+  {
+    "name": "mobile menu returns focus",
+    "ok": true
+  },
+  {
+    "name": "FAQ expandable",
+    "ok": true
+  },
+  {
+    "name": "unknown URL remains noindex 404",
+    "ok": true
+  },
+  {
+    "name": "UTM survives navigation",
+    "ok": true
+  }
+]

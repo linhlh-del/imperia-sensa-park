@@ -16,8 +16,6 @@ const GROUPS = [
   // Ô số liệu ở Overview: hiện lần lượt
   { selector: "#tong-quan [data-stats] > div", step: 110 },
   // Hero: tiêu đề, mô tả, nút hiện lần lượt; thanh số liệu hiện lần lượt
-  { selector: "#hero .container-page.z-10 > div > *", step: 130 },
-  { selector: "#hero dl > div", step: 110 },
   // Trang /tin-tuc
   { selector: "section.container-page > *", step: 0 },
 ];
@@ -26,7 +24,7 @@ const MAX_STAGGER_STEPS = 5;
 
 export default function ScrollEffects() {
   useEffect(() => {
-    if (shouldSkipMotion() || !("IntersectionObserver" in window)) return undefined;
+    if (window.__PRERENDER__ || shouldSkipMotion() || !("IntersectionObserver" in window)) return undefined;
 
     document.documentElement.classList.add("reveal-ready");
 

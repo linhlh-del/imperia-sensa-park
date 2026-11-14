@@ -1,3 +1,4 @@
+import Image from "../components/ui/Image";
 // src/pages/NewsPage.jsx
 //
 // Trang danh sách đầy đủ "/tin-tuc" — hero + bài nổi bật + 2 bài điểm nhấn
@@ -19,7 +20,7 @@ function StateShell({ children, onLead }) {
   return (
     <div className="min-h-screen bg-imperia-cream pt-[var(--header-h)]">
       <Header onLead={onLead} />
-      <main className="container-page section-y">{children}</main>
+      <main id="main-content" tabIndex={-1} className="container-page section-y">{children}</main>
       <Footer />
     </div>
   );
@@ -77,7 +78,7 @@ export default function NewsPage({ onLead }) {
     <div className="min-h-screen bg-imperia-cream pt-[var(--header-h)]">
       <Header onLead={onLead} />
 
-      <main>
+      <main id="main-content" tabIndex={-1}>
         {/* Hero */}
         <section className="bg-imperia-background-dark py-16 text-center text-white md:py-20">
           <div className="container-page">
@@ -103,7 +104,7 @@ export default function NewsPage({ onLead }) {
               to={getHref(featured.id)}
               className="block h-72 overflow-hidden md:h-96"
             >
-              <img
+              <Image
                 src={featured.image_url}
                 alt={featured.title}
                 loading="lazy"
@@ -141,7 +142,7 @@ export default function NewsPage({ onLead }) {
                 key={item.id}
                 className="rounded-[20px] border border-imperia-primary/10 bg-white p-6 shadow-soft"
               >
-                <div className="flex items-center gap-3 text-[11px] font-bold uppercase tracking-widest text-imperia-secondary">
+                <div className="flex items-center gap-3 text-xs font-bold uppercase tracking-widest text-imperia-secondary">
                   <span className="rounded-full bg-imperia-accent/30 px-2.5 py-0.5 text-imperia-primary">
                     {item.tag}
                   </span>
@@ -176,7 +177,7 @@ export default function NewsPage({ onLead }) {
                 to={getHref(item.id)}
                 className="block h-48 overflow-hidden"
               >
-                <img
+                <Image
                   src={item.image_url}
                   alt={item.title}
                   loading="lazy"
@@ -184,7 +185,7 @@ export default function NewsPage({ onLead }) {
                 />
               </Link>
               <div className="flex flex-1 flex-col p-6">
-                <div className="flex items-center gap-3 text-[11px] font-bold uppercase tracking-widest text-imperia-secondary">
+                <div className="flex items-center gap-3 text-xs font-bold uppercase tracking-widest text-imperia-secondary">
                   <span className="rounded-full bg-imperia-accent/30 px-2.5 py-0.5 text-imperia-primary">
                     {item.tag}
                   </span>
@@ -205,7 +206,7 @@ export default function NewsPage({ onLead }) {
                 )}
                 <Link
                   to={getHref(item.id)}
-                  className="mt-4 inline-block text-sm font-bold text-imperia-primary hover:text-imperia-secondary"
+                  className="mt-4 inline-flex min-h-11 items-center text-sm font-bold text-imperia-primary hover:text-imperia-secondary"
                 >
                   Xem chi tiết →
                 </Link>

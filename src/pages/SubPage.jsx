@@ -1,15 +1,20 @@
+import PageMasthead from "../components/ui/PageMasthead";
+import { ParkOverview, ParkGallery } from "../components/sections/ParkTemplate";
 // src/pages/SubPage.jsx
 // Trang con theo nhóm từ khóa ngách (/vi-tri, /tien-ich, /mat-bang, /bang-gia).
 // Mỗi trang có 1 thẻ <h1> riêng + đoạn giới thiệu riêng, tái sử dụng section
 // của trang chủ. Title/description/canonical lấy từ SUBPAGES (src/lib/seo.js).
 
 import { Link } from "react-router-dom";
+import TopicContent from "../components/sections/TopicContent";
+import Overview from "../components/sections/Overview";
 import Header from "../components/layout/Header";
 import Footer from "../components/layout/Footer";
 import Location from "../components/sections/Location";
 import Amenities from "../components/sections/Amenities";
 import FeaturedAmenities from "../components/sections/FeaturedAmenities";
 import FloorPlan from "../components/sections/FloorPlan";
+import ApartmentTypes from "../components/sections/ApartmentTypes";
 import LoanCalculator from "../components/sections/LoanCalculator";
 import LeadSection from "../components/sections/LeadSection";
 import Button from "../components/ui/Button";
@@ -101,6 +106,8 @@ function PriceSurveyForm({ onSubmit }) {
 
 /* ---------- Nội dung riêng từng trang ---------- */
 const CONTENT = {
+  "/tong-quan": { intro: ["Tổng hợp thông tin giới thiệu Imperia Sensa Park tại phường Phước Long, TP.HCM. Khám phá vị trí, tiện ích và mặt bằng để lựa chọn nội dung phù hợp với nhu cầu của bạn."], render: () => <ParkOverview data={site.overview} /> },
+  "/faq": { intro: ["Các câu trả lời dưới đây giúp bạn tra cứu thông tin dự án và sử dụng bản đồ, mặt bằng, công cụ tính trả góp trên website."], render: () => null },
   "/vi-tri": {
     intro: [
       `Imperia Sensa Park nằm ${site.contact.address.charAt(0).toLowerCase()}${site.contact.address.slice(1)}, kết nối trực tiếp đường Liên Phường.`,
@@ -116,7 +123,7 @@ const CONTENT = {
     render: () => (
       <>
         <Amenities items={site.amenities} />
-        <FeaturedAmenities />
+        <ParkGallery />
       </>
     ),
   },
@@ -125,11 +132,22 @@ const CONTENT = {
       "Mặt bằng tầng điển hình hai tháp Sensa A và Sensa B của Imperia Sensa Park gồm 5 loại hình: Studio, 1PN+, 2PN, 3PN và Duplex.",
       "Chọn từng căn trên mặt bằng để xem loại hình, số phòng ngủ, diện tích tim tường (GFA), diện tích thông thủy (NFA) và layout chi tiết.",
     ],
-    render: () => <FloorPlan images={FLOOR_PLAN_IMAGES} />,
+    render: ({ onLead }) => (
+      <>
+        <FloorPlan images={FLOOR_PLAN_IMAGES} onLead={onLead} />
+        <section id="loai-can-ho" className="section-y bg-white" aria-labelledby="loai-can-ho-title">
+          <div className="container-page">
+            <h2 id="loai-can-ho-title" className="q-label">Các loại căn hộ Imperia Sensa Park</h2>
+            <p className="q-lead">Năm dòng căn Studio, 1PN+, 2PN, 3PN và Duplex — xem layout, diện tích, công năng và ảnh căn hộ mẫu của từng loại, rồi tra cứu chi tiết 40 mã căn tầng điển hình.</p>
+            <ApartmentTypes onLead={onLead} />
+          </div>
+        </section>
+      </>
+    ),
   },
   "/bang-gia": {
     intro: [
-      "Bảng giá Imperia Sensa Park được chủ đầu tư MIK Group cập nhật theo từng đợt mở bán, kèm chính sách thanh toán và hỗ trợ lãi suất.",
+      "Giá tham khảo đợt mở bán Imperia Sensa Park từ khoảng 3,4 tỷ (Studio) đến khoảng 13 tỷ (Duplex), cùng 4 phương thức thanh toán với chiết khấu đến 14% và gói vay hỗ trợ lãi suất 24 tháng. Bảng giá chính thức theo từng mã căn có ngày hiệu lực riêng.",
       "Dùng công cụ bên dưới để ước tính khoản vay và số tiền trả góp hàng tháng, sau đó để lại thông tin để nhận bảng giá chính thức theo loại căn bạn quan tâm.",
     ],
     render: ({ onLead, onSubmit }) => (
@@ -149,33 +167,15 @@ export default function SubPage({ path, onLead, onSubmit }) {
   return (
     <>
       <Header onLead={onLead} />
-      <main>
-        {/* Khối mở đầu: breadcrumb + H1 + giới thiệu */}
-        <section className="bg-imperia-background-dark pb-14 pt-[calc(76px+48px)] text-white">
-          <div className="container-page max-w-4xl">
-            <nav aria-label="Breadcrumb" className="mb-5 text-xs text-white/75">
-              <Link to="/" className="hover:text-white">
-                Trang chủ
-              </Link>
-              <span className="mx-2">/</span>
-              <span aria-current="page">{page.name}</span>
-            </nav>
-            <h1 className="font-display text-[clamp(1.9rem,4vw,3.25rem)] font-semibold uppercase leading-tight">
-              {page.h1}
-            </h1>
-            {content.intro.map((text) => (
-              <p
-                key={text}
-                className="mt-5 max-w-3xl text-[15px] leading-7 text-white/85"
-              >
-                {text}
-              </p>
-            ))}
-          </div>
-        </section>
-
+      <main id="main-content" tabIndex={-1} className="park-detail">
+        <PageMasthead title={page.h1} label={page.name} intro={content.intro} onLead={onLead}
+          image={path==='/tien-ich'?'/assets/amenities/canhquan/1.optimized.webp':path==='/mat-bang'?'/assets/layout/sensa-a.optimized.webp':'/assets/overview.webp'}
+          action={{href:'#noi-dung-chi-tiet',label:path==='/faq'?'Xem câu trả lời':'Khám phá chi tiết'}} />
+        <div id="noi-dung-chi-tiet" className="park-topic-body">
         {content.render({ onLead, onSubmit })}
+        <TopicContent path={path} />
 
+        </div>
         {!content.hideLead && <LeadSection onSubmit={onSubmit} />}
 
         {/* Liên kết nội bộ sang các trang con khác */}

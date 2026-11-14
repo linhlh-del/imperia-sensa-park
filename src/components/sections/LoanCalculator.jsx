@@ -1,3 +1,4 @@
+import { trackEvent } from "../../lib/analytics";
 import { useMemo, useState } from "react";
 import Button from "../ui/Button";
 import SectionHeading from "../ui/SectionHeading";
@@ -112,8 +113,10 @@ function ResultRow({ label, hint, value, strong = false, last = false, secondary
 
 export default function LoanCalculator({ onLead }) {
   const [values, setValues] = useState(DEFAULTS);
-  const set = (key) => (val) =>
+  const set = (key) => (val) => {
     setValues((v) => ({ ...v, [key]: Number.isFinite(val) ? val : 0 }));
+    trackEvent("loan_calculator_use", { field: key });
+  };
   const result = useMemo(() => calcLoan(values), [values]);
   /* điện thoại: chi tiết khoản vay thu gọn — nhập liệu + 2 con số chính + CTA vừa 1 màn hình */
   const [detail, setDetail] = useState(false);

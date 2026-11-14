@@ -1,17 +1,36 @@
+import TopicLink from "../ui/TopicLink";
+import Image from "../ui/Image";
 // src/components/sections/Amenities.jsx
 import { useState, useEffect, useRef } from "react";
 import { img, t } from "../../cms/content";
 import {
   AMENITIES,
+  AMENITY_GROUPS,
   ITEMS_PER_COL,
   COLS_PER_SLIDE,
   AUTO_SLIDE_MS,
 } from "../../data/amenitiesMap";
 
-const mapNgoaiKhu = img("amenities.map", "/assets/map-p.optimized.webp");
+/* Sơ đồ tổng mặt bằng mới (public/assets/utility.webp 7680×4320, 16:9) — bản nhẹ trong assets/responsive/utility-*.webp.
+   Toạ độ chấm số (data/amenitiesMap.js) đặt theo ảnh mới, 44 tiện ích chia 4 nhóm màu như trang chủ đầu tư. */
+const MAP_DEFAULT = "/assets/responsive/utility-1920.webp";
+const mapNgoaiKhu = img("amenities.map", MAP_DEFAULT);
+const MAP_SRCSET = mapNgoaiKhu === MAP_DEFAULT
+  ? "/assets/responsive/utility-1280.webp 1280w, /assets/responsive/utility-1920.webp 1920w, /assets/responsive/utility-2880.webp 2880w"
+  : undefined;
+const MAP_MARKERS = true;
+const pad2 = (n) => String(n).padStart(2, "0");
 
-export default function Amenities() {
+export default function Amenities({ id = "tien-ich" }) {
   const [activeId, setActiveId] = useState(null);
+  const [group, setGroup] = useState("all");
+  const [compactMap, setCompactMap] = useState(() => typeof window !== "undefined" && window.matchMedia("(max-width: 600px)").matches);
+  useEffect(() => {
+    const query = window.matchMedia("(max-width: 600px)");
+    const update = () => setCompactMap(query.matches);
+    query.addEventListener("change", update);
+    return () => query.removeEventListener("change", update);
+  }, []);
   const [mobileSlide, setMobileSlide] = useState(0);
   const [mapHeight, setMapHeight] = useState(null);
 
@@ -19,6 +38,7 @@ export default function Amenities() {
   const touchStartX = useRef(null);
   const touchStartY = useRef(null);
   const mapRef = useRef(null);
+  const visibleRef = useRef(false);
 
   // Đo chiều cao map (gồm viền) để cột phải desktop cao đúng bằng sơ đồ
   useEffect(() => {
@@ -30,7 +50,8 @@ export default function Amenities() {
     return () => ro.disconnect();
   }, []);
 
-  const filtered = AMENITIES;
+  const filtered = group === "all" ? AMENITIES : AMENITIES.filter((a) => a.group === group);
+  useEffect(() => { setMobileSlide(0); setActiveId(null); }, [group]);
 
   // Tính slides cho mobile
   const totalCols = Math.ceil(filtered.length / ITEMS_PER_COL);
@@ -49,7 +70,7 @@ export default function Amenities() {
 
   const startTimer = () => {
     clearInterval(timerRef.current);
-    if (totalSlides > 1) {
+    if (visibleRef.current && !document.hidden && totalSlides > 1 && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
       timerRef.current = setInterval(() => {
         setMobileSlide((prev) => (prev + 1) % totalSlides);
       }, AUTO_SLIDE_MS);
@@ -76,13 +97,17 @@ export default function Amenities() {
   useEffect(() => setMobileSlide(0), []);
 
   useEffect(() => {
-    startTimer();
-    return () => clearInterval(timerRef.current);
+    const section = mapRef.current?.closest("section");
+    const observer = new IntersectionObserver(([entry]) => { visibleRef.current = entry.isIntersecting; startTimer(); });
+    if (section) observer.observe(section);
+    const update = () => startTimer();
+    document.addEventListener("visibilitychange", update);
+    return () => { observer.disconnect(); document.removeEventListener("visibilitychange", update); clearInterval(timerRef.current); };
   }, [totalSlides]); // eslint-disable-line
 
   return (
     <section
-      id="tien-ich"
+      id={id}
       data-section="amenities-map"
       className="section-y overflow-hidden bg-imperia-cream"
     >
@@ -95,19 +120,21 @@ export default function Amenities() {
           {/* MAP */}
           <div
             ref={mapRef}
-            className="relative order-2 overflow-hidden rounded-[28px] border border-imperia-primary/10 bg-imperia-cream shadow-soft max-lg:mx-auto max-lg:w-full max-lg:max-w-[calc(var(--amap-h)*1307/1203)] [--amap-h:38svh] md:[--amap-h:38svh] lg:order-none"
+            className="amenities-map-box relative order-2 overflow-hidden rounded-[28px] border border-imperia-primary/10 bg-imperia-cream shadow-soft max-lg:mx-auto max-lg:w-full max-lg:max-w-[calc(var(--amap-h)*16/9)] [--amap-h:38svh] md:[--amap-h:38svh] lg:order-none"
           >
-            <img
+            <Image
               src={mapNgoaiKhu}
+              srcSet={MAP_SRCSET}
+              sizes="(min-width: 1024px) 62vw, 100vw"
               alt={t("amenities.mapAlt")}
-              width="1307"
-              height="1203"
+              width="1920"
+              height="1080"
               loading="lazy"
               decoding="async"
               className="block w-full"
             />
 
-            {filtered.flatMap((item) => {
+            {MAP_MARKERS && filtered.flatMap((item) => {
               const positions = Array.isArray(item.position)
                 ? item.position
                 : [item.position];
@@ -126,11 +153,13 @@ export default function Amenities() {
                   onFocus={() => setActiveId(item.id)}
                   onBlur={() => setActiveId(null)}
                   onClick={() => setActiveId(item.id)}
-                  aria-label={`Hiển thị ${item.name.join(" ")}`}
+                  aria-label={`${pad2(item.no)}. ${item.name.join(" ")}`}
+                  aria-hidden={compactMap ? true : undefined}
+                  tabIndex={compactMap ? -1 : 0}
                   aria-pressed={isActive}
                   style={{ top: position.top, left: position.left }}
                   className={[
-                    "absolute flex h-12 w-12 -translate-x-1/2 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full border-0 bg-transparent p-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-imperia-primary",
+                    "max-[600px]:pointer-events-none absolute flex h-12 w-12 -translate-x-1/2 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full border-0 bg-transparent p-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-imperia-primary",
                     isActive ? "z-20" : "z-10",
                   ].join(" ")}
                 >
@@ -144,16 +173,17 @@ export default function Amenities() {
                   >
                     <span
                       className={[
-                        "relative flex h-7 w-7 items-center justify-center rounded-full border border-imperia-cream font-body text-[15px] font-semibold leading-none transition-colors duration-500",
+                        "amenity-dot relative flex items-center justify-center rounded-full border border-imperia-cream font-body font-semibold leading-none transition-colors duration-500",
                         "before:absolute before:inset-0 before:rounded-full before:content-['']",
                         "after:absolute after:inset-0 after:rounded-full after:content-['']",
-                        "max-[600px]:h-5 max-[600px]:w-5 max-[600px]:text-[11px]",
+                        "motion-reduce:before:hidden motion-reduce:after:hidden",
                         isActive
                           ? "bg-imperia-cream text-imperia-secondary-dark before:hidden after:hidden"
-                          : "animate-marker-shake bg-imperia-secondary-dark text-imperia-cream before:animate-marker-ring1 after:animate-marker-ring2 before:bg-imperia-cream/50 after:bg-imperia-cream/30 motion-reduce:animate-none motion-reduce:before:animate-none motion-reduce:after:animate-none",
+                          : "animate-marker-shake text-white before:animate-marker-ring1 after:animate-marker-ring2 before:bg-imperia-cream/50 after:bg-imperia-cream/30 motion-reduce:animate-none motion-reduce:before:animate-none motion-reduce:after:animate-none",
                       ].join(" ")}
+                      style={isActive ? undefined : { backgroundColor: item.color }}
                     >
-                      {item.id}
+                      {pad2(item.no)}
                     </span>
                   </span>
                 </button>
@@ -176,11 +206,21 @@ export default function Amenities() {
               </p>
             </div>
 
+          {MAP_MARKERS && <p className="order-3 text-sm min-[601px]:hidden">Chọn tên tiện ích trong danh sách bên dưới để làm nổi bật vị trí trên sơ đồ.</p>}
           {/* LIST WRAPPER */}
           <div
             data-hide-floating
             className="order-3 flex flex-col overflow-hidden rounded-[28px] border border-imperia-primary/10 bg-imperia-background-dark shadow-soft lg:order-none lg:min-h-0 lg:flex-1"
           >
+            {/* Lọc theo nhóm tiện ích (màu chấm trên sơ đồ) */}
+            <div className="amenity-groups" role="group" aria-label="Lọc nhóm tiện ích">
+              <button type="button" aria-pressed={group === "all"} onClick={() => setGroup("all")}>Tất cả <span>{AMENITIES.length}</span></button>
+              {AMENITY_GROUPS.map((g) => (
+                <button key={g.key} type="button" aria-pressed={group === g.key} onClick={() => setGroup(g.key)} title={g.label}>
+                  <i style={{ backgroundColor: g.color }} aria-hidden="true" />{g.short} <span>{AMENITIES.filter((a) => a.group === g.key).length}</span>
+                </button>
+              ))}
+            </div>
             {/* Danh sách (> 600px): tablet 2 cột, desktop 1 cột cuộn dọc */}
             <div
               className="grid min-h-0 flex-1 grid-cols-2 gap-x-4 overflow-y-auto bg-imperia-background-dark p-4 text-white lg:flex lg:flex-col
@@ -206,9 +246,10 @@ export default function Amenities() {
                   }`}
                 >
                   <span
-                    className={`flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full border border-imperia-cream text-xs transition-colors duration-300 ${activeId === item.id ? "bg-imperia-cream text-imperia-secondary-dark" : "bg-imperia-secondary-dark text-imperia-cream"}`}
+                    className={`flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full border border-imperia-cream text-xs transition-colors duration-300 ${activeId === item.id ? "bg-imperia-cream text-imperia-secondary-dark" : "text-white"}`}
+                    style={activeId === item.id ? undefined : { backgroundColor: item.color }}
                   >
-                    {item.id}
+                    {pad2(item.no)}
                   </span>
                   <span className="flex flex-col justify-center">
                     {item.name.map((t, i) => (
@@ -258,9 +299,10 @@ export default function Amenities() {
                             }`}
                           >
                             <span
-                              className={`flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full border border-imperia-cream text-xs ${activeId === item.id ? "bg-imperia-cream text-imperia-secondary-dark" : "bg-imperia-secondary-dark text-imperia-cream"}`}
+                              className={`flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full border border-imperia-cream text-xs ${activeId === item.id ? "bg-imperia-cream text-imperia-secondary-dark" : "text-white"}`}
+                              style={activeId === item.id ? undefined : { backgroundColor: item.color }}
                             >
-                              {item.id}
+                              {pad2(item.no)}
                             </span>
                             <span className="flex flex-col justify-center">
                               {item.name.map((t, i) => (
@@ -290,7 +332,7 @@ export default function Amenities() {
                       }}
                       aria-label={`Trang ${idx + 1} / ${totalSlides}`}
                       aria-current={mobileSlide === idx}
-                      className="flex h-8 min-w-8 items-center justify-center"
+                      className="flex h-11 min-w-11 items-center justify-center"
                     >
                       <span
                         className={`block h-2 rounded-full transition-all duration-300 ${
@@ -311,6 +353,7 @@ export default function Amenities() {
           </div>
         </div>
       </div>
+      <div className="container-page section-actions mt-4"><TopicLink to="/tien-ich">Chi tiết hệ tiện ích</TopicLink><a href="#hinhanh" className="btn-base btn-outline">Xem ảnh tiện ích</a><a href="#mat-bang" className="btn-base btn-outline">Khám phá mặt bằng</a></div>
     </section>
   );
 }
