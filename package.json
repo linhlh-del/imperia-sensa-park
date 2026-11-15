@@ -7,6 +7,8 @@
     "dev": "vite",
     "prebuild": "node scripts/fetch-cms.mjs",
     "build": "vite build && node scripts/prerender.mjs && node scripts/seo-check.mjs",
+    "build:release": "node scripts/release.mjs",
+    "build:sites": "node scripts/build-sites.mjs",
     "cms:fetch": "node scripts/fetch-cms.mjs",
     "build:spa": "vite build",
     "preview": "vite preview",

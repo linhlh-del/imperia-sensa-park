@@ -13,3 +13,4 @@ dist-local/
 # build + kết quả audit thiết bị (scripts/audit-devices.mjs)
 dist-audit/
 tmp/
+dist-sites

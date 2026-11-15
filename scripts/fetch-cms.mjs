@@ -34,7 +34,8 @@ function writeStatus(extra) {
   writeFileSync(STATUS, JSON.stringify({
     project,
     built_at: new Date().toISOString(),
-    commit: (process.env.VERCEL_GIT_COMMIT_SHA || '').slice(0, 7) || undefined,
+    commit: (process.env.VERCEL_GIT_COMMIT_SHA || process.env.GIT_COMMIT || '').slice(0, 7) || undefined,
+    release: process.env.SENSA_RELEASE || undefined,
     ...extra,
   }, null, 2) + '\n');
 }

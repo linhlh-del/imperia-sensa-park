@@ -15,7 +15,7 @@ import path from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
-const dist = path.join(root, process.env.DIST_DIR || "dist"); // DIST_DIR: build ra thư mục khác (vd. dist-local)
+const dist = path.resolve(root, process.env.DIST_DIR || "dist"); // DIST_DIR: build ra thư mục khác (vd. dist-local, hoặc đường dẫn tuyệt đối của release trên VPS)
 const { loadEnv } = await import("vite");
 const buildOrigin = loadEnv("production", root, "VITE_").VITE_SITE_URL;
 if (!process.env.VITE_SITE_URL && buildOrigin) process.env.VITE_SITE_URL = buildOrigin;
@@ -207,4 +207,8 @@ if (failure || results.length !== routes.length) {
 } else {
   await fs.copyFile(path.join(dist, "404/index.html"), path.join(dist, "404.html"));
   await fs.writeFile(path.join(dist, "robots.txt"), `User-agent: *\nAllow: /\n\nSitemap: ${SITE_URL}/sitemap.xml\n`);
+  // llms.txt trong public/ ghi link theo domain mặc định → đổi sang domain đang build
+  const llms = path.join(dist, "llms.txt");
+  const text = await fs.readFile(llms, "utf8").catch(() => null);
+  if (text) await fs.writeFile(llms, text.replaceAll("https://imperia-sensa-park.vercel.app", SITE_URL));
 }
