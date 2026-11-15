@@ -92,6 +92,9 @@ async function launchBrowser() {
   const serverless = process.env.VERCEL || process.env.PRERENDER_CHROMIUM === "sparticuz";
   if (serverless) {
     try {
+      // VPS (Ubuntu): báo cho @sparticuz/chromium tự giải nén thư viện đi kèm (nss, nspr…) và đặt
+      // LD_LIBRARY_PATH → không phải apt install thư viện hệ thống cho Chrome. Phải đặt TRƯỚC khi import.
+      if (!process.env.VERCEL) process.env.AWS_LAMBDA_JS_RUNTIME ||= "nodejs24.x";
       const chromium = (await import("@sparticuz/chromium")).default;
       const puppeteer = (await import("puppeteer-core")).default;
       chromium.setGraphicsMode = false;

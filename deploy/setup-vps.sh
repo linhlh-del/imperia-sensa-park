@@ -5,11 +5,12 @@
 #
 # Script làm:
 #   1. Tạo /var/www/sensa/src và /var/www/sensa/sites/<domain>/releases cho 3 domain
-#   2. Clone (hoặc git pull) mã nguồn, npm ci, cài Chrome cho prerender
-#   3. Tạo /var/www/sensa/src/.env.production nếu chưa có (chmod 600)
-#   4. Build 3 domain (npm run build:release) → sites/<domain>/current
-#   5. Cài cấu hình nginx; chỉ bật khi đã có chứng chỉ Origin của sensaparkmik.vn
-#      (nginx -t lỗi thì tự gỡ ra, không làm hỏng QTOPIA)
+#   2. Chứng chỉ Origin sensaparkmik.vn: nếu chưa có thì hỏi để dán vào /etc/ssl/cloudflare/
+#   3. Clone (hoặc git pull) mã nguồn, npm ci (không tải Chrome, không apt install gì)
+#   4. Tạo /var/www/sensa/src/.env.production nếu chưa có (chmod 600)
+#   5. Build 3 domain (npm run build:release) → sites/<domain>/current
+#      Prerender dùng @sparticuz/chromium trong node_modules (kèm sẵn thư viện) → PRERENDER_CHROMIUM=sparticuz
+#   6. Cài cấu hình nginx (nginx -t lỗi thì tự gỡ ra, không làm hỏng site khác)
 # Không đụng tới cloudflared, QTOPIA hay deploy hook.
 set -euo pipefail
 
@@ -40,7 +41,36 @@ mkdir -p "$BASE"
 for d in "${DOMAINS[@]}"; do mkdir -p "$BASE/sites/$d/releases"; done
 ls -d "$BASE"/sites/*/
 
-step "2. Mã nguồn"
+step "2. Chứng chỉ Origin (sensaparkmik.vn)"
+# Dán PEM từ Cloudflare: zone sensaparkmik.vn → SSL/TLS → Origin Server → Create Certificate
+# (hostnames sensaparkmik.vn, *.sensaparkmik.vn). Dán thẳng vào terminal VPS, KHÔNG gửi qua chat.
+paste_pem() { # $1 file đích, $2 tên hiển thị, $3 quyền
+  local f=$1 line tmp
+  tmp=$(umask 077; mktemp)
+  echo "Dán $2 (từ dòng -----BEGIN đến dòng -----END), Enter sau dòng END:"
+  while IFS= read -r line; do
+    line=${line%$'\r'}
+    printf '%s\n' "$line" >> "$tmp"
+    [[ $line == -----END* ]] && break
+  done
+  if grep -q -- '-----BEGIN' "$tmp" && grep -q -- '-----END' "$tmp"; then
+    install -m "$3" "$tmp" "$f"; rm -f "$tmp"; ok "Đã lưu $f"
+  else
+    rm -f "$tmp"; warn "Không phải PEM hợp lệ, bỏ qua $f"
+  fi
+}
+mkdir -p /etc/ssl/cloudflare
+if [ -s "$CERT" ] && [ -s "$KEY" ]; then
+  ok "Đã có $CERT và $KEY"
+elif [ -t 0 ]; then
+  [ -s "$CERT" ] || paste_pem "$CERT" "Origin Certificate" 644
+  [ -s "$KEY" ]  || paste_pem "$KEY" "Private Key" 600
+else
+  warn "Chưa có chứng chỉ, chạy script trong terminal để dán (bash $0)"
+fi
+[ -f "$KEY" ] && chmod 600 "$KEY"
+
+step "3. Mã nguồn"
 if [ -d "$SRC/.git" ]; then
   git -C "$SRC" pull --ff-only
 else
@@ -49,12 +79,10 @@ else
 fi
 git -C "$SRC" log --oneline -1
 cd "$SRC"
-npm ci --no-audit --no-fund
-# Danh sách gói apt cũ → mirror trả 404 khi cài thư viện cho Chrome → cập nhật trước
-apt-get update -qq
-npx --yes puppeteer browsers install chrome --install-deps
+# Không tải Chrome của gói puppeteer: prerender dùng @sparticuz/chromium (đã nằm trong node_modules)
+PUPPETEER_SKIP_DOWNLOAD=1 npm ci --no-audit --no-fund
 
-step "3. .env.production"
+step "4. .env.production"
 ENV_FILE=$SRC/.env.production
 if [ ! -f "$ENV_FILE" ]; then
   cat > "$ENV_FILE" <<'EOF'
@@ -65,18 +93,23 @@ CMS_SUPABASE_ANON_KEY=
 # Để trống thì dùng endpoint lead cấu hình trong CMS
 VITE_LEAD_ENDPOINT=
 SENSA_BASE_DIR=/var/www/sensa
-# Bỏ dấu # nếu prerender báo không mở được Chrome
-#PRERENDER_CHROMIUM=sparticuz
+# Prerender bằng Chrome đóng gói sẵn trong node_modules (không cần cài Chrome/thư viện hệ thống)
+PRERENDER_CHROMIUM=sparticuz
 EOF
   ok "Đã tạo $ENV_FILE"
 fi
 chmod 600 "$ENV_FILE"
+if ! grep -qE '^PRERENDER_CHROMIUM=' "$ENV_FILE"; then
+  sed -i '/^#\?PRERENDER_CHROMIUM=/d' "$ENV_FILE"
+  echo 'PRERENDER_CHROMIUM=sparticuz' >> "$ENV_FILE"
+  ok "Thêm PRERENDER_CHROMIUM=sparticuz vào $ENV_FILE"
+fi
 if ! grep -qE '^CMS_SUPABASE_ANON_KEY=.+' "$ENV_FILE"; then
   warn "CMS_SUPABASE_ANON_KEY còn trống → build sẽ dùng nội dung mặc định trong code, không có nội dung CMS."
   warn "Điền vào: nano $ENV_FILE  rồi chạy lại script này."
 fi
 
-step "4. Build 3 domain"
+step "5. Build 3 domain"
 if [ "${SKIP_BUILD:-0}" = 1 ]; then
   warn "SKIP_BUILD=1 → bỏ qua build"
 else
@@ -86,7 +119,7 @@ for d in "${DOMAINS[@]}"; do
   if [ -L "$BASE/sites/$d/current" ]; then ok "$d → $(readlink "$BASE/sites/$d/current")"; else warn "$d chưa có bản build (current)"; fi
 done
 
-step "5. nginx"
+step "6. nginx"
 cp deploy/sensa-security.conf /etc/nginx/snippets/sensa-security.conf
 cp deploy/nginx-sensa.conf /etc/nginx/sites-available/sensa
 NGINX_VER=$(nginx -v 2>&1 | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' | head -1)
@@ -95,7 +128,6 @@ if [ "$(printf '%s\n1.25.1\n' "$NGINX_VER" | sort -V | head -1)" != "1.25.1" ]; 
   sed -i -e '/^\s*http2 on;/d' -e 's/listen \(\[::\]:\)\?443 ssl;/listen \1443 ssl http2;/' /etc/nginx/sites-available/sensa
   ok "nginx $NGINX_VER: dùng 'listen 443 ssl http2'"
 fi
-mkdir -p /etc/ssl/cloudflare
 NGINX_ON=0
 if [ -s "$CERT" ] && [ -s "$KEY" ]; then
   chmod 600 "$KEY"

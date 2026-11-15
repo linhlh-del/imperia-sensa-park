@@ -68,10 +68,10 @@ Chạy bằng root như QTOPIA (Node cài qua nvm trong `/root`).
 sudo -i
 mkdir -p /var/www/sensa && cd /var/www/sensa
 git clone https://github.com/linhlh-del/imperia-sensa-park.git src
-cd src && npm ci
-# Chrome cho bước prerender (HTML tĩnh cho SEO) + thư viện hệ thống
-npx puppeteer browsers install chrome --install-deps
+cd src && PUPPETEER_SKIP_DOWNLOAD=1 npm ci
 ```
+
+Không cần cài Chrome hay thư viện hệ thống: prerender dùng `@sparticuz/chromium` có sẵn trong `node_modules` (kèm thư viện riêng), bật bằng `PRERENDER_CHROMIUM=sparticuz` trong `.env.production`. Cách nhanh nhất là chạy `deploy/setup-vps.sh`, script làm hết bước 2–4.
 
 Repo private thì clone giống cách đã làm với QTOPIA (Personal Access Token hoặc deploy key).
 
@@ -84,6 +84,7 @@ CMS_SUPABASE_ANON_KEY=<anon key>
 VITE_LEAD_ENDPOINT=<URL worker sensa-park-lead-worker>
 # Phát hành
 SENSA_BASE_DIR=/var/www/sensa
+PRERENDER_CHROMIUM=sparticuz
 ```
 
 Mọi biến khác đang có trên Vercel (GTM…) cũng chép sang, trừ `VITE_SITE_URL`.
@@ -97,7 +98,7 @@ ls -l /var/www/sensa/sites/*/current      # mỗi domain → releases/<id>
 
 Cuối log phải có `xong <id>: 3 thành công`.
 
-Nếu prerender báo không mở được Chrome, thêm `PRERENDER_CHROMIUM=sparticuz` vào `.env.production` (dùng Chrome đóng gói sẵn) rồi build lại.
+Nếu prerender báo không mở được Chrome, gửi log lỗi để xử lý (thường do thiếu một thư viện hệ thống mà bản Chrome đóng gói không kèm).
 
 ## Bước 4. nginx
 
