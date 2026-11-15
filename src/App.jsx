@@ -26,6 +26,7 @@ import LoanCalculator from "./components/sections/LoanCalculator";
 import { SUBPAGES } from "./lib/seo";
 import RouteSeo from "./components/seo/RouteSeo";
 import ScrollEffects from "./components/effects/ScrollEffects";
+import PhraseGlue from "./components/effects/PhraseGlue";
 import { SalesPolicy, HomeFaq } from "./components/sections/DecisionSections";
 import { hrefForSection, sectionForPath } from "./lib/sections";
 import { sendLead, validateLeadForm } from "./lib/lead";
@@ -231,6 +232,7 @@ export default function App() {
       <a className="skip-link" href="#main-content">Bỏ qua menu, đến nội dung chính</a>
       <RouteSeo />
       <ScrollEffects />
+      <PhraseGlue />
       <MotionVisibility />
       <Routes>
         <Route path="/chinh-sach-bao-mat" element={<SitePolicyPage type="privacy" onLead={openLead} />} />

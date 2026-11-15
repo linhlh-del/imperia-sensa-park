@@ -66,16 +66,14 @@ function useLightbox(items) {
 }
 
 /* ---------- Tổng quan: ảnh tràn khung, khối chữ bên trái (như Story của qtopia) ---------- */
-const OVERVIEW_BG = {
-  src: "/assets/gallery/ngoai-canh/phoi-canh-ven-song-1600.webp",
-  srcSet: "/assets/gallery/ngoai-canh/phoi-canh-ven-song-800.webp 800w, /assets/gallery/ngoai-canh/phoi-canh-ven-song-1600.webp 1600w",
-};
+// Ảnh nền Tổng quan: overview1.webp (phối cảnh hai tòa tháp bên sông, 1672×941) do chủ dự án cung cấp
+const OVERVIEW_BG = { src: "/assets/overview1.webp", width: 1672, height: 941 };
 export function ParkOverview({ data = site.overview }) {
   const custom = img("overview.image", "/assets/overview.optimized.webp");
   const bg = custom !== "/assets/overview.optimized.webp" ? { src: custom } : OVERVIEW_BG;
   return (
     <section id="tong-quan" className="q-story">
-      <div className="q-story-media"><Image src={bg.src} srcSet={bg.srcSet} sizes="100vw" alt={t("overview.imageAlt")} /></div>
+      <div className="q-story-media"><Image src={bg.src} srcSet={bg.srcSet} sizes="100vw" width={bg.width} height={bg.height} alt={t("overview.imageAlt")} /></div>
       <div className="container-page q-story-inner">
         <div className="q-panel">
           <QHeading light label={t("overview.seo")} title={data.title} lead={data.subtitle} />

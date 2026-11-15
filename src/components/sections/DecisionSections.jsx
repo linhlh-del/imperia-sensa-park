@@ -38,7 +38,7 @@ function TimelineV({ milestones }) {
       {milestones.map((m, i) => (
         <li key={i}>
           <div className="csbh-v-row">
-            <span className="csbh-v-text"><strong>{m.label}</strong>{[m.when && `${m.when} (dự kiến)`, m.group, m.sub, m.bank && "NH giải ngân"].filter(Boolean).map((x) => <span key={x}>{x}</span>)}</span>
+            <span className="csbh-v-text"><strong>{m.label}</strong>{[m.when && `${m.when} (dự kiến)`, m.group, m.sub, m.bank && "NH giải ngân"].filter(Boolean).map((x) => <span key={x}>{x}</span>)}{m.between && <span className="csbh-v-next">↓ {m.between}</span>}</span>
             <Amount m={m} size="sm" />
           </div>
           {m.between && <span className="csbh-v-between">↓ {m.between}</span>}
@@ -67,6 +67,13 @@ export function SalesPolicy({ onLead }) {
           <QHeading light label={salesPolicy.label} lead={salesPolicy.lead} />
           <p className="csbh-badge"><span className="csbh-badge-side">{highlight.prefix}<br/>đến</span><span className="csbh-badge-num">{highlight.value}<small>{highlight.unit}</small></span><span className="csbh-badge-side">{highlight.note.split(" ").slice(0, 2).join(" ")}<br/>{highlight.note.split(" ").slice(2).join(" ")}</span></p>
         </div>
+        {/* Điện thoại: chọn gói bằng dropdown (5 tab không vừa 1 hàng) */}
+        <label className="csbh-select">
+          <span>Phương thức thanh toán</span>
+          <select value={activeId} onChange={(e) => setActiveId(e.target.value)} aria-controls="csbh-panel">
+            {methods.map((m) => <option key={m.id} value={m.id}>{m.title}</option>)}
+          </select>
+        </label>
         <div className="csbh-tabs" role="tablist" aria-label="Phương thức thanh toán" onKeyDown={onKey}>
           {methods.map((m) => (
             <button key={m.id} id={`csbh-tab-${m.id}`} type="button" role="tab" aria-selected={m.id === activeId} aria-controls="csbh-panel" tabIndex={m.id === activeId ? 0 : -1} onClick={() => setActiveId(m.id)}>{m.tab}</button>
@@ -89,7 +96,7 @@ export function SalesPolicy({ onLead }) {
           })}
         </div>
         <div className="csbh-foot">
-          <div className="csbh-legal"><span>{salesPolicy.glossary}</span><span>{salesPolicy.disclaimer}</span></div>
+          <div className="csbh-legal"><span>{salesPolicy.glossary}</span><span>{salesPolicy.disclaimer}</span><span className="csbh-legal-short">Mốc thời gian dự kiến · điều kiện theo hồ sơ chủ đầu tư.</span></div>
           <div className="q-actions">
             <a className="btn-base btn-outline-light" href={salesPolicy.image} target="_blank" rel="noopener">Xem bảng CSBH gốc</a>
             <button type="button" className="btn-base btn-light" onClick={onLead}>Nhận chính sách & bảng giá</button>

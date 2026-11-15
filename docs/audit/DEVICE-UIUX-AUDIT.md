@@ -440,3 +440,33 @@ Lượt kiểm lại: 12 thiết bị đại diện × 14 trang = 168 lượt (`
 **Báo nhầm đã kiểm chứng bằng tay (không sửa):** nút có vệt sáng `::after` (scrollWidth giả); link inline xuống dòng trong đoạn văn; “ảnh mờ” do audit giả lập DPR = 1 nên trình duyệt chọn bản 800px (máy thật DPR 2–3 sẽ chọn bản 1600px); ảnh tin tức từ `media.sachicloud.io.vn` lỗi vì Chromium audit không có mạng (curl trả 200).
 
 **Còn lại, chấp nhận:** nhãn ô form (`<label>` cao 21px; ô nhập bên dưới đã 48px); ô căn trên sơ đồ mặt bằng tương tác nhỏ hơn 44px trên điện thoại (đã có danh sách mã căn và bảng 40 căn để chọn thay); tiêu đề bài viết dài chưa vừa màn hình đầu ở iPhone SE 320px và điện thoại ngang; ảnh đại diện tin tức từ CMS chỉ có một cỡ 640px, có thể hơi mờ trên màn 3x (cần tải ảnh lớn hơn trong CMS).
+
+## 7. Bổ sung phép đo bố cục (15/11/2026)
+
+Đợt audit đầu chỉ đo lỗi kỹ thuật, **không đo bố cục**, nên bỏ sót hero tablet để trống ~50% màn hình và section tiện ích dài hơn 1 màn hình trên điện thoại. Đã thêm vào `scripts/audit-devices.mjs`:
+- `heroImgFill`: ảnh hero phủ được bao nhiêu % khung ảnh (cảnh báo < 90%).
+- `heroGap`: khoảng hở giữa ảnh và khối chữ hero (cảnh báo > 12% chiều cao màn hình).
+- `tallSections`: section trang chủ cao hơn phần màn hình còn lại (trừ header + thanh liên hệ).
+
+Đã sửa: hero tablet/điện thoại (ảnh giãn lấp chỗ trống, khối chữ ngay dưới ảnh); ảnh Tổng quan dùng lại `overview.webp`; thiết kế lại “Tổng hợp tiện ích đa chiều” (desktop: sơ đồ + cột danh sách; tablet: thẻ dưới sơ đồ; điện thoại: gọn 1 màn hình, số dòng danh sách tính theo chiều cao máy); thanh liên hệ điện thoại chỉ còn icon, cao 45px.
+
+Kết quả quét trang chủ 142 thiết bị (`tmp/audit-devices/results-layout-home.json`; 6 lượt lỗi chụp ảnh do máy quá tải): **0** hero để trống ảnh, **0** khoảng hở hero, 0 tràn ngang. “Tổng hợp tiện ích đa chiều” vừa 1 màn hình trên mọi điện thoại dọc trừ 6 máy rất thấp (iPhone SE 1st 320×568, Safari còn thanh công cụ 375×548…; dư 37px trung bình).
+
+Section còn dài hơn 1 màn hình trên điện thoại dọc (73 máy) — cần quyết định thiết kế:
+
+| Section | Số máy | Dư trung bình | Dư tối đa |
+|---|---|---|---|
+| Chính sách bán hàng | 73 | 430px | 701px |
+| Tiện ích “Sống trọn” (carousel) | 59 | 67px | 286px |
+| Form liên hệ | 38 | 91px | 324px |
+| Mặt bằng 2 tòa | 28 | 57px | 208px |
+| Vị trí | 14 | 100px | 240px |
+| Tin tức | 11 | 77px | 164px |
+| Tổng quan, FAQ | 9 | 100–132px | 352px |
+
+## 8. Ngắt dòng tiếng Việt (15/11/2026)
+
+- `src/lib/vnPhrases.js` + `src/components/effects/PhraseGlue.jsx`: nối âm tiết trong ~250 cụm từ/tên riêng của website bằng dấu cách không ngắt dòng (U+00A0) → “Chính sách / bán hàng” chỉ ngắt GIỮA các cụm, không tách “Chính / sách”. Số + đơn vị (“100 triệu”, “24 tháng”), “& bảng giá” dính từ sau; dấu “·”, “–”, “/” và “TP.HCM” dính từ trước. Áp cho mọi chữ hiển thị (cả HTML prerender); SEO check đã chuẩn hoá `&nbsp;`.
+- CSS: tiêu đề, nút, nhãn `text-wrap: balance`; đoạn văn `text-wrap: pretty`.
+- Audit thêm phép đo “dòng cuối còn 1 âm tiết đơn lẻ” (tiêu đề, nút, nhãn, menu, chip). 24 thiết bị × 14 trang: 28 → 10 chỗ; 10 chỗ còn lại đều là “Đài phun nước / Sensa” trên điện thoại hẹp (tên riêng xuống dòng nguyên vẹn, không mất nghĩa).
+- Tổng quan: bỏ lớp phủ toàn ảnh, chỉ phủ sau khối chữ; chữ sáng/đậm hơn; điện thoại: ảnh trên, chữ dưới.

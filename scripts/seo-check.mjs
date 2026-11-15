@@ -12,7 +12,7 @@ let errors=0, warnings=0;
 const fail=(p,m)=>{errors++;console.error(`ERROR ${p}: ${m}`)};
 const warn=(p,m)=>{warnings++;console.warn(`WARN ${p}: ${m}`)};
 const attr=(tag,name)=>tag?.match(new RegExp(`\\s${name}="([^"]*)"`))?.[1] || '';
-const clean=s=>(s||'').replace(/<[^>]*>/g,' ').replace(/&amp;/g,'&').replace(/&quot;/g,'"').replace(/\s+/g,' ').trim();
+const clean=s=>(s||'').replace(/<[^>]*>/g,' ').replace(/&nbsp;|&#160;/g,' ').replace(/&amp;/g,'&').replace(/&quot;/g,'"').replace(/\s+/g,' ').trim();
 const rows=[]; const titles=new Set(); const descriptions=new Set();
 if(!urls.length) fail('sitemap','No URLs');
 for(const url of urls) {

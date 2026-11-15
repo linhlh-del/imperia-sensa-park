@@ -65,7 +65,7 @@ function FbLabel({ children }) {
    tương ứng (xem index.css) để thanh không che nội dung cuối trang. */
 function MobileStickyBar({ onLead }) {
   const item =
-    "flex min-h-12 flex-1 flex-col items-center justify-center gap-0.5 text-xs font-bold uppercase tracking-[.04em]";
+    "flex h-11 flex-1 items-center justify-center"; // chỉ icon (nhãn đọc màn hình qua aria-label), cao 44px
   return (
     <nav
       aria-label="Liên hệ nhanh"
@@ -76,8 +76,7 @@ function MobileStickyBar({ onLead }) {
         className={item}
         aria-label={`Gọi hotline ${PHONE_DISPLAY}`}
       >
-        <PhoneIcon className="h-5 w-5" aria-hidden="true" />
-        {t("sticky.call")}
+        <PhoneIcon className="h-[22px] w-[22px]" aria-hidden="true" />
       </a>
       <a
         href={ZALO_URL}
@@ -91,17 +90,16 @@ function MobileStickyBar({ onLead }) {
           alt=""
           width="20"
           height="20"
-          className="h-5 w-5 object-contain"
+          className="h-6 w-6 object-contain"
         />
-        {t("sticky.zalo")}
       </a>
       <button
         type="button"
         onClick={onLead}
         className={`${item} cta-fx relative bg-imperia-accent text-imperia-black`}
+        aria-label={t("sticky.price")}
       >
-        <PdfIcon className="h-5 w-5" aria-hidden="true" />
-        {t("sticky.price")}
+        <PdfIcon className="h-[22px] w-[22px]" aria-hidden="true" />
       </button>
     </nav>
   );

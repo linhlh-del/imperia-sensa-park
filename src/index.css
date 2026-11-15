@@ -84,7 +84,7 @@
 }
 @media (max-width: 1023px) {
   :root {
-    --bar-h: 49px;
+    --bar-h: 45px; /* thanh liên hệ chỉ icon: 44px + viền trên 1px */
   }
 }
 /* Điện thoại xoay ngang: header gọn lại để còn chỗ cho nội dung */

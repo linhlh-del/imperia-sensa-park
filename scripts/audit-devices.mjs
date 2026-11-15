@@ -17,6 +17,7 @@ await fs.mkdir(shots, { recursive: true })
 const only = (process.env.AUDIT_DEVICES || '').split(',').filter(Boolean)
 const list = only.length ? devices.filter((d) => only.some((o) => d.name.includes(o))) : devices
 const routes = [...(await fs.readFile(path.join(dist, 'sitemap.xml'), 'utf8')).matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => new URL(m[1]).pathname)
+  .filter((r) => !process.env.AUDIT_ROUTES || process.env.AUDIT_ROUTES.split(',').includes(r))
 const CONC = Number(process.env.AUDIT_CONCURRENCY || 6)
 
 const UA = {
@@ -124,6 +125,28 @@ function measure({ touch, dpr }) {
   // 9. scroll-snap trên cảm ứng
   if (touch) res.scrollSnap = [document.documentElement, document.body].map((e) => getComputedStyle(e).scrollSnapType).find((v) => v && v !== 'none') || null
 
+  // 9b. ngắt dòng làm mất nghĩa: dòng cuối chỉ còn 1 âm tiết đơn lẻ (vd. "Chính sách bán / hàng") ở tiêu đề, nút, nhãn, menu.
+  //     Cụm đã nối bằng NBSP được tính là 1 khối; chỉ ngắt ở dấu cách thường.
+  const orphans = []
+  for (const e of document.querySelectorAll('h1,h2,h3,h4,.q-label,.q-title,.amx-title,.park-eyebrow,button,a.btn-base,nav a,label,dt,.csbh-chip,.q-flow-title,.apt-unit-type,.amx-name')) {
+    if (!visible(e) || srOnly(e)) continue
+    const text = e.innerText || ''
+    if (text.length < 8 || text.length > 140) continue
+    const toks = []
+    const w = document.createTreeWalker(e, NodeFilter.SHOW_TEXT)
+    for (let n = w.nextNode(); n; n = w.nextNode()) {
+      if (n.parentElement.closest('.sr-only')) continue
+      const re = /[^ \t\n\r]+/g; let m
+      while ((m = re.exec(n.nodeValue))) { const rg = document.createRange(); rg.setStart(n, m.index); rg.setEnd(n, m.index + m[0].length); const rc = rg.getClientRects()[0]; if (rc && rc.width) toks.push({ t: m[0], top: Math.round(rc.top) }) }
+    }
+    if (toks.length < 3) continue
+    const tops = [...new Set(toks.map((x) => x.top))].sort((a, b) => a - b)
+    if (tops.length < 2) continue
+    const last = toks.filter((x) => Math.abs(x.top - tops[tops.length - 1]) <= 3)
+    if (last.length === 1 && !last[0].t.includes(' ') && /\p{L}/u.test(last[0].t) && last[0].t.length <= 6) orphans.push(`${sel(e)} "${txt(e)}" → dòng cuối: "${last[0].t}"`)
+  }
+  res.orphans = orphans.slice(0, 8); res.orphanCount = orphans.length
+
   // 10. nội dung còn ẩn sau khi đã cuộn hết trang (animation không chạy)
   const hidden = [...document.querySelectorAll('main *')].filter((e) => e instanceof HTMLElement && ownText(e) && !srOnly(e) && e.getBoundingClientRect().width > 0 && !e.closest('[aria-hidden="true"],[role=dialog],[hidden],[inert]') && opac(e) <= 0.05)
   res.hiddenText = hidden.slice(0, 6).map((e) => `${sel(e)} "${txt(e)}"`); res.hiddenTextCount = hidden.length
@@ -199,6 +222,19 @@ async function runOne({ dev, route }) {
     r.early = await page.evaluate(() => { const h = document.querySelector('main h1'); let o = 1; for (let n = h; n; n = n.parentElement) o *= parseFloat(getComputedStyle(n).opacity); return h ? +o.toFixed(2) : null })
     await new Promise((s) => setTimeout(s, 4500))
     r.first = await page.evaluate(firstScreen, { touch: dev.touch })
+    r.layout = await page.evaluate(() => {
+      const out = {}
+      const hero = document.querySelector('#hero, .park-hero')
+      const media = hero?.querySelector('.park-hero-media'), img = media?.querySelector('img'), copy = hero?.querySelector('.park-hero-copy-inner')
+      if (media && img) { const mb = media.getBoundingClientRect(), ib = img.getBoundingClientRect(); out.heroImgFill = +(ib.height / Math.max(1, mb.height)).toFixed(2) }
+      if (img && copy) { const ib = img.getBoundingClientRect(), cb = copy.getBoundingClientRect(); out.heroGap = Math.round(cb.top - ib.bottom) ; out.heroGapRatio = +((cb.top - ib.bottom) / innerHeight).toFixed(2) }
+      const hd = document.querySelector('header')?.getBoundingClientRect().height || 0
+      const bar = [...document.querySelectorAll('body *')].find((e) => getComputedStyle(e).position === 'fixed' && e.getBoundingClientRect().bottom >= innerHeight - 1 && e.getBoundingClientRect().width > innerWidth * 0.9 && e.getBoundingClientRect().height < 90)
+      const avail = innerHeight - hd - (bar ? bar.getBoundingClientRect().height : 0)
+      out.avail = Math.round(avail)
+      out.tallSections = [...document.querySelectorAll('main > section[id]')].map((sec) => [sec.id, Math.round(sec.getBoundingClientRect().height)]).filter(([, h]) => h > avail + 4).map(([id, h]) => `${id} ${h}px`)
+      return out
+    })
     if (route === '/') await page.screenshot({ path: path.join(shots, `first-${slug(dev.group + '-' + dev.name)}-${dev.w}x${dev.h}.jpg`), type: 'jpeg', quality: 62 })
     if (r.first.dialogOpen) { await page.keyboard.press('Escape'); await new Promise((s) => setTimeout(s, 300)) }
     r.coverTop = await page.evaluate(fixedCover)
@@ -249,7 +285,7 @@ if (process.env.AUDIT_FULLSHOTS !== '0') for (const name of reps) {
 }
 
 /* ------------- tương tác A→B→A: tab, nút chọn, dropdown ------------- */
-const interDevices = ['iPhone SE (2nd/3rd)', 'iPhone 15 / 15 Pro', 'Galaxy S22 / S23 / S25', 'iPad 10th / Air 4-5 dọc', 'Laptop HD 1366×768 – trình duyệt', 'Màn FHD 1920×1080', 'Màn QHD 2560×1440']
+const interDevices = process.env.AUDIT_INTERACTIONS === '0' ? [] : ['iPhone SE (2nd/3rd)', 'iPhone 15 / 15 Pro', 'Galaxy S22 / S23 / S25', 'iPad 10th / Air 4-5 dọc', 'Laptop HD 1366×768 – trình duyệt', 'Màn FHD 1920×1080', 'Màn QHD 2560×1440']
 const interactions = []
 for (const name of interDevices) {
   const dev = devices.find((d) => d.name === name)
