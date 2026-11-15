@@ -50,6 +50,8 @@ fi
 git -C "$SRC" log --oneline -1
 cd "$SRC"
 npm ci --no-audit --no-fund
+# Danh sách gói apt cũ → mirror trả 404 khi cài thư viện cho Chrome → cập nhật trước
+apt-get update -qq
 npx --yes puppeteer browsers install chrome --install-deps
 
 step "3. .env.production"
