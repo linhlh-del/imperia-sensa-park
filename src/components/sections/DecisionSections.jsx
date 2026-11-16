@@ -65,7 +65,8 @@ export function SalesPolicy({ onLead }) {
       <div className="container-page">
         <div className="q-head-row">
           <QHeading light label={salesPolicy.label} lead={salesPolicy.lead} />
-          <p className="csbh-badge"><span className="csbh-badge-side">{highlight.prefix}<br/>đến</span><span className="csbh-badge-num">{highlight.value}<small>{highlight.unit}</small></span><span className="csbh-badge-side">{highlight.note.split(" ").slice(0, 2).join(" ")}<br/>{highlight.note.split(" ").slice(2).join(" ")}</span></p>
+          {/* Hai cột chữ cao đúng bằng chiều cao chữ số (--num = cỡ chữ số) — xem .csbh-badge trong park-template.css */}
+          <p className="csbh-badge"><span className="csbh-badge-side"><span>{highlight.prefix}</span><span>lên đến</span></span><span className="csbh-badge-num">{highlight.value}<small>{highlight.unit}</small></span></p>
         </div>
         {/* Điện thoại: chọn gói bằng dropdown (5 tab không vừa 1 hàng) */}
         <label className="csbh-select">

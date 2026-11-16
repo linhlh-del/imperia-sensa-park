@@ -54,7 +54,7 @@
 .park-eyebrow a:hover { text-decoration: underline; text-underline-offset: 4px; }
 .park-page-copy h1 {
   margin: 0;
-  font-family: "SVN Bon Voyage", Georgia, serif;
+  font-family: "SVN Bon Voyage", "Times New Roman", serif;
   font-weight: 600;
   font-size: var(--park-display-2);
   text-transform: uppercase;
@@ -143,7 +143,7 @@
 .park-hero h1 {
   margin: 0;
   max-width: 56rem;
-  font-family: "SVN Bon Voyage", Georgia, serif;
+  font-family: "SVN Bon Voyage", "Times New Roman", serif;
   font-weight: 400;
   font-size: clamp(2rem, 3vw, 3.25rem);
   line-height: 1.04;
@@ -201,7 +201,7 @@
 }
 /* slogan ngắn (font display) — chỉ dùng cho câu 1 dòng như "Một chuẩn sống xanh giữa lòng đại đô thị." */
 .q-title {
-  margin: 0; font-family: "SVN Bon Voyage", Georgia, serif; font-weight: 400; text-transform: uppercase;
+  margin: 0; font-family: "SVN Bon Voyage", "Times New Roman", serif; font-weight: 400; text-transform: uppercase;
   font-size: clamp(1.45rem, 2.4vw, 2.25rem); line-height: 1.18; text-wrap: balance; color: var(--park-ink);
 }
 /* câu dẫn: đoạn văn thường như prose-lead của qtopia */
@@ -229,7 +229,7 @@
 .q-stats { margin: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.6rem; }
 .q-stats > div { display: flex; flex-direction: column-reverse; gap: 0.2rem; padding: 0.75rem 0.9rem; border: 1px solid rgb(255 255 255 / 0.18); border-radius: 0.75rem; background: rgb(53 60 39 / 0.45); backdrop-filter: blur(6px); }
 .q-stats dt { font-size: 0.75rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: rgb(255 255 255 / 0.8); }
-.q-stats dd { margin: 0; font-family: "SVN Bon Voyage", Georgia, serif; font-size: clamp(1.25rem, 1.9vw, 1.75rem); line-height: 1.1; color: #fff; }
+.q-stats dd { margin: 0; font-family: "SVN Bon Voyage", "Times New Roman", serif; font-size: clamp(1.25rem, 1.9vw, 1.75rem); line-height: 1.1; color: #fff; }
 @media (max-width: 1023px) {
   .q-story::after { background: linear-gradient(to top, rgb(77 85 56 / 0.82), rgb(112 129 85 / 0.5) 60%, rgb(169 181 120 / 0.1)); }
   .q-story-inner { align-items: flex-end; }
@@ -248,7 +248,7 @@
 .q-distances { margin: 0; padding: 0; list-style: none; }
 .q-distances li { display: flex; align-items: baseline; gap: 1rem; padding-block: clamp(0.35rem, 1.1svh, 0.65rem); border-bottom: 1px solid rgb(255 255 255 / 0.14); }
 .q-distances li:last-child { border-bottom: 0; }
-.q-distances strong { flex: none; width: 4.6rem; font-family: "SVN Bon Voyage", Georgia, serif; font-weight: 400; font-size: clamp(1.5rem, 2.2vw, 2rem); line-height: 1; }
+.q-distances strong { flex: none; width: 4.6rem; font-family: "SVN Bon Voyage", "Times New Roman", serif; font-weight: 400; font-size: clamp(1.5rem, 2.2vw, 2rem); line-height: 1; }
 .q-distances small { margin-left: 0.25rem; font-family: "SVN Selecta", Arial, sans-serif; font-size: 0.75rem; color: var(--imperia-accent); }
 .q-distances span { font-size: 0.9rem; line-height: 1.45; color: rgb(255 255 255 / 0.88); }
 .q-location .q-note { margin: 0; color: rgb(255 255 255 / 0.72); }
@@ -269,7 +269,7 @@
 .q-tile:hover img { transform: scale(1.03); }
 .q-concept-controls { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-top: 0.75rem; }
 .q-concept-count { display: flex; align-items: baseline; gap: 0.4rem; margin: 0; color: var(--park-ink-soft); font-size: 0.8rem; font-weight: 700; }
-.q-concept-count > span:first-child { color: var(--park-dark); font-family: "SVN Bon Voyage", Georgia, serif; font-size: 1.5rem; font-weight: 400; }
+.q-concept-count > span:first-child { color: var(--park-dark); font-family: "SVN Bon Voyage", "Times New Roman", serif; font-size: 1.5rem; font-weight: 400; }
 .q-concept-label { margin-left: 0.6rem; font-weight: 400; }
 .q-concept-navigation { display: flex; gap: 0.5rem; }
 .q-concept-navigation button { display: grid; place-items: center; width: 2.75rem; height: 2.75rem; border: 1px solid var(--park-line-strong); border-radius: 999px; background: #fff; color: var(--park-dark); font-size: 1.2rem; transition: background-color 0.2s, color 0.2s; }
@@ -297,7 +297,7 @@
   position: absolute; inset: auto 0 0 0; display: grid; gap: 0.5rem; padding: clamp(1.25rem, 3vw, 2.5rem); text-align: left; color: #fff;
   background: linear-gradient(180deg, transparent 0%, rgb(20 23 15 / 0.35) 30%, rgb(20 23 15 / 0.82) 100%);
 }
-.q-flow-title { font-family: "SVN Bon Voyage", Georgia, serif; font-size: clamp(1.35rem, 2.6vw, 2.4rem); line-height: 1.15; text-transform: uppercase; }
+.q-flow-title { font-family: "SVN Bon Voyage", "Times New Roman", serif; font-size: clamp(1.35rem, 2.6vw, 2.4rem); line-height: 1.15; text-transform: uppercase; }
 .q-flow-desc { max-width: 46rem; font-size: clamp(0.9rem, 1.05vw, 1.05rem); line-height: 1.6; color: rgb(255 255 255 / 0.9); }
 .q-flow-controls { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-top: 1rem; }
 .q-flow-dots { display: flex; flex-wrap: wrap; justify-content: center; }
@@ -361,10 +361,24 @@
 
 /* ---------- Chính sách bán hàng (CSBH): tab + timeline như qtopia ---------- */
 .csbh { background: linear-gradient(115deg, #4d5538 0%, #607049 58%, #687850 100%); color: #fff; }
-.csbh-badge { margin: 0; display: inline-flex; align-items: stretch; gap: 0.75rem; padding: 0.6rem 1.1rem; border: 1px solid rgb(255 255 255 / 0.2); border-radius: 1rem; background: rgb(255 255 255 / 0.06); }
-.csbh-badge-side { display: flex; flex-direction: column; justify-content: center; font-size: 0.75rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; line-height: 1.3; }
-.csbh-badge-num { font-family: "SVN Bon Voyage", Georgia, serif; font-size: clamp(2.6rem, 4.5vw, 4rem); line-height: 1; color: var(--imperia-accent); }
-.csbh-badge-num small { font-size: 0.5em; }
+/* Badge ưu đãi chính (cách làm như qtopia .price-badge): nền ánh màu nhấn + quầng sáng + số chữ gradient sáng →
+   nổi hẳn khỏi nền xanh rêu. Màu theo palette Sensa: accent #A9B578, kem #D6C7BB. */
+.csbh-badge { --num: clamp(2.9rem, 4.4vw, 4rem); position: relative; margin: 0; display: inline-flex; align-items: center; gap: calc(var(--num) * 0.16); padding: calc(var(--num) * 0.14) calc(var(--num) * 0.28); border: 1px solid rgb(214 222 160 / 0.55); border-radius: 1.1rem; background: linear-gradient(135deg, rgb(169 181 120 / 0.5) 0%, rgb(169 181 120 / 0.22) 100%); box-shadow: 0 0 0 4px rgb(169 181 120 / 0.12), 0 16px 38px -10px rgb(198 210 140 / 0.75), inset 0 1px 0 rgb(255 255 255 / 0.3); backdrop-filter: blur(4px); overflow: hidden; isolation: isolate; }
+.csbh-badge::after { content: ""; position: absolute; inset: 0; z-index: -1; background: linear-gradient(105deg, transparent 35%, rgb(255 255 255 / 0.22) 50%, transparent 65%); transform: translateX(-110%); animation: csbh-badge-shine 4.5s ease-in-out 1s infinite; }
+@keyframes csbh-badge-shine { 0% { transform: translateX(-110%); } 40%, 100% { transform: translateX(110%); } }
+@media (prefers-reduced-motion: reduce) { .csbh-badge::after { animation: none; display: none; } }
+/* Cột chữ: cao = chiều cao chữ số (SVN Bon Voyage: số cao 0.70em, tâm số cao hơn tâm dòng 0.076em khi line-height 1);
+   2 dòng bám đỉnh / chân số (text-box cắt khoảng trống trên/dưới chữ hoa); cỡ chữ theo --num */
+.csbh-badge-side { display: flex; flex-direction: column; justify-content: space-between; align-self: center; height: calc(var(--num) * 0.7); translate: 0 calc(var(--num) * -0.076); font-size: calc(var(--num) * 0.3); font-weight: 800; letter-spacing: 0.04em; text-transform: uppercase; line-height: 1; color: #fff; } /* tỉ lệ như qtopia .price-badge: 2 dòng chữ sát nhau, cao bằng số */
+/* Không dùng text-box (Chrome < 133 / Firefox chưa hỗ trợ). Căn bằng số đo SVN Selecta Bold, line-height 1:
+   đỉnh dấu (Ế, Ấ) cao hơn đỉnh hộp dòng 0.078em → đẩy dòng trên xuống 0.08em; chân chữ cách đáy hộp dòng 0.138em →
+   kéo dòng dưới xuống 0.14em. Kết quả: đỉnh dấu dòng trên = đỉnh số, chân chữ dòng dưới = chân số. */
+.csbh-badge-side > span { display: block; white-space: nowrap; }
+.csbh-badge-side > span:first-child { margin-top: 0.08em; }
+.csbh-badge-side > span:last-child { margin-bottom: -0.14em; }
+/* Bon Voyage chỉ có 1 độ đậm → viền chữ cùng màu để số dày hơn */
+.csbh-badge-num { font-family: "SVN Bon Voyage", "Times New Roman", serif; font-size: var(--num); line-height: 1; color: #f6f9dc; -webkit-text-stroke: calc(var(--num) * 0.04) #f6f9dc; paint-order: stroke fill; letter-spacing: 0.02em; text-shadow: 0 0 calc(var(--num) * 0.35) rgb(226 236 160 / 0.75), 0 0 calc(var(--num) * 0.12) rgb(240 246 200 / 0.6), 0 2px 8px rgb(20 24 12 / 0.4); }
+.csbh-badge-num small { font-size: 1em; } /* % to bằng số (như qtopia) */
 .csbh-tabs { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 0.25rem; padding: 0.25rem; border: 1px solid rgb(255 255 255 / 0.18); border-radius: 999px; background: rgb(255 255 255 / 0.05); }
 @media (min-width: 1024px) { .csbh-tabs { display: inline-grid; grid-template-columns: repeat(5, auto); } }
 .csbh-tabs button { min-height: 2.75rem; padding: 0 1.1rem; border: 0; border-radius: 999px; background: transparent; color: rgb(255 255 255 / 0.85); font-size: 0.875rem; font-weight: 700; text-transform: none; white-space: nowrap; }
@@ -378,7 +392,7 @@
 .csbh-row { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); }
 .csbh-row > div { display: flex; flex-direction: column; align-items: center; gap: 0.25rem; padding-inline: 0.25rem; text-align: center; }
 .csbh-mlabel { font-size: 0.75rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: rgb(255 255 255 / 0.75); }
-.csbh-amount { font-family: "SVN Bon Voyage", Georgia, serif; font-size: clamp(1.6rem, 2.6vw, 2.4rem); line-height: 1; white-space: nowrap; color: #fff; }
+.csbh-amount { font-family: "SVN Bon Voyage", "Times New Roman", serif; font-size: clamp(1.6rem, 2.6vw, 2.4rem); line-height: 1; white-space: nowrap; color: #fff; }
 .csbh-amount small { margin-left: 0.1rem; font-family: "SVN Selecta", Arial, sans-serif; font-size: 0.45em; font-weight: 700; color: var(--imperia-accent); }
 .csbh-amount.is-empty { color: rgb(255 255 255 / 0.4); }
 .csbh-amount.is-sm { font-size: 1.25rem; }
@@ -419,7 +433,7 @@
 @media (min-width: 768px) { .park-residences { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 .park-residences article { display: flex; flex-direction: column; gap: 1rem; padding: clamp(1rem, 2.4svh, 1.75rem); border: 1px solid var(--park-line); border-radius: var(--park-radius); background: #fff; }
 .park-residence-title { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; }
-.park-residence-title h3 { margin: 0; font-family: "SVN Bon Voyage", Georgia, serif; font-weight: 400; font-size: var(--park-display-3); color: var(--park-dark); }
+.park-residence-title h3 { margin: 0; font-family: "SVN Bon Voyage", "Times New Roman", serif; font-weight: 400; font-size: var(--park-display-3); color: var(--park-dark); }
 .park-residences article img { height: clamp(160px, 34svh, 420px); width: 100%; object-fit: contain; border-radius: 0; transition: transform 1.2s var(--park-ease); }
 .park-residences article a:hover img { transform: scale(1.03); }
 .park-text-link { display: inline-flex; align-items: center; justify-content: space-between; gap: 0.75rem; padding-top: 0.875rem; border-top: 1px solid var(--park-line); font-size: 0.75rem; font-weight: 700; letter-spacing: 0.16em; color: var(--park-bronze-deep); }
@@ -483,7 +497,7 @@
 .apt-layout { position: relative; display: block; width: 100%; aspect-ratio: 4 / 3; padding: 0.75rem; border: 0; border-radius: 1rem; background: #f4efe9; cursor: zoom-in; }
 .apt-layout img { width: 100%; height: 100%; object-fit: contain; }
 .apt-zoom { position: absolute; right: 0.75rem; bottom: 0.75rem; padding: 0.35rem 0.75rem; border-radius: 999px; background: rgb(255 255 255 / 0.92); color: var(--park-dark); font-size: 0.8rem; font-weight: 700; }
-.apt-info h3 { margin: 0.25rem 0 0.5rem; font-family: "SVN Bon Voyage", Georgia, serif; font-size: clamp(1.6rem, 2.6vw, 2.3rem); font-weight: 400; color: var(--park-dark); }
+.apt-info h3 { margin: 0.25rem 0 0.5rem; font-family: "SVN Bon Voyage", "Times New Roman", serif; font-size: clamp(1.6rem, 2.6vw, 2.3rem); font-weight: 400; color: var(--park-dark); }
 .apt-summary { margin: 0; line-height: 1.7; color: var(--park-ink); }
 .apt-specs { display: grid; gap: 0; margin: 1rem 0; border-top: 1px solid var(--park-line); }
 .apt-specs > div { display: flex; justify-content: space-between; gap: 1rem; padding: 0.6rem 0; border-bottom: 1px solid var(--park-line); }
@@ -499,7 +513,7 @@
 .apt-disclaimer { margin: 0.75rem 0 0; font-size: 0.8rem; line-height: 1.6; color: var(--park-ink-soft); }
 .apt-units { margin-top: clamp(2rem, 5vw, 3.5rem); }
 .apt-units-head { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: 1rem; }
-.apt-units-head h3 { margin: 0; font-family: "SVN Bon Voyage", Georgia, serif; font-size: clamp(1.4rem, 2.2vw, 2rem); font-weight: 400; color: var(--park-dark); }
+.apt-units-head h3 { margin: 0; font-family: "SVN Bon Voyage", "Times New Roman", serif; font-size: clamp(1.4rem, 2.2vw, 2rem); font-weight: 400; color: var(--park-dark); }
 .apt-units-head p { margin: 0.35rem 0 0; color: var(--park-ink-soft); }
 .apt-filters { display: flex; flex-wrap: wrap; gap: 0.75rem; }
 .apt-filters label { display: grid; gap: 0.25rem; font-size: 0.8rem; font-weight: 700; color: var(--park-ink-soft); }
@@ -521,7 +535,7 @@
 .apt-dialog-media figure { margin: 0; }
 .apt-dialog-media img { width: 100%; max-height: 70svh; object-fit: contain; border-radius: 0.8rem; background: #f4efe9; }
 .apt-dialog-media figcaption { margin-top: 0.35rem; font-size: 0.85rem; color: var(--park-ink-soft); }
-.apt-dialog-info h3 { margin: 0.25rem 0 0; font-family: "SVN Bon Voyage", Georgia, serif; font-size: 2rem; font-weight: 400; color: var(--park-dark); }
+.apt-dialog-info h3 { margin: 0.25rem 0 0; font-family: "SVN Bon Voyage", "Times New Roman", serif; font-size: 2rem; font-weight: 400; color: var(--park-dark); }
 .apt-note { font-size: 0.85rem; line-height: 1.6; color: var(--park-ink-soft); }
 .apt-dialog-close { position: absolute; top: 0.75rem; right: 0.75rem; display: grid; place-items: center; width: 2.75rem; height: 2.75rem; border: 0; border-radius: 999px; background: rgb(255 255 255 / 0.92); color: var(--park-dark); font-size: 1.6rem; cursor: pointer; box-shadow: 0 4px 14px rgb(0 0 0 / 0.15); }
 @media (max-width: 767px) {
@@ -580,7 +594,7 @@ main article p, main article li { max-width: 75ch; }
 .amx-head { display: grid; justify-items: center; gap: 0.5rem; max-width: 46rem; margin: 0 auto clamp(1.25rem, 3svh, 2.25rem); text-align: center; }
 .amx-eyebrow { margin: 0; font-size: 0.75rem; font-weight: 700; letter-spacing: 0.24em; text-transform: uppercase; color: var(--park-bronze); }
 .amx-eyebrow::before, .amx-eyebrow::after { content: ""; display: inline-block; width: 1.75rem; height: 1px; margin: 0 0.75rem; vertical-align: middle; background: currentColor; opacity: 0.55; }
-.amx-title { margin: 0; font-family: "SVN Bon Voyage", Georgia, serif; font-weight: 400; font-size: clamp(1.9rem, 3.2vw, 2.75rem); line-height: 1.1; text-transform: uppercase; color: var(--park-dark); }
+.amx-title { margin: 0; font-family: "SVN Bon Voyage", "Times New Roman", serif; font-weight: 400; font-size: clamp(1.9rem, 3.2vw, 2.75rem); line-height: 1.1; text-transform: uppercase; color: var(--park-dark); }
 .amx-lead { margin: 0; max-width: 40rem; font-size: clamp(0.95rem, 1.05vw, 1.05rem); line-height: 1.7; color: rgb(32 35 27 / 0.72); }
 
 .amx-stage { position: relative; width: min(100%, calc((100svh - var(--header-h, 76px) - 22.5rem) * 16 / 9), 1320px); margin-inline: auto; }
@@ -676,9 +690,7 @@ main article p, main article li { max-width: 75ch; }
   .csbh .q-head-row { gap: 0.75rem; }
   .csbh .q-lead { display: none; }
   .csbh .q-label { font-size: 0.95rem; }
-  .csbh-badge { gap: 0.5rem; padding: 0.35rem 0.8rem; border-radius: 0.8rem; }
-  .csbh-badge-num { font-size: 2.1rem; }
-  .csbh-badge-side { font-size: 0.7rem; }
+  .csbh-badge { --num: 2.75rem; border-radius: 0.8rem; } /* cỡ chữ / khoảng cách badge đều tính theo --num */
   .csbh-tabs { display: none !important; }
   .csbh-select { display: grid; gap: 0.3rem; margin-top: 0.25rem; }
   .csbh-select span { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: rgb(255 255 255 / 0.7); }
@@ -749,5 +761,5 @@ p, li, dd, figcaption, .q-lead, .amx-lead, .q-flow-desc { text-wrap: pretty; }
 .amx-name, .amx-item, .apt-unit-type, article h3, .q-stats dt { text-wrap: balance; }
 @media (max-width: 767px) {
   .amx-dot { font-size: 0; } /* điện thoại: chấm màu không số (số quá nhỏ để đọc) — số nằm trong danh sách bên dưới */
-  .csbh-badge-side, .csbh-select span { font-size: 0.75rem; }
+  .csbh-select span { font-size: 0.75rem; }
 }

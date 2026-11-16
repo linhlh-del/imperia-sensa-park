@@ -78,6 +78,15 @@ export default function Header({ onLead }) {
               {t("header.cta")}
             </Button>
           </div>
+          {/* điện thoại / máy tính bảng: nút Tư vấn gọn cạnh menu — CTA luôn trong tầm mắt */}
+          <div className="ml-auto flex items-center gap-2 lg:hidden">
+            <button
+              type="button"
+              onClick={onLead}
+              className="btn-base btn-light !min-h-10 !px-4 !text-[13px] uppercase tracking-[.08em]"
+            >
+              Tư vấn
+            </button>
           <button
             aria-label="Mở menu"
             aria-expanded={open}
@@ -88,6 +97,7 @@ export default function Header({ onLead }) {
               <path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
             </svg>
           </button>
+          </div>
         </div>
       </header>
       <div

@@ -22,8 +22,8 @@ export default {
       },
       fontFamily: {
         sans: ['"SVN Selecta"', "Arial", "Helvetica", "sans-serif"],
-        display: ['"SVN Bon Voyage"', "Georgia", "serif"],
-        1: ['"SVN Bon Voyage"', "Georgia", "serif"],
+        display: ['"SVN Bon Voyage"', '"Times New Roman"', "serif"],
+        1: ['"SVN Bon Voyage"', '"Times New Roman"', "serif"],
         title: ['"Times New Roman"', "Times", "serif"], // dùng cho title "50+"
         body: ['"SVN Selecta"', "Arial", "Helvetica", "sans-serif"],
       },
