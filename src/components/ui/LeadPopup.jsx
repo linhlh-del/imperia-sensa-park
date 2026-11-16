@@ -2,7 +2,7 @@ import Image from "./Image";
 import useModalFocus from "../../lib/useModalFocus";
 import { useRef } from "react";
 import Button from "./Button";
-import { clearPhoneError } from "../../lib/lead";
+import { APARTMENT_TYPES, clearPhoneError } from "../../lib/lead";
 import FormExtras from "./FormExtras";
 import { img, site, t, tList } from "../../cms/content";
 
@@ -111,6 +111,7 @@ export default function LeadPopup({
   open,
   onClose,
   onSubmit,
+  formType = "popup",
   address = `Imperia Sensa Park, ${site.contact.address.charAt(0).toLowerCase()}${site.contact.address.slice(1)}`,
 }) {
   const ref = useRef(null);
@@ -188,7 +189,7 @@ export default function LeadPopup({
 
           <form
             onSubmit={onSubmit}
-            data-form-type="popup"
+            data-form-type={formType}
             className="relative mt-1 grid gap-2.5"
           >
             <div className="grid gap-2.5 md:grid-cols-2">
@@ -213,6 +214,19 @@ export default function LeadPopup({
                 placeholder="Số điện thoại *"
               />
             </div>
+
+            {/* nhu cầu: loại căn hộ quan tâm (không bắt buộc) → cột apartment_types trên Sheet */}
+            <select
+              name="apartmentType"
+              defaultValue=""
+              aria-label="Nhu cầu: loại căn hộ quan tâm"
+              className="min-h-12 min-w-0 cursor-pointer rounded-xl border border-imperia-primary/15 bg-white px-3 py-2.5 text-sm outline-none focus:border-imperia-primary"
+            >
+              <option value="">Nhu cầu: chọn loại căn hộ</option>
+              {APARTMENT_TYPES.map((type) => (
+                <option key={type} value={type}>{type}</option>
+              ))}
+            </select>
 
             <FormExtras />
             <Button type="submit">{t("lead.submit")}</Button>

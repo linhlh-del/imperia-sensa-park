@@ -154,6 +154,14 @@ function HomePage({ onOpenModal, submitLead }) {
   );
 }
 
+const POPUP_SEEN_KEY = "sensa_popup_seen";
+const popupSeen = () => {
+  try { return sessionStorage.getItem(POPUP_SEEN_KEY) === "1"; } catch { return true; }
+};
+const markPopupSeen = () => {
+  try { sessionStorage.setItem(POPUP_SEEN_KEY, "1"); } catch { /* chế độ riêng tư: bỏ qua */ }
+};
+
 export default function App() {
   const [leadOpen, setLeadOpen] = useState(false);
   const navigate = useNavigate();
@@ -193,7 +201,34 @@ export default function App() {
     return () => document.removeEventListener("click", handleAnchorClick);
   }, [navigate, location.pathname, location.hash]);
 
-  const openLead = () => setLeadOpen(true);
+  /* form_type trên Sheet: "popup" (khách bấm nút) hoặc "popup_auto" (tự mở) */
+  const [leadSource, setLeadSource] = useState("popup");
+  const openLead = (from) => {
+    setLeadSource(typeof from === "string" ? from : "popup");
+    setLeadOpen(true);
+    markPopupSeen();
+  };
+
+  /* Popup tự mở MỘT lần mỗi phiên, KHÔNG mở khi vừa vào trang: chỉ khi khách đã lướt qua section "Tổng quan"
+     (#tong-quan: đáy section lên tới 30% trên của màn hình). Trang không có section này: khi đã cuộn quá nửa trang.
+     Không mở trên trang cảm ơn, không cắt ngang khi khách đang gõ vào form khác (thử lại ở lần cuộn sau). */
+  useEffect(() => {
+    if (popupSeen()) return undefined;
+    const passed = () => {
+      const el = document.getElementById("tong-quan");
+      if (el) return el.getBoundingClientRect().bottom <= window.innerHeight * 0.3;
+      const max = document.documentElement.scrollHeight - window.innerHeight;
+      return max > 0 && window.scrollY / max >= 0.5;
+    };
+    const onScroll = () => {
+      if (popupSeen()) { window.removeEventListener("scroll", onScroll); return; }
+      if (window.location.pathname.includes("/cam-on") || document.activeElement?.closest?.("form") || !passed()) return;
+      window.removeEventListener("scroll", onScroll);
+      openLead("popup_auto");
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
   // Mọi form đăng ký đều đi qua đây: chặn gửi nếu SĐT không hợp lệ,
   // hợp lệ thì chuyển sang màn hình cảm ơn (thông báo gửi thành công).
   const submitLead = async (e) => {
@@ -266,6 +301,7 @@ export default function App() {
         open={leadOpen}
         onClose={() => setLeadOpen(false)}
         onSubmit={submitLead}
+        formType={leadSource}
       />
     </>
   );

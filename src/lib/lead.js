@@ -3,6 +3,9 @@ import { firstTouch } from "./attribution";
 // Tiện ích dùng chung cho các form đăng ký: chuẩn hoá + kiểm tra số điện thoại
 // Việt Nam phía client (di động 10 số đầu 03/05/07/08/09, chấp nhận +84/84).
 
+/** Loại căn hộ của dự án (khớp LAYOUT_IMAGES trong data/apartmentLayouts.js) — ô "Nhu cầu" / "Loại căn quan tâm" */
+export const APARTMENT_TYPES = ["Studio", "1PN+", "2PN", "3PN", "Duplex"];
+
 export const PHONE_ERROR =
   "Vui lòng nhập số điện thoại Việt Nam hợp lệ (10 số, vd: 0912 345 678).";
 
