@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import Image from "../ui/Image";
 import { img, site, t } from "../../cms/content";
-import gallery from "../../data/gallery.json";
+import { cmsGallery as gallery } from "../../cms/content";
 
 /* ============================================================
    Các section trang chủ theo cách sắp xếp của qtopia-landing:

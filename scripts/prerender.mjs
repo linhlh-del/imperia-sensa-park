@@ -23,6 +23,7 @@ if (!process.env.VITE_SITE_URL && buildOrigin) process.env.VITE_SITE_URL = build
 const { SITE_URL, SUBPAGES } = await import(pathToFileURL(path.join(root, "src/lib/seo.js")).href);
 const { default: NEWS } = await import(pathToFileURL(path.join(root, "src/data/newsData.js")).href);
 const { buildCmsSchema } = await import(pathToFileURL(path.join(root, "src/cms/schema.js")).href);
+const { cmsDomains } = await import(pathToFileURL(path.join(root, "scripts/cms-head.mjs")).href);
 
 const { CONTENT_UPDATED } = await import(pathToFileURL(path.join(root, "src/data/topicContent.js")).href);
 const routes = [
@@ -69,7 +70,7 @@ await fs.writeFile(path.join(dist, "sitemap.xml"), sitemap);
 console.log(`[seo] sitemap.xml: ${NEWS.length + SUBPAGES.length + 2} URL`);
 
 /* ---------- 1b) schema cho CMS (sensa-park-cms đọc file này) ---------- */
-await fs.writeFile(path.join(dist, "cms-schema.json"), JSON.stringify(buildCmsSchema(), null, 2));
+await fs.writeFile(path.join(dist, "cms-schema.json"), JSON.stringify(buildCmsSchema({ domains: cmsDomains(root) }), null, 2));
 console.log("[cms] cms-schema.json");
 
 /* ---------- 2) prerender ---------- */

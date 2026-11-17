@@ -8,7 +8,11 @@
    - settings["site.contact.hotline"] → thông tin chung
    ============================================================ */
 import { project } from '../data/project';
+import galleryData from '../data/gallery.json';
+import { FILTERS, GALLERY_ITEMS } from '../data/dataAmenities';
 import UI from './ui';
+import { applyList, inLists } from './lists-core';
+import { CMS_LISTS } from './lists';
 
 const files = import.meta.glob('../generated/cms-content.json', { eager: true, import: 'default' });
 export const cms = Object.values(files)[0] || {};
@@ -44,10 +48,22 @@ function setPath(root, path, value) {
   return out;
 }
 
+const getPath = (obj, path) => path.split('.').reduce((o, k) => (o == null ? undefined : o[k]), obj);
+const specOf = (key) => CMS_LISTS.find((l) => l.key === key);
+const lists = cms.lists || {};
+/** Danh sách sau khi áp CMS (không có trong CMS → mặc định) */
+const listOf = (key, defaults) => (Array.isArray(lists[key]) && specOf(key) ? applyList(defaults, lists[key], specOf(key), pick) : defaults);
+
 function applySiteOverrides(data) {
   let s = data;
+  /* danh sách thêm/bớt được: thay cả mảng; khoá phẳng cũ cùng tiền tố bị bỏ qua */
+  for (const spec of CMS_LISTS.filter((l) => l.key.startsWith('site.'))) {
+    const path = spec.key.slice(5);
+    const defaults = getPath(s, path);
+    if (Array.isArray(lists[spec.key]) && Array.isArray(defaults)) s = setPath(s, path, listOf(spec.key, defaults));
+  }
   for (const [key, v] of Object.entries(cms.texts || {})) {
-    if (key.startsWith('site.') && pick(v) !== undefined) s = setPath(s, key.slice(5), pick(v));
+    if (key.startsWith('site.') && pick(v) !== undefined && !inLists(key, lists)) s = setPath(s, key.slice(5), pick(v));
   }
   for (const [key, v] of Object.entries(cms.settings || {})) {
     if (key.startsWith('site.') && v) s = setPath(s, key.slice(5), v);
@@ -57,6 +73,13 @@ function applySiteOverrides(data) {
 
 /** Dữ liệu dự án (project.js) đã áp CMS — dùng thay cho `project` trong component */
 export const site = applySiteOverrides(project);
+
+/** Gallery 3 nhóm (gallery.json) đã áp CMS — dùng thay cho import gallery.json trong component */
+export const cmsGallery = Object.fromEntries(Object.entries(galleryData).map(([k, g]) => [k, { ...g, items: listOf(`gallery.${k}.items`, g.items) }]));
+
+/** Carousel tiện ích nổi bật (dataAmenities.js) đã áp CMS — giữ thứ tự nhóm theo FILTERS */
+export const cmsAmenityItems = FILTERS.flatMap((f) => listOf(`amenities.${f.key}`, GALLERY_ITEMS.filter((i) => i.category === f.key))
+  .map((i) => ({ ...i, category: f.key })));
 
 /** Bố cục trang chủ: thứ tự, section ẩn, biến thể */
 export const cmsLayout = {

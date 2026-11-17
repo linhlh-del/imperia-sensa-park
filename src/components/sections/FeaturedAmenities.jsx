@@ -4,7 +4,8 @@ import Image from "../ui/Image";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import useModalFocus from "../../lib/useModalFocus";
-import { FILTERS, GALLERY_ITEMS } from "../../data/dataAmenities";
+import { FILTERS } from "../../data/dataAmenities";
+import { cmsAmenityItems as GALLERY_ITEMS } from "../../cms/content";
 import { t } from "../../cms/content";
 
 function ChevronIcon({ direction = "left", className = "" }) {

@@ -89,7 +89,9 @@ const cacheName = (src) => {
 };
 
 async function localize(src) {
-  if (typeof src !== 'string' || !/^https:\/\//.test(src)) return src;
+  if (typeof src !== 'string' || !/^https?:\/\//.test(src)) return src;
+  /* http:// chỉ chấp nhận với máy chủ demo local (landing-cms/demo-server.mjs) */
+  if (/^http:/.test(src) && !/^(localhost|127\.0\.0\.1)(:\d+)?$/.test(new URL(src).host)) return src;
   if (new URL(src).host !== allowedHost) return src; // chỉ tải ảnh từ Supabase của CMS
   const name = cacheName(src);
   const file = join(IMG_DIR, name);
@@ -109,6 +111,14 @@ try {
   for (const v of Object.values(content.seo || {})) {
     if (v?.ogImage?.src) { v.ogImage.src = await localize(v.ogImage.src); count += 1; }
   }
+  /* danh sách thêm/bớt được (gallery, tiện ích…): lists[key] = [{ <trường ảnh>: { src } … }] */
+  for (const items of Object.values(content.lists || {})) {
+    for (const item of Array.isArray(items) ? items : []) {
+      for (const v of Object.values(item || {})) {
+        if (v && typeof v === 'object' && typeof v.src === 'string') { v.src = await localize(v.src); count += 1; }
+      }
+    }
+  }
 } catch (e) {
   fail(e.message);
 }
@@ -120,6 +130,7 @@ writeStatus({
   content_hash: hash,
   texts: Object.keys(content.texts || {}).length,
   images: count,
+  lists: Object.keys(content.lists || {}).length,
   empty: Object.keys(content).length === 0,
 });
 console.log(`[cms] Đã lấy nội dung "${project}": ${Object.keys(content.texts || {}).length} chữ, ${count} ảnh.`);

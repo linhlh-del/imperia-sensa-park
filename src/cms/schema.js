@@ -7,22 +7,24 @@
 import UI from './ui.js';
 import { project } from '../data/project.js';
 import { HOME_SEO, SUBPAGES, DEFAULT_IMAGE } from '../lib/seo.js';
+import { GALLERY_ITEMS } from '../data/dataAmenities.js';
+import { listSchema } from './lists-core.js';
+import { CMS_LISTS } from './lists.js';
+/* import attributes: Node (prerender) bắt buộc `with { type: 'json' }`; Vite cũng hiểu */
+import gallery from '../data/gallery.json' with { type: 'json' };
 
 /* Section trang chủ theo thứ tự mặc định. locked: luôn hiển thị, giữ vị trí. variants: phần tử đầu là mặc định. */
 export const HOME_SECTIONS = [
   { id: 'hero', label: 'Hero (màn hình đầu)', locked: true, ui: ['hero'],
     site: ['hero.kicker', 'hero.title', 'hero.titleAccent', 'hero.description'],
-    lists: [['hero.stats', 'Số liệu', ['số', 'đơn vị', 'nhãn']]],
     images: [['hero.background', 'Ảnh nền hero', '/assets/overview.webp', null, '16/9']],
     variants: [['left', 'Chữ bên trái'], ['center', 'Chữ ở giữa']] },
   { id: 'tong-quan', label: 'Tổng quan', ui: ['overview'],
     site: ['overview.title', 'overview.subtitle'],
-    lists: [['overview.bullets', 'Ý chính'], ['overview.facts', 'Số liệu', ['số', 'nhãn']]],
     images: [['overview.image', 'Ảnh tổng quan', '/assets/overview.optimized.webp', 'overview.imageAlt', '1619/972']],
     variants: [['image-right', 'Ảnh bên phải'], ['image-left', 'Ảnh bên trái']] },
   { id: 'vi-tri', label: 'Vị trí', ui: ['location'],
     site: ['location.title', 'location.subtitle'],
-    lists: [['location.distances', 'Khoảng cách', ['thời gian', 'địa điểm']]],
     variants: [['map-right', 'Bản đồ bên phải'], ['map-left', 'Bản đồ bên trái']] },
   { id: 'tien-ich', label: 'Tiện ích: carousel “Sống trọn” + sơ đồ tổng hợp tiện ích', ui: ['amenities'],
     images: [['amenities.map', 'Sơ đồ tiện ích', '/assets/responsive/utility-1920.webp', 'amenities.mapAlt', '16/9']] },
@@ -85,10 +87,20 @@ function build(s) {
   const images = (s.images || []).map(([key, label, def, altKey, ratio]) => ({
     key, label, default: def, altKey: altKey || undefined, altDefault: altKey ? UI[altKey] : undefined, ratio,
   }));
+  /* danh sách thêm/bớt được (src/cms/lists.js) */
+  const lists = CMS_LISTS.filter((l) => l.section === s.id).map((l) => listSchema(l, { vi: listDefaults(l.key) }));
   return {
     id: s.id, label: s.label, locked: Boolean(s.locked), inLayout: true,
-    variants: s.variants?.map(([id, label]) => ({ id, label })), fields, images,
+    variants: s.variants?.map(([id, label]) => ({ id, label })), fields, images, lists,
   };
+}
+
+/** Mảng mặc định của một danh sách CMS */
+function listDefaults(key) {
+  if (key.startsWith('site.')) return get(project, key.slice(5)) || [];
+  if (key.startsWith('gallery.')) return gallery[key.split('.')[1]]?.items || [];
+  if (key.startsWith('amenities.')) return GALLERY_ITEMS.filter((i) => i.category === key.split('.')[1]);
+  return [];
 }
 
 const SETTINGS = [
@@ -99,10 +111,12 @@ const SETTINGS = [
 ];
 
 /** Toàn bộ schema cho CMS */
-export function buildCmsSchema() {
+export function buildCmsSchema({ domains = [] } = {}) {
   return {
     version: 1,
     project: 'sensa-park',
+    /* domain của dự án (sites/<domain>) — CMS dùng cho "Thẻ head & tracking" theo domain */
+    domains,
     langs: ['vi'],
     sections: [...HOME_SECTIONS.map(build), ...OTHER_SECTIONS.map((s) => ({ ...build(s), inLayout: false }))],
     seo: [

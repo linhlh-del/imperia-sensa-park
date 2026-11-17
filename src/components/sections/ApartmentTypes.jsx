@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { UNITS_A, UNITS_B } from "../../data/sensaAFloorData";
 import { LAYOUT_IMAGES, PENDING_LAYOUT_UNITS, UNIT_FLOOR_LAYOUT_IMAGES, UNIT_LAYOUT_IMAGES } from "../../data/apartmentLayouts";
-import gallery from "../../data/gallery.json";
+import { cmsGallery as gallery } from "../../cms/content";
 
 /* ============================================================
    Loại căn hộ + thông tin từng căn tầng điển hình (Sensa A, Sensa B).
