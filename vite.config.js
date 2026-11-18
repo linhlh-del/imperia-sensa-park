@@ -17,7 +17,7 @@ const siteUrl = new URL(process.env.VITE_SITE_URL || loadEnv('production', proce
 export default defineConfig({
   /* Cache Vite riêng cho từng tài khoản Windows: cache do tài khoản khác tạo (vd. sandbox Codex) thì tài khoản
      thường không xoá được → EPERM khi Vite tối ưu lại deps. Các thư mục cũ .vite / .vite-sensa có thể xoá bằng quyền admin. */
-  cacheDir: `node_modules/.vite-${userInfo().username.replace(/[^\w.-]/g, '_')}`,
+  cacheDir: `node_modules/.vite-${(process.env.USERNAME || process.env.USER || userInfo().username).replace(/[^\w.-]/g, '_')}`,
   /* site không có trình tải GTM riêng → chèn snippet GTM chuẩn vào <head>.
      Thẻ theo domain đang build: CMS "Thẻ head & tracking" (riêng domain → tất cả domain → site.env). */
   plugins: [react(), cmsHeadPlugin(cms, { gtm: true, host: hostOf(siteUrl) }), {
