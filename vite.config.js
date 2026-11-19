@@ -1,7 +1,8 @@
 import { defineConfig, loadEnv } from 'vite'
 import react from '@vitejs/plugin-react'
 import { fileURLToPath, URL } from 'node:url'
-import { userInfo } from 'node:os'
+import { execFileSync } from 'node:child_process'
+import { join } from 'node:path'
 import { cmsHeadPlugin, hostOf, readCms } from './scripts/cms-head.mjs'
 
 /* Nội dung CMS (scripts/fetch-cms.mjs ghi trước khi build): thẻ head, endpoint lead.
@@ -13,15 +14,18 @@ const cmsUrl = (process.env.CMS_SUPABASE_URL || process.env.VITE_SUPABASE_URL ||
 if (cmsUrl && !process.env.VITE_CMS_COLLECT_URL) process.env.VITE_CMS_COLLECT_URL = `${cmsUrl}/functions/v1/collect`
 process.env.VITE_CMS_PROJECT = 'sensa-park'
 
-const siteUrl = new URL(process.env.VITE_SITE_URL || loadEnv('production', process.cwd(), 'VITE_').VITE_SITE_URL || 'https://imperia-sensa-park.vercel.app').origin;
+const siteUrl = new URL(process.env.VITE_SITE_URL || loadEnv('production', process.cwd(), 'VITE_').VITE_SITE_URL || 'https://sensaparkmik.vn').origin;
 export default defineConfig({
-  /* Cache Vite riêng cho từng tài khoản Windows: cache do tài khoản khác tạo (vd. sandbox Codex) thì tài khoản
-     thường không xoá được → EPERM khi Vite tối ưu lại deps. Các thư mục cũ .vite / .vite-sensa có thể xoá bằng quyền admin. */
-  cacheDir: `node_modules/.vite-${(process.env.USERNAME || process.env.USER || userInfo().username).replace(/[^\w.-]/g, '_')}`,
+  // USERNAME có thể được kế thừa từ tài khoản mở sandbox. whoami đọc tài khoản thực chạy Vite.
+  cacheDir: process.platform === 'win32'
+    ? 'node_modules/.vite-cache/' + execFileSync(join(process.env.SystemRoot, 'System32', 'whoami.exe'), {
+        encoding: 'utf8', windowsHide: true,
+      }).trim().replace(/[^\w.-]/g, '_')
+    : 'node_modules/.vite',
   /* site không có trình tải GTM riêng → chèn snippet GTM chuẩn vào <head>.
      Thẻ theo domain đang build: CMS "Thẻ head & tracking" (riêng domain → tất cả domain → site.env). */
   plugins: [react(), cmsHeadPlugin(cms, { gtm: true, host: hostOf(siteUrl) }), {
     name: 'sensa-site-origin',
-    transformIndexHtml: { order: 'post', handler: (html) => html.replaceAll('https://imperia-sensa-park.vercel.app', siteUrl) },
+    transformIndexHtml: { order: 'pre', handler: (html) => html.replaceAll('https://sensaparkmik.vn', siteUrl) },
   }],
 })

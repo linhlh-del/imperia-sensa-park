@@ -2,11 +2,11 @@
 // Tiện ích cập nhật <head> theo từng route (SPA). Không chứa JSX, không phụ thuộc
 // DOM lúc import -> có thể import từ Node (scripts/prerender.mjs) để dùng chung hằng số.
 
-const configuredSiteUrl = import.meta.env?.VITE_SITE_URL || (typeof process !== "undefined" && process.env.VITE_SITE_URL) || "https://imperia-sensa-park.vercel.app";
+const configuredSiteUrl = import.meta.env?.VITE_SITE_URL || (typeof process !== "undefined" && process.env.VITE_SITE_URL) || "https://sensaparkmik.vn";
 export const SITE_URL = new URL(configuredSiteUrl).origin;
 export const SITE_NAME = "Imperia Sensa Park";
 export const DEFAULT_IMAGE = `${SITE_URL}/assets/thumbnail.jpg`;
-export const LOGO_URL = `${SITE_URL}/assets/logo.png`;
+export const LOGO_URL = `${SITE_URL}/favicon-192.png?v=2`;
 
 export const HOME_SEO = {
   title: "Imperia Sensa Park | Căn hộ MIK Group, Phước Long, TP.HCM",
